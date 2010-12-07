@@ -53,8 +53,8 @@ try {
 	define("SITE_TITLE",' | '.Config::get('info','site_name'));
 	Tpl::_get()->setConstant('site_title',Config::get('info','site_name'));
 
-	//setup admin nav
-	Tpl::_get()->adminNav(Login::$user);
+	//setup main menu
+	Tpl::_get()->setConstant('main_menu',Tpl::_get()->parse('global','main_menu',array(),true));
 
 	switch(get('act')){
 

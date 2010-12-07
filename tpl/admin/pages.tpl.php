@@ -72,7 +72,7 @@ $tpl['edit'] = <<<HTML
 	<td colspan="2"><textarea name="content" style="width: 100%; height: 300px;">{content}</textarea></td>
 </tr>
 <tr>
-	<td><input type="submit" value="Update" /></td>
+	<td colspan="2"><input type="submit" value="Update" /> <input type="submit" name="copy" value="Copy" /></td>
 </tr>
 </table>
 </form>

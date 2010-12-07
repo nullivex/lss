@@ -90,7 +90,7 @@ $tpl['header'] = <<<HTML
 	<li class="page_item category-3"><a href="#" title="Links">Sports</a></li>
 </ul>
 </li>
-<li class="page_item page-item-43"><a href="#" title="Theme Options">Advertise</a></li>
+<li class="page_item page-item-43"><a href="{url_page}advertise" title="Theme Options">Advertise</a></li>
 				<li>
 				<form method="get" id="searchform" action="search.php">
 
