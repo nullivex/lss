@@ -1,6 +1,6 @@
 <?php
 /*
- * Tacker - Simple task tracker system
+ * Sloppygames - Arcade gaming
  * Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
@@ -28,7 +28,7 @@ require_once(ROOT.'/lib/tpl.php');
 require_once(ROOT.'/lib/validate.php');
 
 //set constants
-define("TACKER_VERSION","0.1.0");
+define("SG_VERSION","0.1.0");
 
 try {
 
@@ -48,7 +48,7 @@ try {
 	Tpl::_get()->setPath(Config::_get()->get('tpl','path'));
 	Tpl::_get()->setThemePath(Config::_get()->get('tpl','theme_path'));
 	Tpl::_get()->initConstants();
-	Tpl::_get()->setConstant('tacker_version',TACKER_VERSION);
+	Tpl::_get()->setConstant('sg_version',SG_VERSION);
 
 
 } catch (Exception $e){

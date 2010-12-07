@@ -1,3 +1,3 @@
 <?php
 
-$config['db']['password'] = '';
+$config['db']['password'] = 'est2008';

@@ -1,6 +1,6 @@
 <?php
 /*
- * Tacker - Simple task tracker system
+ * Sloppygames - Arcade gaming
  * Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
@@ -8,7 +8,7 @@
 $config = array();
 
 //info
-$config['info']['site_name'] = 'Tacker';
+$config['info']['site_name'] = 'Sloppygames';
 $config['info']['default_timezone'] = 'America/Chicago';
 
 //date

@@ -1,8 +1,8 @@
 <?php
 /*
- * Sydep WebAdm - Dedicated Deployment System
+ * Sloppygames - Arcade gaming
  * Light, sturdy, stupid simple
- * (c) GigeNET, All Rights Reserved.
+ * (c) Nullivex LLC, All Rights Reserved.
  */
 
 class Tpl {

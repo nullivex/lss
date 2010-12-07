@@ -1,8 +1,7 @@
 <?php
 /*
- * Magic - Dedicated Control System
+ * Sloppygames - Arcade gaming
  * Light, sturdy, stupid simple
- *
  * (c) Nullivex LLC, All Rights Reserved.
  */
 

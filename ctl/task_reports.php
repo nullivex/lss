@@ -1,6 +1,6 @@
 <?php
 /*
- * Tacker - Simple task tracker system
+ * Sloppygames - Arcade gaming
  * Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
