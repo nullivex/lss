@@ -1,0 +1,184 @@
+           	<h2 style="float: none;"><?=$contentTitle;?></h2>
+                        
+                        <p align="center">
+                            <? tradesDropDown($baseDir,$templateBase,$template); ?>
+                        </p>
+                        <?if (!empty($_SESSION['status'])){echo "<b><span style=\"color:red;\">".$_SESSION['status']."</span></b><br /><br />";}?>
+                        <p align="center">
+                            <b>We want to trade traffic with you! Link to us and plug any of our games on your site for a 1:1 traffic trade.</b><br />
+                        </p>
+  						<script type="text/javascript">
+							function formCheck() {
+								var msg = "";
+								
+								if (document.formTradeLinks.tradeAnchor.value == "") {
+									msg = msg+ "- Link Anchor\n";
+								}
+								
+								if (document.formTradeLinks.tradeurl.value == "") {
+									msg = msg+ "- Homepage URL\n";
+								}
+								
+								if (document.formTradeLinks.tradeEmail.value == "") {
+									msg = msg+ "- Email Address\n";
+								}
+								
+								if (msg == "") {
+									return true;
+								} else {
+									alert("The following fields were left empty and are required:\n\n" +msg);
+									return false;
+								}
+							}
+						</script>
+						<form name="formTradeLinks" method="post" action="index.php?a=addtrade" onsubmit="return formCheck();">
+          					<table width="700" border="0" cellpadding="3" cellspacing="0" align="center">
+            					<tr>
+                          			<td width="260" align="right" valign="middle">Link Anchor:</td>
+                                	<td width="440" align="left" valign="middle">&nbsp;&nbsp;&nbsp;<input name="tradeAnchor" type="text" id="tradeAnchor" value="<?=$_SESSION['anchor'];?>" size="30" maxlength="30" /></td>
+                                </tr>
+                                <tr>
+                                    <td width="260" align="right" valign="middle">Homepage URL:</td>
+                                	<td width="440" align="left" valign="middle">&nbsp;&nbsp;&nbsp;<input name="tradeurl" type="text" id="tradeurl" value="<?=$_SESSION['tradeURL'];?>" size="30" /></td>
+                                </tr>
+                                <tr>
+                                    <td width="260" align="right" valign="middle">Description:</td>
+                                	<td width="440" align="left" valign="middle">&nbsp;&nbsp;&nbsp;<input name="description" type="text" id="description" value="<?=$_SESSION['description'];?>" size="30" maxlength="75" /></td>
+                                </tr>
+                                <tr>
+                                    <td width="260" align="right" valign="middle">E-Mail Address:</td>
+                                	<td width="440" align="left" valign="middle">&nbsp;&nbsp;&nbsp;<input name="tradeEmail" type="text" id="tradeEmail" value="<?=$_SESSION['tradeEmail'];?>" size="30" /></td>
+								</tr>
+                                <tr>
+                          			<td width="700" colspan="2" align="center" valign="middle">&nbsp;</td>
+								</tr>
+                                <tr>
+                          			<td width="700" colspan="2" align="center" valign="middle"><p align="center"><b>The more plugs you fill out below the better the chance you have of use sending the full 1:1 traffic back.<br />
+<span style="color: red;">We only accept plugs to games you host.</span></b></p></td>
+								</tr>
+                                <tr>
+                          			<td width="700" colspan="2" align="center" valign="middle">&nbsp;</td>
+								</tr>
+                    		</table>
+                            <div style="width: 700px; height: 600px; overflow: scroll; margin-left: 12px;">
+                               <table width="680" border="0" cellpadding="3" cellspacing="0" style="float: left;" class="borders">
+                                   <tr>
+                                      <td width="106" align="center" class="row0">Thumb</td>
+                                      <td width="144" align="center" class="row0">Title</td>
+                                      <td width="430" align="center" class="row0">Enter full URL path to game on your site</td>
+                                   </tr>
+<?
+$classNum = 1;
+$result = mysql_query("SELECT * FROM ats_games WHERE gStatus = 1 AND tradeType = '1' AND (hardPlaysYesterday > 0 || hardPlaysToday > 0) ORDER BY hardPlaysYesterday DESC");
+if(mysql_num_rows($result)) {
+    while($row = mysql_fetch_array($result)) {
+        $gameID = $row['gid'];
+        $gameName = stripslashes($row['gName']);
+        $gameDesc = stripslashes($row['gDesc']);
+        $gameIcon1 = $row['gIcon1'];
+        $gameIcon1Hosted = $row['gIcon1Hosted'];
+        
+        if ($gameIcon1Hosted == 1) {
+            $gameIcon1 = $baseDir."content/icons/".$gameIcon1;
+        }
+        
+        if (strlen($gameDesc) > 150) {
+            $gameDesc = substr($gameDesc,0,150);
+        }
+        
+        if ($seoFriendly == 1) {
+        	$plugLink = $baseDir.$seoDir."/".seo_str_plain($gameName);
+        } else {
+        	$plugLink = $baseDir."index.php?a=play&amp;id=".$gameID;
+        }
+        
+        if ($row['gFileHosted'] == 1) {
+        	$gameFile = $baseDir."content/games/".$row['gFile'];
+        } else {
+        	$gameFile = $row['gFile'];
+        }
+        
+        if ($classNum == 1) {
+            $class = "row1";
+            $classNum = 2;
+        } elseif ($classNum == 2) {
+            $class = "row2";
+            $classNum = 1;
+        }
+?>
+                                   <tr>
+                                      <td align="left" valign="middle" class="<?=$class;?>"><img src="<?=$gameIcon1;?>" width="100" height="100" alt="<?=$gameName;?> icon" /></td>
+                                      <td align="center" valign="middle" class="<?=$class;?>">
+                                      	<a href="<?=$plugLink;?>" target="_blank"><?=$gameName;?></a><br />
+                                        <a href="<?=$gameFile;?>" target="_blank">Download SWF</a>
+                                      </td>
+                                      <td align="left" valign="middle" class="<?=$class;?>Right"><?=$gameDesc;?><br />
+                                      <input name="game_<?=$gameID;?>" type="text" id="game_<?=$gameID;?>" size="40" /></td>
+                                   </tr>
+<?
+    }
+} else {
+	$result = mysql_query("SELECT * FROM ats_games WHERE gStatus = 1 AND tradeType = '1' ORDER BY gName ASC LIMIT 50");
+    if(mysql_num_rows($result)) {
+        while($row = mysql_fetch_array($result)) {
+            $gameID = $row['gid'];
+            $gameName = stripslashes($row['gName']);
+            $gameDesc = stripslashes($row['gDesc']);
+            $gameIcon1 = $row['gIcon1'];
+            $gameIcon1Hosted = $row['gIcon1Hosted'];
+            
+            if ($gameIcon1Hosted == 1) {
+                $gameIcon1 = $baseDir."content/icons/".$gameIcon1;
+            }
+            
+            if (strlen($gameDesc) > 150) {
+                $gameDesc = substr($gameDesc,0,150);
+            }
+            
+            if ($seoFriendly == 1) {
+                $plugLink = $baseDir.$seoDir."/".seo_str_plain($gameName);
+            } else {
+                $plugLink = $baseDir."index.php?a=play&amp;id=".$gameID;
+            }
+            
+            if ($row['gFileHosted'] == 1) {
+                $gameFile = $baseDir."content/games/".$row['gFile'];
+            } else {
+                $gameFile = $row['gFile'];
+            }
+            
+            if ($classNum == 1) {
+                $class = "row1";
+                $classNum = 2;
+            } elseif ($classNum == 2) {
+                $class = "row2";
+                $classNum = 1;
+            }
+    ?>
+                                       <tr>
+                                          <td align="left" valign="middle" class="<?=$class;?>"><img src="<?=$gameIcon1;?>" width="100" height="100" alt="<?=$gameName;?> icon" /></td>
+                                          <td align="center" valign="middle" class="<?=$class;?>">
+                                            <a href="<?=$plugLink;?>" target="_blank"><?=$gameName;?></a><br />
+                                            <a href="<?=$gameFile;?>" target="_blank">Download SWF</a>
+                                          </td>
+                                          <td align="left" valign="middle" class="<?=$class;?>Right"><?=$gameDesc;?><br />
+                                          <input name="game_<?=$gameID;?>" type="text" id="game_<?=$gameID;?>" size="40" /></td>
+                                       </tr>
+    <?
+        }
+    }
+}
+?>
+                                 </table>
+                            </div>
+                            <p style="width: 700px; padding: 15px 0 0 0; float: left;" align="center">
+                                <input type="submit" name="Submit" value="Submit Site" />
+                            </p>
+                        </form>
+
+<?
+$_SESSION['anchor'] = "";
+$_SESSION['tradeURL'] = "";
+$_SESSION['tradeEmail'] = "";
+$_SESSION['description'] = "";
+?>

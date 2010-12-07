@@ -54,6 +54,10 @@ try {
 
 	switch(get('act')){
 
+		case 'pages':
+			require_once(ROOT.'/router/admin/pages.php');
+			break;
+		
 		case 'staff':
 			require_once(ROOT.'/router/admin/staff.php');
 			break;

@@ -1,0 +1,114 @@
+.gameinfo { float:left; width:610px;}
+.gameinfocol { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.gameinfo img { border:0;}
+
+.gameinfo h2,.comments h3 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.gameinfo ul,.right ul { list-style-type:none; margin:0; padding:0; line-height:150%; font-size:11px; }
+.gameinfo ul li,.right ul li { list-style-type:none; margin:0 0 20px; padding:0; }
+.gameinfo ul li ul,.right ul li ul { list-style-type:square; margin:0; padding:0 3px; }
+.gameinfo ul li ul li,.right ul li ul li { list-style-type:none; background:transparent url(images/bullet.gif) no-repeat 0 4px; border:0; margin:0; padding:0 0 2px 14px; }
+
+
+.categoryinfo { float:left; width:553px;}
+.categorycol { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.categorycol img { border:0;}
+
+.categorycol h2,.comments h3 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.categorycol ul,.right ul { list-style-type:none; margin:0; padding:0; line-height:150%; font-size:11px; }
+.categorycol ul li,.right ul li { list-style-type:none; margin:0 0 20px; padding:0; }
+.categorycol ul li ul,.right ul li ul { list-style-type:square; margin:0; padding:0 3px; }
+.categorycol ul li ul li,.right ul li ul li { list-style-type:none; background:transparent url(images/bullet.gif) no-repeat 0 4px; border:0; margin:0; padding:0 0 2px 14px; }
+
+
+.gameplay { float:left; width:640px;}
+.gameplaycol { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.gameplay img { border:0;}
+
+.gameplay h2,.comments h3 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.gameplay ul,.right ul { list-style-type:none; margin:0; padding:0; line-height:150%; font-size:11px; }
+.gameplay ul li,.right ul li { list-style-type:none; margin:0 0 20px; padding:0; }
+.gameplay ul li ul,.right ul li ul { list-style-type:square; margin:0; padding:0 3px; }
+.gameplay ul li ul li,.right ul li ul li { list-style-type:none; background:transparent url(images/bullet.gif) no-repeat 0 4px; border:0; margin:0; padding:0 0 2px 14px; }
+
+
+.gameinforight { float:right; width:310px;} 
+.gameinforightcol { float:right; width:310px;} 
+.gameinforightcolbox { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.gameinforightcolbox2 { border:0px solid #D5D5D5; padding:0px; background: #fff; }
+.gameinforight img { border:0; display:block; margin-left:auto; margin-right:auto; }
+
+
+.categoryright { float:right; width:390px;} 
+.categoryrightcol { float:right; width:390px;} 
+.categoryrightcolbox { border:1px solid #000; padding:8px; background: #fff; }
+.categoryright img { border:0; display:block; margin-left:auto; margin-right:auto; }
+
+
+.middle {  background: #fff; margin-top:0px; line-height:16px; margin-left:10px; float:left; width:295px; border:1px solid #D5D5D5; overflow:hidden; padding:8px; font-size:11px; }
+.middle h2 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.middle h4  { font-size:11px;sans-serif;color:#999;font-weight:80; margin:0 7px 3px 0; padding:3px 0; }
+.middle img { padding:4px; border: 0px;}
+
+
+
+
+
+
+.gameinfodesc {
+	width: 315px;
+	height: 90px;
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+
+.gameinfoplay a {
+	width: 315px;
+	height: 90px;
+
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+	.gameinfoplay a span { color: #5d5d5d; font-weight: bold; font-size:12px; }
+	a.gamelink, a.gamelink:link, a.gamelink:active, a.gamelink:visited { text-decoration: none; }
+	.gameinfoplay a span.link { color: #4977ac; font-weight: bold; font-size: 18px; text-decoration: none; }
+	.gameinfoplay a:hover span { text-decoration: none; }
+	.gameinfoplay a:hover { background: #DDD; }
+	.gameinfoplay .thumb { width: 110px; height: 90px; float: left; border: 1px solid #000; margin-right: 5px; }
+	.gameinfoplay span.play { float: right; }
+
+
+
+.gameplaydesc {
+	width: 270px;
+
+	display: block;
+	float: left;
+	margin-top: 2px;
+	padding: 5px;
+}
+
+.gameplayplay a {
+	width: 270px;
+	height: 90px;
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+	.gameplayplay a span { color: #5d5d5d; font-weight: bold; font-size:12px; }
+	a.gamelink, a.gamelink:link, a.gamelink:active, a.gamelink:visited { text-decoration: none; }
+	.gameplayplay a span.link { color: #4977ac; font-weight: bold; font-size: 13px; text-decoration: none; }
+	.gameplayplay a:hover span { text-decoration: none; }
+	.gameplayplay a:hover { background: #DDD; }
+	.gameplayplay .thumb { width: 90px; height: 75px; float: left; border: 1px solid #000; margin-right: 5px; }
+	.gameplayplay span.play { float: right; }
+
+
+
+
+
+

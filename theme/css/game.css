@@ -1,0 +1,60 @@
+.gameinforight { float:right; width:160px;} 
+.gameinforightcol { float:right; width:160px;} 
+.gameinforightcolbox { border:1px solid #000; padding:8px; background: #fff; }
+.gameinforight img { border:0; display:block; margin-left:auto; margin-right:auto; }
+
+
+.categoryright { float:right; width:425px;} 
+.categoryrightcol { float:right; width:425px;} 
+.categoryrightcolbox { border:1px solid #000; padding:8px; background: #fff; }
+.categoryright img { border:0; display:block; margin-left:auto; margin-right:auto; }
+
+
+
+.gameinfodesc {
+	width: 285px;
+	height: 90px;
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+
+.gameinfoplay a {
+	width: 285px;
+	height: 102px;
+
+	display: block;
+	float: left;
+	margin-left: 3px;
+	padding: 5px;
+}
+	.gameinfoplay a span { color: #5d5d5d; font-weight: bold; font-size:12px; }
+	a.gamelink, a.gamelink:link, a.gamelink:active, a.gamelink:visited { text-decoration: none; }
+	.gameinfoplay a span.link { color: #4977ac; font-weight: bold; font-size: 18px; text-decoration: none; }
+	.gameinfoplay a:hover span { text-decoration: none; }
+	.gameinfoplay a:hover { background: #DDD; }
+	.gameinfoplay .thumb { width: 110px; height: 100px; float: left; border: 1px solid #000; margin-right: 5px; }
+	.gameinfoplay span.play { float: right; }
+
+
+.gameinfo-menubar {
+	background-image: url(images/gamedescmenubar.gif);
+	background-repeat: no-repeat;
+	height: 24px;
+	width: 760px;
+	text-align: left;
+	vertical-align: middle;
+	line-height: 24px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+}
+.gameinfo-menubar a {
+	padding-right: 5px;
+	margin-top: auto;
+	margin-bottom: auto;
+	line-height: 24px;
+	padding-left: 2px;
+	font-weight: normal;
+	
+}

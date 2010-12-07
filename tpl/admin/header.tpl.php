@@ -10,7 +10,7 @@ $tpl = array();
 $tpl['header'] = <<<HTML
 <html>
 <head>
-<title>{site_name}</title>
+<title>{site_name} - Admin Panel</title>
 <link rel="stylesheet" type="text/css" href="{css}/main.css" />
 </head>
 <body>

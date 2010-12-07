@@ -1,0 +1,18 @@
+				<div id="leftSidebarBox">
+                    <div id="leftSidebarInnerBox">
+                        <img src="<?=$templateBase;?>images/cats-left.jpg" width="8" height="230" alt="" class="tl" />
+                        <img src="<?=$templateBase;?>images/cats-right.jpg" width="8" height="230" alt="" class="tr" />
+                        <img src="<?=$templateBase;?>images/sidebar-bl.jpg" width="8" height="230" alt="" class="bl" />
+                        <img src="<?=$templateBase;?>images/sidebar-br.jpg" width="8" height="8" alt="" class="br" />
+                        <? include("$templatePath/files/categories-menu.html"); ?>
+                        <div class="ad_160x600">
+                            <? include("$templatePath/files/ad-160x600.html"); ?>
+                        </div>
+                        <?
+                        if ($usersSwitchTemplate == 1) {
+                        	include("$templatePath/files/switch-template.html");
+                        }
+                        ?>
+                        <? include("$templatePath/files/top-referrers.html"); ?>
+                    </div>
+                </div>

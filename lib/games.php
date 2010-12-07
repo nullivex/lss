@@ -66,9 +66,10 @@ class Games {
 			'inst'			=>	'',
 			'width'			=>	'400',
 			'height'		=>	'300',
-			'icon'			=>	'',
-			'thumb'			=>	'',
-			'large'			=>	'',
+			'icon'			=>	'/games/icons/',
+			'thumb'			=>	'/games/thumbs/',
+			'large'			=>	'/games/large/',
+			'media'			=>	'/games/media/',
 			'is_tradable'	=>	'1',
 			'is_featured'	=>	'',
 			'is_active'		=>	'1'
@@ -100,16 +101,16 @@ class Games {
 			insert into games
 			(
 				category_id,name,urlname,shortname,`desc`,inst,width,height,icon,
-				thumb,large,is_tradable,is_featured,is_active,created
+				thumb,large,media,is_tradable,is_featured,is_active,created
 			)values(
 				?,?,?,?,?,?,?,?,?,
-				?,?,?,?,?,?
+				?,?,?,?,?,?,?
 			)
 		');
 		$query->execute(array(
 				data('category_id'),data('name'),urlname(data('name')),shortname(data('name')),
 				data('desc'),data('inst'),data('width'),data('height'),data('icon'),
-				data('thumb'),data('large'),
+				data('thumb'),data('large'),data('media'),
 				$is_tradable,$is_featured,$is_active,time()
 		));
 		return $this->db->lastInsertId();
@@ -125,14 +126,14 @@ class Games {
 			update games set
 				category_id = ?, name = ?, urlname = ?, shortname = ?,
 				`desc` = ?, inst = ?, width = ?, height = ?,
-				icon = ?, thumb = ?, large = ?,
+				icon = ?, thumb = ?, large = ?, media = ?,
 				is_tradable = ?, is_featured = ?, is_active = ?
 			where game_id = ?
 		');
 		$query->execute(array(
 			data('category_id'),data('name'),urlname(data('name')),shortname(data('name')),
 			data('desc'),data('inst'),data('width'),data('height'),
-			data('icon'),data('thumb'),data('large'),
+			data('icon'),data('thumb'),data('large'),data('media'),
 			$is_tradable,$is_featured,$is_active,data('game_id')
 		));
 		return data('game_id');

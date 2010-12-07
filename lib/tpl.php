@@ -122,7 +122,7 @@ class Tpl {
 		$this->setConstant('site_name',Config::get('info','site_name'));
 		$this->setConstant('uri',Config::get('url','uri'));
 		$this->setConstant('url',Config::get('url','url'));
-		$this->setConstant('skin_url',$this->theme_path);
+		$this->setConstant('theme',$this->theme_path);
 		$this->setConstant('cur_year',date('Y'));
 		$this->setConstant('css',$this->theme_path.'/css');
 		$this->setConstant('js',Config::get('url','uri').'/js');

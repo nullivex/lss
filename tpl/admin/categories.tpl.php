@@ -44,7 +44,7 @@ $tpl['create'] = <<<HTML
 	<td><input type="text" class="input_fields" name="name" value="{name}" /></td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Create" /></td>
+	<td><input type="submit" value="Create" /></td>
 </tr>
 </table>
 </form>
@@ -62,7 +62,7 @@ $tpl['edit'] = <<<HTML
 	<td><input type="text" class="input_fields" name="name" value="{name}" /></td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Update" /></td>
+	<td><input type="submit" value="Update" /></td>
 </tr>
 </table>
 </form>
@@ -81,7 +81,7 @@ $tpl['edit'] = <<<HTML
 </tr>
 <tr>
 	<td class="label"></td>
-	<td align="right"><input type="submit" value="Delete Category" /></td>
+	<td><input type="submit" value="Delete Category" /></td>
 </tr>
 </table>
 </form>

@@ -18,6 +18,8 @@ class Url {
 		'game_create',
 		'staff',
 		'staff_create',
+		'pages',
+		'page_create',
 		'members',
 		'member_create',
 		'profile',
@@ -65,6 +67,18 @@ class Url {
 
 	public static function category_manage($category_id){
 		return self::categories().'&do=manage&category_id='.$category_id;
+	}
+
+	public static function pages(){
+		return self::prep().'admin.php?act=pages';
+	}
+
+	public static function page_create(){
+		return self::pages().'&do=create';
+	}
+
+	public static function page_manage($page_id){
+		return self::pages().'&do=manage&page_id='.$page_id;
 	}
 
 	public static function members(){

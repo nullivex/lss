@@ -1,0 +1,202 @@
+.gameinfo { float:left; width:610px;}
+.gameinfocol { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.gameinfo img { border:0;}
+
+.gameinfo h2,.comments h3 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.gameinfo ul,.right ul { list-style-type:none; margin:0; padding:0; line-height:150%; font-size:11px; }
+.gameinfo ul li,.right ul li { list-style-type:none; margin:0 0 20px; padding:0; }
+.gameinfo ul li ul,.right ul li ul { list-style-type:square; margin:0; padding:0 3px; }
+.gameinfo ul li ul li,.right ul li ul li { list-style-type:none; background:transparent url(images/bullet.gif) no-repeat 0 4px; border:0; margin:0; padding:0 0 2px 14px; }
+
+
+.categoryinfo { float:left; width:529px;}
+.categorycol { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.categorycol img { border:0;}
+
+.categorycol h2,.comments h3 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.categorycol ul,.right ul { list-style-type:none; margin:0; padding:0; line-height:150%; font-size:11px; }
+.categorycol ul li,.right ul li { list-style-type:none; margin:0 0 20px; padding:0; }
+.categorycol ul li ul,.right ul li ul { list-style-type:square; margin:0; padding:0 3px; }
+.categorycol ul li ul li,.right ul li ul li { list-style-type:none; background:transparent url(images/bullet.gif) no-repeat 0 4px; border:0; margin:0; padding:0 0 2px 14px; }
+
+
+.gameplay { float:left; width:790px;}
+.gameplaycol { border:0px solid #D5D5D5; padding:0px; background: #fff; }
+.gameplaycol2 { border:1px solid #D5D5D5; padding:8px; background: #fff; }
+.gameplay img { border:0;}
+
+.gameplay h2,.comments h3 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.gameplay ul,.right ul { list-style-type:none; margin:0; padding:0; line-height:150%; font-size:11px; }
+.gameplay ul li,.right ul li { list-style-type:none; margin:0 0 20px; padding:0; }
+.gameplay ul li ul,.right ul li ul { list-style-type:square; margin:0; padding:0 3px; }
+.gameplay ul li ul li,.right ul li ul li { list-style-type:none; background:transparent url(images/bullet.gif) no-repeat 0 4px; border:0; margin:0; padding:0 0 2px 14px; }
+
+
+.gameinforight { float:right; width:160px;} 
+.gameinforightcol { float:right; width:160px;} 
+.gameinforightcolbox { border:1px solid #000; padding:8px; background: #fff; }
+.gameinforight img { border:0; display:block; margin-left:auto; margin-right:auto; }
+
+
+.categoryright { float:right; width:425px;} 
+.categoryrightcol { float:right; width:425px;} 
+.categoryrightcolbox { border:1px solid #000; padding:8px; background: #fff; }
+.categoryright img { border:0; display:block; margin-left:auto; margin-right:auto; }
+
+
+.middle {  background: #fff; margin-top:0px; line-height:16px; margin-left:10px; float:left; width:295px; border:1px solid #D5D5D5; overflow:hidden; padding:8px; font-size:11px; }
+.middle h2 { font-size:13px; border-bottom:dashed 1px #ccc; margin:0 7px 3px 0; padding:3px 0; }
+.middle h4  { font-size:11px;sans-serif;color:#999;font-weight:80; margin:0 7px 3px 0; padding:3px 0; }
+.middle img { padding:4px; border: 0px;}
+
+
+
+
+
+
+.gameinfodesc {
+	width: 315px;
+	height: 90px;
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+
+.gameinfoplay a {
+	width: 315px;
+	height: 90px;
+
+	display: block;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+	.gameinfoplay a span { color: #5d5d5d; font-weight: bold; font-size:12px; }
+	a.gamelink, a.gamelink:link, a.gamelink:active, a.gamelink:visited { text-decoration: none; }
+	.gameinfoplay a span.link { color: #4977ac; font-weight: bold; font-size: 18px; text-decoration: none; }
+	.gameinfoplay a:hover span { text-decoration: none; }
+	.gameinfoplay a:hover { background: #DDD; }
+	.gameinfoplay .thumb { width: 110px; height: 90px; float: left; border: 1px solid #000; margin-right: 5px; }
+	.gameinfoplay span.play { float: right; }
+
+
+
+
+.gameinfo-menubar {
+	background-image: url(gamedescmenubar.gif);
+	background-repeat: no-repeat;
+	height: 24px;
+	width: 760px;
+	text-align: left;
+	vertical-align: middle;
+	padding-bottom: 5px;
+}
+.gameinfo-menubar a {
+	padding-right: 5px;
+	margin-top: auto;
+	margin-bottom: auto;
+	line-height: 24px;
+	padding-left: 2px;
+	font-weight: normal;
+	
+}
+
+.holder-menu {
+	background-image: url(bkg_ingamemenu.gif);
+	background-repeat: no-repeat;
+	height: 24px;
+	width: 760px;
+	text-align: left;
+	vertical-align: middle;
+	padding-bottom: 5px;
+}
+.holder-menu a {
+	padding-right: 5px;
+	margin-top: auto;
+	margin-bottom: auto;
+	line-height: 24px;
+	padding-left: 2px;
+	font-weight: normal;
+	
+}
+.holder-menur {
+	background-image: url(bkg_ingamemenu.gif);
+	background-repeat: no-repeat;
+	margin-top:5px;
+	height: 24px;
+	width: 760px;
+	text-align: left;
+	vertical-align: middle;
+}
+.holder-menur a {
+	padding-right: 5px;
+	margin-top: auto;
+	margin-bottom: auto;
+	line-height: 24px;
+	padding-left: 2px;
+	font-weight: normal;
+	
+}
+
+.main-bkg {
+	background-image: url(body-bkg.gif);
+	background-repeat: repeat-y;
+}
+.holder-bkg {
+	background-image: url(holder-bkg.gif);
+	background-repeat: repeat-y;
+	padding: 5px 15px;
+	height: auto;
+	width: 760px;
+}
+.holder-bkg2 {
+	background-image: url(holder-bkg.gif);
+	background-repeat: repeat-y;
+	padding: 0px 15px;
+	height: auto;
+	width: 760px;
+}
+.holder-top {
+	background-image: url(holder-top.gif);
+	height: 8px;
+	width: 790px;
+	background-repeat: no-repeat;
+}
+.holder-top-line {
+	background-image: url(holder-top-line.gif);
+	height: 8px;
+	width: 790px;
+	background-repeat: no-repeat;
+}
+
+.holder-bottom {
+
+	background-image: url(holder-bottom.gif);
+	height: 8px;
+	width: 790px;
+	background-repeat: no-repeat;
+}
+
+.holder-forum {
+	background-image: url(divider_ingamemenu.gif);
+	background-repeat: no-repeat;
+	height: 24px;
+	width: 115px;
+	text-align: right;
+	vertical-align: middle;
+	float: right;
+}
+
+
+#footerwrap { 
+width:970px; 
+padding: 8px; 
+margin: 0 auto; 
+padding-top:10px; 
+text-align:center; 
+clear:both; 
+color: #ffffff;
+padding:5px; 
+background: #425E92; 
+}

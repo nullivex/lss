@@ -49,21 +49,17 @@ try {
 	Login::_get(Config::_get()->get('root_user'))->check();
 	Tpl::_get()->setConstant('user_username',Login::$user['username']);
 
+	//title stuff
+	define("SITE_TITLE",' | '.Config::get('info','site_name'));
+	Tpl::_get()->setConstant('site_title',Config::get('info','site_name'));
+
 	//setup admin nav
 	Tpl::_get()->adminNav(Login::$user);
 
 	switch(get('act')){
 
-		case 'profile':
-			require_once(ROOT.'/router/profile.php');
-			break;
-		
-		case 'staff':
-			require_once(ROOT.'/router/staff.php');
-			break;
-
-		case 'seed':
-			require_once(ROOT.'/router/seed.php');
+		case 'pages':
+			require_once(ROOT.'/router/pages.php');
 			break;
 
 		case 'home':

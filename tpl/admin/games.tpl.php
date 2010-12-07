@@ -92,6 +92,10 @@ $tpl['create'] = <<<HTML
 	<td><input type="text" class="input_fields" name="large" value="{large}" /></td>
 </tr>
 <tr>
+	<td class="label">Media File</td>
+	<td><input type="text" class="input_fields" name="media" value="{media}" /></td>
+</tr>
+<tr>
 	<td class="label">Featured?</td>
 	<td><input type="checkbox" name="is_featured" {is_featured} /></td>
 </tr>
@@ -104,7 +108,7 @@ $tpl['create'] = <<<HTML
 	<td><input type="checkbox" name="is_active" {is_active} /></td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Create" /></td>
+	<td><input type="submit" value="Create" /></td>
 </tr>
 </table>
 </form>
@@ -154,6 +158,10 @@ $tpl['edit'] = <<<HTML
 	<td><input type="text" class="input_fields" name="large" value="{large}" /></td>
 </tr>
 <tr>
+	<td class="label">Media File</td>
+	<td><input type="text" class="input_fields" name="media" value="{media}" /></td>
+</tr>
+<tr>
 	<td class="label">Featured?</td>
 	<td><input type="checkbox" name="is_featured" {is_featured} /></td>
 </tr>
@@ -166,7 +174,7 @@ $tpl['edit'] = <<<HTML
 	<td><input type="checkbox" name="is_active" {is_active} /></td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Update" /></td>
+	<td colspan="2"><input type="submit" value="Update" /> <input type="submit" name="copy" value="Copy" /></td>
 </tr>
 </table>
 </form>
@@ -181,7 +189,7 @@ $tpl['edit'] = <<<HTML
 </tr>
 <tr>
 	<td class="label"></td>
-	<td align="right"><input type="submit" value="Delete Game" /> (if deleted will undelete)</td>
+	<td><input type="submit" value="Delete Game" /> (if deleted will undelete)</td>
 </tr>
 </table>
 </form>

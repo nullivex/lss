@@ -8,7 +8,7 @@
 $tpl = array();
 
 $tpl['members'] = <<<HTML
-<h1>Staff</h1>
+<h1>Members</h1>
 <div class="action_link"><a href="{url_staff_create}">Add Member</a></div>
 
 <table cellpadding="10" cellspacing="0" class="tbl">
@@ -57,7 +57,7 @@ $tpl['create'] = <<<HTML
 	<td><input type="checkbox" name="is_affiliate" value="true" {is_affiliate}/></td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Create" /></td>
+	<td colspan="2"><input type="submit" value="Create" /></td>
 </tr>
 </table>
 </form>
@@ -91,7 +91,7 @@ $tpl['edit'] = <<<HTML
 	<td><input type="checkbox"  name="is_affiliate" value="true" {is_affiliate}/></td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Update" /></td>
+	<td colspan="2"><input type="submit" value="Update" /></td>
 </tr>
 </table>
 </form>
@@ -105,7 +105,8 @@ $tpl['edit'] = <<<HTML
 	<td><input type="checkbox" name="confirm_delete" value="true" /> (cannot be undone)</td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><input type="submit" value="Delete Member" /></td>
+	<td class="label"></td>
+	<td colspan="2"><input type="submit" value="Delete Member" /></td>
 </tr>
 </table>
 </form>

@@ -44,6 +44,7 @@ $tpl['admin_nav'] = <<<HTML
 	<a href="{url_traffic}">Traffic</a> |
 	<a href="{url_categories}">Categories</a> |
 	<a href="{url_games}">Games</a> |
+	<a href="{url_pages}">Pages</a> |
 	<a href="{url_members}">Members</a> |
 	<a href="{url_staff}">Staff</a>
 </div>
@@ -54,6 +55,7 @@ $tpl['staff_nav'] = <<<HTML
 	<a href="{url_traffic}">Traffic</a> |
 	<a href="{url_categories}">Categories</a> |
 	<a href="{url_games}">Games</a> |
+	<a href="{url_pages}">Pages</a> | 
 	<a href="{url_members}">Members</a>
 </div>
 HTML;

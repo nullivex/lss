@@ -9,6 +9,16 @@ require_once(ROOT.'/lib/games.php');
 require_once(ROOT.'/lib/categories.php');
 page_header();
 
+if(post('copy')){
+	try {
+		Games::_get()->create(post());
+		alert('game created successfully',true,true);
+		redirect(Url::games());
+	} catch (Exception $e){
+		alert($e->getMessage(),false);
+	}
+}
+
 if(post('edit')){
 	try {
 		Games::_get()->edit(post());
