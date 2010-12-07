@@ -17,7 +17,7 @@ include_once('config.php');
 date_default_timezone_set($config['info']['default_timezone']);
 
 //set root path
-define("ROOT",$config['paths']['tacker']);
+define("ROOT",$config['paths']['sg']);
 
 //load base libs
 require_once(ROOT.'/src/func.php');

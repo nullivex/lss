@@ -24,7 +24,7 @@ $config['url']['url'] = '';
 $config['url']['uri'] = '';
 
 //paths
-$config['paths']['tacker'] = dirname(__FILE__);
+$config['paths']['sg'] = dirname(__FILE__);
 
 //db
 $config['db']['driver'] = 'mysql';
