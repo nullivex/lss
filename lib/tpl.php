@@ -156,11 +156,9 @@ class Tpl {
 	}
 
 	public function adminNav($user){
-		$this->setConstant('admin_nav','');
+		$this->setConstant('admin_nav',$this->parse('global','staff_nav',array(),true));;
 		if(!isset($user['is_manager']) || !$user['is_manager']) return;
 		$this->setConstant('admin_nav',$this->parse('global','admin_nav',array(),true));
-		if(session('manage') == 'true') $this->setConstant('manage_mode_action','Leave Management Mode');
-		else $this->setConstant('manage_mode_action','Enter Management Mode');
 	}
 	
 }

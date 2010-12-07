@@ -146,3 +146,13 @@ function hours($tm,$inc=1){
 	if($hours < 1) $hours = 1;
 	return $hours.' hours';
 }
+
+function urlname($name){
+	$name = preg_replace('/\W+/',' ',strtolower($name));
+	$name = preg_replace('/\s+/','-',$name);
+	return $name;
+}
+
+function shortname($name){
+	return preg_replace('/-/','',urlname($name));
+}
