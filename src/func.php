@@ -82,7 +82,7 @@ function output($body){
 }
 
 function redirect($url,$meta=false,$time=2){
-	if(empty($url)) $url = Config::get('url','url').'/index.php';
+	if(empty($url)) $url = Url::home(); //url must be preloaded
 	if(!$meta){
 		header("Location: $url");
 		output('');

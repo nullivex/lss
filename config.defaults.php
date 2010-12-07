@@ -32,11 +32,13 @@ $config['db']['host'] = 'localhost';
 $config['db']['port'] = '';
 $config['db']['user'] = 'root';
 $config['db']['password'] = '';
-$config['db']['database'] = 'tacker';
+$config['db']['database'] = 'sg';
 
 //tpl
 $config['tpl']['path'] = 'tpl';
+$config['tpl']['admin_path'] = 'tpl/admin';
 $config['tpl']['theme_path'] = 'theme';
+$config['tpl']['admin_theme_path'] = 'theme/admin';
 
 //api
 $config['api']['enabled'] = false;
