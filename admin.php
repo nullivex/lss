@@ -57,6 +57,10 @@ try {
 		case 'staff':
 			require_once(ROOT.'/router/admin/staff.php');
 			break;
+
+		case 'profile':
+			require_once(ROOT.'/router/admin/profile.php');
+			break;
 		
 		case 'members':
 			require_once(ROOT.'/router/admin/members.php');

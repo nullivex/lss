@@ -13,7 +13,7 @@ if(post('edit')){
 	try {
 		Games::_get()->edit(post());
 		alert('game updated successfully',true,true);
-		redirect(Url::members());
+		redirect(Url::games());
 	} catch (Exception $e){
 		alert($e->getMessage(),false);
 	}

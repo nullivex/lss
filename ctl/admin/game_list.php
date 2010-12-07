@@ -8,7 +8,7 @@
 require_once(ROOT.'/lib/games.php');
 page_header();
 
-$list = Games::_get()->gameList();
+$list = Games::_get()->gameList(get('status'));
 $html = '';
 $count = 1;
 foreach($list as $game){
@@ -24,6 +24,12 @@ foreach($list as $game){
 
 $params = array();
 $params['games'] = $html;
+$params['url_active'] = Url::game_status('active');
+$params['url_tradable'] = Url::game_status('tradable');
+$params['url_intradable'] = Url::game_status('intradable');
+$params['url_featured'] = Url::game_status('featured');
+$params['url_inactive'] = Url::game_status('inactive');
+$params['url_deleted'] = Url::game_status('deleted');
 Tpl::_get()->parse('games','games',$params);
 
 page_footer();

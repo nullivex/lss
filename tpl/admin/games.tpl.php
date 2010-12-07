@@ -10,6 +10,14 @@ $tpl = array();
 $tpl['games'] = <<<HTML
 <h1>Games</h1>
 <div class="action_link"><a href="{url_game_create}">Add Game</a></div>
+<div class="action_link">
+	<a href="{url_active}">Active</a> |
+	<a href="{url_featured}">Featured</a> |
+	<a href="{url_tradable}">Tradable</a> |
+	<a href="{url_intradable}">Intradable</a> |
+	<a href="{url_inactive}">Inactive</a> |
+	<a href="{url_deleted}">Deleted</a>
+</div>
 
 <table cellpadding="10" cellspacing="0" class="tbl">
 <tr>
@@ -169,11 +177,11 @@ $tpl['edit'] = <<<HTML
 <table class="form_tbl">
 <tr>
 	<td class="label">Confirm Delete</td>
-	<td><input type="checkbox" name="confirm_delete" value="true" /> (cannot be undone)</td>
+	<td><input type="checkbox" name="confirm_delete" value="true" /></td>
 </tr>
 <tr>
 	<td class="label"></td>
-	<td align="right"><input type="submit" value="Delete Game" /></td>
+	<td align="right"><input type="submit" value="Delete Game" /> (if deleted will undelete)</td>
 </tr>
 </table>
 </form>

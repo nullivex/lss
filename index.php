@@ -66,9 +66,9 @@ try {
 			require_once(ROOT.'/router/seed.php');
 			break;
 
-		case 'tasks':
+		case 'home':
 		default:
-			require_once(ROOT.'/router/tasks.php');
+			require_once(ROOT.'/router/home.php');
 			break;
 
 	}

@@ -17,16 +17,45 @@ class Games {
 		$this->db = Db::_get();
 	}
 
-	public function gameList(){
-		$query = $this->db->prepare('
+	public function gameList($type=null,$limit=null){
+		$is_featured = 0; $is_tradable = 0; $is_active = 1; $is_deleted = 0;
+		$values = array();
+		switch($type){
+			case 'featured':
+				$status = 'g.is_featured = ? and g.is_active = ? and g.is_deleted = ?';
+				$values[] = 1; $values[] = $is_active; $values[] = $is_deleted;
+				break;
+			case 'tradable':
+				$status = 'g.is_tradable = ? and g.is_active = ? and g.is_deleted = ?';
+				$values[] = 1; $values[] = $is_active; $values[] = $is_deleted;
+				break;
+			case 'intradable':
+				$status = 'g.is_tradable = ? and g.is_active = ? and g.is_deleted = ?';
+				$values[] = $is_tradable; $values[] = $is_active; $values[] = $is_deleted;
+				break;
+			case 'inactive':
+				$status = 'g.is_active = ? and g.is_deleted = ?';
+				$values[] = 0; $values[] = $is_deleted;
+				break;
+			case 'deleted':
+				$status = 'g.is_deleted = ?';
+				$values[] = 1;
+				break;
+			default:
+				$status = 'g.is_active = ? and is_deleted = ?';
+				$values[] = $is_active; $values[] = $is_deleted;
+				break;
+		}
+		$sql = '
 			select
 			g.*,(select count(*) from game_tags t where t.game_id = g.game_id) as tags,
 			c.name as category
 			from games g
 			left join categories c on c.category_id = g.category_id
-			where g.is_deleted = ?
-		');
-		$query->execute(array(0));
+			where '.$status.'
+		';
+		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql); $query->execute($values);
 		return $query->fetchAll();
 	}
 
@@ -104,7 +133,7 @@ class Games {
 			data('category_id'),data('name'),urlname(data('name')),shortname(data('name')),
 			data('desc'),data('inst'),data('width'),data('height'),
 			data('icon'),data('thumb'),data('large'),
-			$is_tradable,$is_featured,$is_active
+			$is_tradable,$is_featured,$is_active,data('game_id')
 		));
 		return data('game_id');
 	}
@@ -114,8 +143,10 @@ class Games {
 		Validate::go('game_id')->not('blank')->type('num');
 		Validate::go('confirm_delete')->not('blank');
 		Validate::paint();
+		$params = $this->editParams(data('game_id'));
+		$deleted = $params['is_deleted'] ? 0 : 1;
 		$query = $this->db->prepare('update games set is_deleted = ? where game_id = ?');
-		$query->execute(array(1,data('game_id')));
+		$query->execute(array($deleted,data('game_id')));
 		return data('game_id');
 	}
 

@@ -51,6 +51,10 @@ class Url {
 		return self::games().'&do=manage&game_id='.$game_id;
 	}
 
+	public static function game_status($status){
+		return self::games().'&do=list&status='.$status;
+	}
+
 	public static function categories(){
 		return self::prep().'admin.php?act=categories';
 	}
