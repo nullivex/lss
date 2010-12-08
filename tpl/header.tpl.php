@@ -8,31 +8,6 @@
 $tpl = array();
 
 $tpl['header'] = <<<HTML
-<html>
-<head>
-<title>{site_title}</title>
-<link rel="stylesheet" type="text/css" href="{css}/main.css" />
-</head>
-<body>
-	<div id="header_frame">
-		<div class="banner_nav">
-			<a href="{url_task_roadmap}">Roadmap</a>&nbsp;|&nbsp;
-			<a href="{url_profile}">Profile</a>&nbsp;|&nbsp;
-			<a href="{url_tasks}">Tasks</a>&nbsp;|&nbsp;
-			<a href="{url_logout}">Logout ({user_username})</a>
-		</div>
-		<div id="site_name"><a href="{url_home}">{site_name}</a></div>
-	</div>
-	<div class="mainNavFrame">
-		<div class="mainNav">
-			{admin_nav}
-		</div>
-	</div>
-<div class="content">
-{alert}
-HTML;
-
-$tpl['header'] = <<<HTML
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
 
@@ -41,8 +16,8 @@ $tpl['header'] = <<<HTML
 <meta http-equiv="cache-control" content="no-cache" />
 <meta name="keywords" content="free games, free online games, games, online games, play games, racing games, car games, sports games, action games, adventure games, arcade games, shooting games, addicting games" />
 <meta name="description" content="Play over 15000 FREE games here at SloppyGames.com, including free online games, arcade games, racing games, shooting games, and flash games!" />
-<link rel="stylesheet" type="text/css" href="{css}/game.css" media="screen">
-<link rel="stylesheet" type="text/css" href="{css}/style.css" media="screen">
+<link rel="stylesheet" type="text/css" href="{css}/game.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{css}/style.css" media="screen" />
 <script language="javascript" type="text/javascript" src="{js}/ajaxtabs.js"></script>
 <script type="text/javascript" src="{js}/menu.js"></script>
 <script type="text/javascript" src="{js}/jquery.js"></script>
@@ -75,14 +50,6 @@ $tpl['header'] = <<<HTML
 		<div class="mlmenu horizontal fade inaccesible">
 			<ul>
 				<li class="page_item page-item-2"><a href="{url_page}about" title="About">About</a></li>
-<li class="page_item page-item-29"><a href="http://beta.sloppygames.com/elements.php" title="Elements">Elements</a></li>
-<li class="page_item page-item-31haschild"><a href="http://beta.sloppygames.com/mediumpage.php" title="Page Templates">Page Templates</a>
-<ul class="fade" style="z-index: 100; display: none; opacity: 0;">
-	<li class="page_item category-1"><a href="http://beta.sloppygames.com/archives.php" title="Category Title">Archives</a></li>
-	<li class="page_item category-2"><a href="http://beta.sloppygames.com/fullwidth.php" title="Category Title">Full Width</a></li>
-	<li class="page_item category-3"><a href="http://www.theme-junkie.com/demo/portal/page-templates/links/" title="Category Title">Links</a></li>
-</ul>
-</li>
 <li class="page_item games"><a href="#" title="Game Categories">Games</a>
 <ul class="fade" style="z-index: 100; display: none; opacity: 0;">
 	<li class="page_item category-1"><a href="#" title="Archives">Action</a></li>
@@ -92,7 +59,8 @@ $tpl['header'] = <<<HTML
 </li>
 <li class="page_item page-item-43"><a href="{url_page}advertise" title="Theme Options">Advertise</a></li>
 				<li>
-				<form method="get" id="searchform" action="search.php">
+				<form method="get" id="searchform" action="index.php">
+				<input type="hidden" name="act" value="search" />
 
 				  <div id="search">
     <input type="hidden" name="cx" value="014838308468683311433:spe8e_fvvo4" />
@@ -114,4 +82,5 @@ $tpl['header'] = <<<HTML
 
 
 <div id="wrapper">
+{alert}
 HTML;

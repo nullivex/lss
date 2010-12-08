@@ -60,7 +60,7 @@ $tpl['main_menu'] = <<<HTML
 </li>
 	</ul>
 </li>
-	<li class="cat-item cat-item-54"><a href="http://beta.sloppygames.com/category.php" title="View all posts filed under Category #2">Category Games</a>
+	<li class="cat-item cat-item-54"><a href="{url_game_list}" title="">Category Games</a>
 </li>
 	<li class="cat-item cat-item-55"><a href="http://beta.sloppygames.com/register.php" title="View all posts filed under Category #3">Register</a>
 </li>
@@ -69,13 +69,13 @@ $tpl['main_menu'] = <<<HTML
 
 	<li class="haschild hide"><a href="#" title="View all posts filed under Sports">Play Game</a>
 <ul style="overflow: visible; z-index: 100; display: none; height: 121px;" class="blindv">
-	<li class="cat-item cat-item-61"><a href="http://beta.sloppygames.com/gameinfo.php" title="View all posts filed under Football">Game Info</a>
+	<li class="cat-item cat-item-61"><a href="{url_game_info}" title="">Game Info</a>
 </li>
-	<li class="cat-item cat-item-62"><a href="http://beta.sloppygames.com/gameplay.php" title="View all posts filed under Cricket">Game Play</a>
+	<li class="cat-item cat-item-62"><a href="{url_game_play}" title="">Game Play</a>
 </li>
-	<li class="cat-item cat-item-63"><a href="http://beta.sloppygames.com/traffic-stats.php" title="View all posts filed under Motor Sports">Traffic Stats</a>
+	<li class="cat-item cat-item-63"><a href="{url_traffic_stats}" title="">Traffic Stats</a>
 </li>
-	<li class="cat-item cat-item-64"><a href="http://beta.sloppygames.com/member-stats.php" title="View all posts filed under Golf">Member Stats</a>
+	<li class="cat-item cat-item-64"><a href="http://beta.sloppygames.com/member-stats.php" title="">Member Stats</a>
 </li>
 </ul>
 </li>
@@ -92,7 +92,7 @@ $tpl['main_menu'] = <<<HTML
 		<div class="box">
 						<div class="leftnews">
 				<div class="thumb">
-					<a href="#" rel="bookmark"><img src="include/timthumb_006.png" alt="ITV appoints Royal Mail boss Crozier CEO"></a>
+					<a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/timthumb_006.png" alt="ITV appoints Royal Mail boss Crozier CEO"></a>
 				</div> <!--end: thumb-->
 				<span><a href="#" rel="bookmark">ITV appoints Royal Mail boss Crozier CEO</a></span>
 				<div class="clear"></div>
@@ -100,7 +100,7 @@ $tpl['main_menu'] = <<<HTML
 
 						<div class="leftnews">
 				<div class="thumb">
-					<a href="#" rel="bookmark"><img src="include/timthumb_004.png" alt="The Apple iPad: It’s just ahead of its time ‎"></a>
+					<a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/timthumb_004.png" alt="The Apple iPad: It’s just ahead of its time ‎"></a>
 				</div> <!--end: thumb-->
 				<span><a href="#" rel="bookmark">The Apple iPad: It’s just ahead of its time ‎</a></span>
 				<div class="clear"></div>

@@ -44,3 +44,13 @@ $config['tpl']['admin_theme_path'] = 'theme/admin';
 $config['api']['enabled'] = false;
 $config['api']['username'] = '';
 $config['api']['password'] = '';
+
+//crawler
+$config['crawler']['enabled'] = false;
+$config['crawler']['publisher_id'] = '';
+$config['crawler']['base_url'] = 'http://www.mochimedia.com/feeds/games/[[pub]]/all/all';
+$config['crawler']['chunk'] = 10; //games
+$config['crawler']['advance'] = 7; //games
+$config['crawler']['throttle'] = 200; //ms
+$config['crawler']['sleep'] = 1; //secs
+$config['crawler']['verbose'] = true; //show output

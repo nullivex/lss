@@ -19,6 +19,16 @@ $tpl['games'] = <<<HTML
 	<a href="{url_deleted}">Deleted</a>
 </div>
 
+<div class="search">
+	<form action="{url_games}" method="get">
+	<input type="hidden" name="act" value="games" />
+	<input type="hidden" name="do" value="search" />
+	<input type="hidden" name="status" value="{status}" />
+	<input type="text" name="keywords" value="{keywords}" />
+	<input type="submit" value="Search" />
+	</form>
+</div>
+
 <table cellpadding="10" cellspacing="0" class="tbl">
 <tr>
 	<th>Game Id</th>
@@ -72,12 +82,24 @@ $tpl['create'] = <<<HTML
 	<td><input type="text" class="input_fields" name="inst" value="{inst}" /></td>
 </tr>
 <tr>
+	<td class="label">Author</td>
+	<td><input type="text" class="input_fields" name="author" value="{author}" /></td>
+</tr>
+<tr>
+	<td class="label">Author Url</td>
+	<td><input type="text" class="input_fields" name="author_url" value="{author_url}" /></td>
+</tr>
+<tr>
 	<td class="label">Width</td>
 	<td><input type="text" class="input_fields" name="width" value="{width}" /></td>
 </tr>
 <tr>
 	<td class="label">Height</td>
 	<td><input type="text" class="input_fields" name="height" value="{height}" /></td>
+</tr>
+<tr>
+	<td class="label">Size</td>
+	<td><input type="text" class="input_fields" name="size" value="{size}" /></td>
 </tr>
 <tr>
 	<td class="label">Icon</td>
@@ -94,6 +116,10 @@ $tpl['create'] = <<<HTML
 <tr>
 	<td class="label">Media File</td>
 	<td><input type="text" class="input_fields" name="media" value="{media}" /></td>
+</tr>
+<tr>
+	<td class="label">Media Type</td>
+	<td><input type="text" class="input_fields" name="media_type" value="{media_type}" /></td>
 </tr>
 <tr>
 	<td class="label">Featured?</td>
@@ -138,12 +164,24 @@ $tpl['edit'] = <<<HTML
 	<td><input type="text" class="input_fields" name="inst" value="{inst}" /></td>
 </tr>
 <tr>
+	<td class="label">Author</td>
+	<td><input type="text" class="input_fields" name="author" value="{author}" /></td>
+</tr>
+<tr>
+	<td class="label">Author Url</td>
+	<td><input type="text" class="input_fields" name="author_url" value="{author_url}" /></td>
+</tr>
+<tr>
 	<td class="label">Width</td>
 	<td><input type="text" class="input_fields" name="width" value="{width}" /></td>
 </tr>
 <tr>
 	<td class="label">Height</td>
 	<td><input type="text" class="input_fields" name="height" value="{height}" /></td>
+</tr>
+<tr>
+	<td class="label">Size</td>
+	<td><input type="text" class="input_fields" name="size" value="{size}" /></td>
 </tr>
 <tr>
 	<td class="label">Icon</td>
@@ -160,6 +198,10 @@ $tpl['edit'] = <<<HTML
 <tr>
 	<td class="label">Media File</td>
 	<td><input type="text" class="input_fields" name="media" value="{media}" /></td>
+</tr>
+<tr>
+	<td class="label">Media Type</td>
+	<td><input type="text" class="input_fields" name="media_type" value="{media_type}" /></td>
 </tr>
 <tr>
 	<td class="label">Featured?</td>

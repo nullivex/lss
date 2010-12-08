@@ -26,3 +26,8 @@ function apiOutput($out){
 	echo trim($out);
 	flush();
 }
+
+function crawlerOutput($out){
+	echo trim($out)."\n";
+	flush();
+}

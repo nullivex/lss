@@ -40,14 +40,14 @@ table th {background-color:#9A1726;font-weight:bold;font-size:13px;color:#F0F0F0
 table .odd {background-color:#F9F9F9;}
 table .even {background-color:#EFEFEF;}
 
-.actions{margin-left:10px;margin-top:20px;}
+.actions, .search {margin-left:10px;margin-top:20px;}
 .action_link{margin-left:10px;margin-bottom:20px;font-weight:bold;}
 
 .form_tbl {margin-left:10px;width:70%;margin-right:40px;font-size:12px;}
 .form_tbl .label {width:150px; background: #eaeaea;}
 
 .form_tbl small {font-size:9px;}
-.input_fields {width:400px;}
+.input_fields, .search input[type="text"] {width:400px;}
 
 .redirection {margin-top:200px;background-color:#F0F0F0;}
 .redirection h1{margin-bottom:10px;}

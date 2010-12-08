@@ -7,7 +7,7 @@
 
 $tpl = array();
 
-$tpl['login'] = <<<HTML
+$tpl['register'] = <<<HTML
 
 <div id="leftwrapper">
 
@@ -15,9 +15,8 @@ $tpl['login'] = <<<HTML
 
 	<div id="column2">
 			<div id="content-smallpage">
-<p class="browse">You are here: Login</p>
-			
-
+<p class="browse">You Are Here: Register</p>
+   
  
   <div class="pagenavi">
 
@@ -25,24 +24,34 @@ $tpl['login'] = <<<HTML
 
   </div>
       <div id="respond">
-
-        <form action="#" method="post" id="commentform">
+<form action="#" method="post" id="commentform">
             <p>
-        <input class="author" value="Enter your username" onclick="this.value='';" name="author" id="author" size="22" tabindex="1" type="text">
-        <label for="author"></label>
+        <input class="author" value="Enter your name..." onclick="this.value='';" name="author" id="author" size="22" tabindex="1" type="text">
+        <label for="author"><small>
+          (Required)          </small></label>
       </p>
       <p>
 
-        <input class="email" value="Enter your password" onclick="this.value='';" name="email" id="email" size="22" tabindex="2" type="text">
-        <label for="email"></label>       <input class="submit" name="submit" id="submit" tabindex="5" value="Login" type="submit">
-
+        <input class="email" value="Enter your email..." onclick="this.value='';" name="email" id="email" size="22" tabindex="2" type="text">
+        <label for="email"><small>(Will not be published)
+           (Required)          </small></label>
       </p>
+      <p>
+        <input class="url" value="Enter your website..." onclick="this.value='';" name="url" id="url" size="22" tabindex="3" type="text">
+        <label for="url"><small>(Optional)</small></label>
+      </p>
+            <!--<p><small><strong>XHTML:</strong> You can use these tags: <code>&lt;a href=&quot;&quot; title=&quot;&quot;&gt; &lt;abbr title=&quot;&quot;&gt; &lt;acronym title=&quot;&quot;&gt; &lt;b&gt; &lt;blockquote cite=&quot;&quot;&gt; &lt;cite&gt; &lt;code&gt; &lt;del datetime=&quot;&quot;&gt; &lt;em&gt; &lt;i&gt; &lt;q cite=&quot;&quot;&gt; &lt;strike&gt; &lt;strong&gt; </code></small></p>-->
 
-           <p><a href="#"><small>&nbsp;Forgot your password? Forgot your username?</small></a></p>
-
-
- 
+      <p>
+        <textarea name="comment" id="comment" tabindex="4"></textarea>
+      </p>
+      <p>
+        <input class="submit" name="submit" id="submit" tabindex="5" value="Submit" type="submit">
+        <input name="comment_post_ID" value="99" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+      </p>
           </form>
+
       </div>
 
   </div>

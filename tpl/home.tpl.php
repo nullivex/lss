@@ -16,35 +16,35 @@ $tpl['home'] = <<<HTML
 	<div id="column2">
 				<div id="slider">
 			<div id="featured">
-			  			  <div style="" id="post-99" class="ui-tabs-panel ui-tabs-hide"><a href="#" rel="bookmark"><img src="include/timthumb.png" alt="#"></a>
+			  			  <div style="" id="post-99" class="ui-tabs-panel ui-tabs-hide"><a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/timthumb.png" alt="#"></a>
 			    <div class="info">
 				    <h2><a href="#" rel="bookmark">
 				      Cruiser - Shoot em down			      </a></h2>
 			    </div>
 			  </div>
-			  			  <div style="" id="post-16" class="ui-tabs-panel ui-tabs-hide"><a href="#" rel="bookmark"><img src="include/timthumb_002.png" alt="#"></a>
+			  			  <div style="" id="post-16" class="ui-tabs-panel ui-tabs-hide"><a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/timthumb_002.png" alt="#"></a>
 			    <div class="info">
 				    <h2><a href="#" rel="bookmark">
 				      Yoko - a mario like adventure game				      </a></h2>
 			    </div>
 			  </div>
-			  			  <div style="" id="post-15" class="ui-tabs-panel"><a href="#" rel="bookmark"><img src="include/bigthumb_004.png" alt="#"></a>
+			  			  <div style="" id="post-15" class="ui-tabs-panel"><a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/bigthumb_004.png" alt="#"></a>
 			    <div class="info">
 				    <h2><a href="#" rel="bookmark">
 				      Bloons Tower Defense 3				      </a></h2>
 			    </div>
 			  </div>
-			  			  <div id="post-14" class="ui-tabs-panel ui-tabs-hide"><a href="#" rel="bookmark"><img src="include/bigthumb_005.png" alt="#"></a>
+			  			  <div id="post-14" class="ui-tabs-panel ui-tabs-hide"><a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/bigthumb_005.png" alt="#"></a>
 			    <div class="info">
 				    <h2><a href="#" rel="bookmark">
 				      Adorninho against the Tsunami - Run!				      </a></h2>
 			    </div>
 			  </div>
 			  			  <ul class="ui-tabs-nav">
-			    			    <li class="ui-tabs-nav-item" id="nav-post-99"><a href="#post-99"><img src="include/timthumb_020.png" alt="Cameron says deficit cuts must start in 2010"></a></li>
-			    			    <li class="ui-tabs-nav-item" id="nav-post-16"><a href="#post-16"><img src="include/timthumb_015.png" alt="Obama vows to fight on after tough year"></a></li>
-			    			    <li class="ui-tabs-nav-item ui-tabs-selected" id="nav-post-15"><a href="#post-15"><img src="include/timthumb_003.png" alt="ITV appoints Royal Mail boss Crozier CEO"></a></li>
-			    			    <li class="ui-tabs-nav-item" id="nav-post-14"><a href="#post-14"><img src="include/timthumb_016.png" alt="Darling says breaking up banks not the answer"></a></li>
+			    			    <li class="ui-tabs-nav-item" id="nav-post-99"><a href="#post-99"><img src="http://beta.sloppygames.com/include/timthumb_020.png" alt="Cameron says deficit cuts must start in 2010"></a></li>
+			    			    <li class="ui-tabs-nav-item" id="nav-post-16"><a href="#post-16"><img src="http://beta.sloppygames.com/include/timthumb_015.png" alt="Obama vows to fight on after tough year"></a></li>
+			    			    <li class="ui-tabs-nav-item ui-tabs-selected" id="nav-post-15"><a href="#post-15"><img src="http://beta.sloppygames.com/include/timthumb_003.png" alt="ITV appoints Royal Mail boss Crozier CEO"></a></li>
+			    			    <li class="ui-tabs-nav-item" id="nav-post-14"><a href="#post-14"><img src="http://beta.sloppygames.com/include/timthumb_016.png" alt="Darling says breaking up banks not the answer"></a></li>
 			    			  </ul>
 			</div> <!--end: featured-->
 		</div> <!--end: slider-->

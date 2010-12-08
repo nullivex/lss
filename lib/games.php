@@ -17,7 +17,7 @@ class Games {
 		$this->db = Db::_get();
 	}
 
-	public function gameList($type=null,$limit=null){
+	public function gameStatus($type=null){
 		$is_featured = 0; $is_tradable = 0; $is_active = 1; $is_deleted = 0;
 		$values = array();
 		switch($type){
@@ -46,6 +46,11 @@ class Games {
 				$values[] = $is_active; $values[] = $is_deleted;
 				break;
 		}
+		return array($status,$values);
+	}
+
+	public function gameList($type=null,$alpha=true,$limit=null){
+		list($status,$values) = $this->gameStatus($type);
 		$sql = '
 			select
 			g.*,(select count(*) from game_tags t where t.game_id = g.game_id) as tags,
@@ -54,7 +59,41 @@ class Games {
 			left join categories c on c.category_id = g.category_id
 			where '.$status.'
 		';
+		if($alpha) $sql .= ' order by g.name asc';
+		else $sql .= ' order by g.created desc';
 		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql); $query->execute($values);
+		return $query->fetchAll();
+	}
+
+	public function gameSearch($keywords,$type=null){
+		list($status,$values) = $this->gameStatus($type);
+		$sql = '
+			select
+			g.*,(select count(*) from game_tags t where t.game_id = g.game_id) as tags,
+			c.name as category
+			from games g
+			left join categories c on c.category_id = g.category_id
+			where '.$status.'
+		';
+		if(substr($keywords,0,1) == '"' && substr($keywords,strlen($keywords)-1,1) == '"'){
+			$sql .= ' and g.name like ? ';
+			$values[] = '%'.str_replace('"','',$keywords).'%';
+		} elseif(preg_match('/\d+/',trim($keywords))){
+			$sql .= ' and g.game_id = ? ';
+			$values[] = trim($keywords);
+		} else {
+			$keywords = preg_replace('/\W+/',' ',$keywords);
+			$keywords = preg_replace('/\s+/',' ',$keywords);
+			$words = explode(' ',$keywords); $lim = count($words); $i = 1;
+			foreach($words as $word){
+				$inc = isset($inc) ? ' or ' : ' and (';
+				$sql .= $inc.' g.name like ? ';
+				$values[] = '%'.$word.'%';
+				if($i == $lim){$sql .= ' ) '; break;}
+				$i++;
+			}
+		}
 		$query = $this->db->prepare($sql); $query->execute($values);
 		return $query->fetchAll();
 	}
@@ -64,12 +103,16 @@ class Games {
 			'name'			=>	'',
 			'desc'			=>	'',
 			'inst'			=>	'',
+			'author'		=>	'',
+			'author_url'	=>	'',
 			'width'			=>	'400',
 			'height'		=>	'300',
+			'size'			=>	'1000',
 			'icon'			=>	'/games/icons/',
 			'thumb'			=>	'/games/thumbs/',
 			'large'			=>	'/games/large/',
 			'media'			=>	'/games/media/',
+			'media_type'	=>	'',
 			'is_tradable'	=>	'1',
 			'is_featured'	=>	'',
 			'is_active'		=>	'1'
@@ -100,18 +143,34 @@ class Games {
 		$query = $this->db->prepare('
 			insert into games
 			(
-				category_id,name,urlname,shortname,`desc`,inst,width,height,icon,
-				thumb,large,media,is_tradable,is_featured,is_active,created
+				category_id,name,urlname,shortname,`desc`,inst,width,height,icon,size,
+				author,author_url,thumb,large,media,media_type,is_tradable,is_featured,is_active,created
 			)values(
-				?,?,?,?,?,?,?,?,?,
-				?,?,?,?,?,?,?
+				:category_id,:name,:urlname,:shortname,:desc,:inst,:width,:height,:icon,:size,
+				:author,:author_url,:thumb,:large,:media,:media_type,:is_tradable,:is_featured,:is_active,:created
 			)
 		');
 		$query->execute(array(
-				data('category_id'),data('name'),urlname(data('name')),shortname(data('name')),
-				data('desc'),data('inst'),data('width'),data('height'),data('icon'),
-				data('thumb'),data('large'),data('media'),
-				$is_tradable,$is_featured,$is_active,time()
+				':category_id'	=>	data('category_id'),
+				':name'			=>	data('name'),
+				':urlname'		=>	urlname(data('name')),
+				':shortname'	=>	shortname(data('name')),
+				':desc'			=>	data('desc'),
+				':inst'			=>	data('inst'),
+				':author'		=>	data('author'),
+				':author_url'	=>	data('author_url'),
+				':width'		=>	data('width'),
+				':height'		=>	data('height'),
+				':size'			=>	data('size'),
+				':icon'			=>	data('icon'),				
+				':thumb'		=>	data('thumb'),
+				':large'		=>	data('large'),
+				':media'		=>	data('media'),
+				':media_type'	=>	data('media_type'),
+				':is_tradable'	=>	$is_tradable,
+				':is_featured'	=>	$is_featured,
+				':is_active'	=>	$is_active,
+				':created'		=>	time()
 		));
 		return $this->db->lastInsertId();
 	}
@@ -127,13 +186,15 @@ class Games {
 				category_id = ?, name = ?, urlname = ?, shortname = ?,
 				`desc` = ?, inst = ?, width = ?, height = ?,
 				icon = ?, thumb = ?, large = ?, media = ?,
+				media_type = ?, size = ?, author = ?, author_url = ?,
 				is_tradable = ?, is_featured = ?, is_active = ?
 			where game_id = ?
 		');
 		$query->execute(array(
 			data('category_id'),data('name'),urlname(data('name')),shortname(data('name')),
 			data('desc'),data('inst'),data('width'),data('height'),
-			data('icon'),data('thumb'),data('large'),data('media'),
+			data('icon'),data('thumb'),data('large'),data('media'),data('media_type'),
+			data('size'),data('author'),data('author_url'),
 			$is_tradable,$is_featured,$is_active,data('game_id')
 		));
 		return data('game_id');

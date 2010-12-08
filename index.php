@@ -61,7 +61,23 @@ try {
 		case 'pages':
 			require_once(ROOT.'/router/pages.php');
 			break;
+		
+		case 'games':
+			require_once(ROOT.'/router/games.php');
+			break;
 
+		case 'account':
+			require_once(ROOT.'/router/account.php');
+			break;
+		
+		case 'traffic':
+			require_once(ROOT.'/router/traffic.php');
+			break;
+			
+		case 'search':
+			require_once(ROOT.'/router/search.php');
+			break;
+		
 		case 'home':
 		default:
 			require_once(ROOT.'/router/home.php');
