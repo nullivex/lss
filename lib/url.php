@@ -70,8 +70,8 @@ class Url {
 		return self::games().'&do=list';
 	}
 
-	public static function game_info(){
-		return self::games().'&do=info';
+	public static function game_info($game_id=null){
+		return self::games().'&do=info&game_id='.$game_id;
 	}
 	
 	public static function game_play(){
@@ -84,6 +84,10 @@ class Url {
 	
 	public static function traffic_stats(){
 		return self::traffic().'&do=stats';
+	}
+
+	public static function ad_out($ad_id){
+		return self::prep().inc.'index.php?act=ads&do=out&ad_id='.$ad_id;
 	}
 	
 	public static function page(){

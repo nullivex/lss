@@ -24,6 +24,7 @@ $verbose = Config::get('crawler','verbose');
 $do_crawl = true;
 $seed = 0;
 while($do_crawl){
+	Db::_get()->setConfig(Config::_get()->get('db'))->connect();
 	if($verbose) crawlerOutput('starting batch seed: '.$seed.' chunk: '.$chunk.' advance: '.$advance);
 	$list = Crawler::_get()->gameList($pub,$url,$seed,$chunk,$advance,$do_crawl);
 	if($list === false) break;
@@ -43,5 +44,6 @@ while($do_crawl){
 		usleep($throttle);
 	}
 	if($verbose) crawlerOutput('finished batch... sleeping: '.$sleep.'s');
+	Db::_get()->close();
 	sleep($sleep);
 }

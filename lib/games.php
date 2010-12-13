@@ -9,6 +9,8 @@ class Games {
 
 	public $db;
 
+	const RANDOM_LIFE = 600;
+
 	public static function _get(){
 		return new Games();
 	}
@@ -96,6 +98,81 @@ class Games {
 		}
 		$query = $this->db->prepare($sql); $query->execute($values);
 		return $query->fetchAll();
+	}
+
+	public function gamesFeatured($limit=null){
+		$is_featured = $is_active = 1; $is_deleted = 0;
+		$sql = '
+			select g.*,c.name as category from games g
+			left join categories c on c.category_id = g.category_id 
+			where g.is_featured = ? and g.is_active = ? and g.is_deleted = ?
+			order by RAND()
+		';
+		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql);
+		$query->execute(array($is_featured,$is_active,$is_deleted));
+		return $query->fetchAll();
+	}
+
+	public function gamesMostPlayed($limit=null){
+		$is_active = 1; $is_deleted = 0;
+		$sql = 'select * from games where is_active = ?  and is_deleted = ? order by plays desc';
+		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql);
+		$query->execute(array($is_active,$is_deleted));
+		return $query->fetchAll();
+	}
+
+	public function gamesRecentlyPlayed($limit=null){
+		$is_active = 1; $is_deleted = 0;
+		$sql = 'select * from games where is_active = ?  and is_deleted = ? order by last_played desc';
+		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql);
+		$query->execute(array($is_active,$is_deleted));
+		return $query->fetchAll();
+	}
+
+	public function gamesRecentlyAdded($limit=null){
+		$is_active = 1; $is_deleted = 0;
+		$sql = 'select * from games where is_active = ?  and is_deleted = ? order by created desc';
+		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql);
+		$query->execute(array($is_active,$is_deleted));
+		return $query->fetchAll();
+	}
+
+	public function gamesRandom($limit=null){
+		//clear random entries
+		$query = $this->db->prepare('delete from games_random where expires < ?');
+		$query->execute(array(time()-self::RANDOM_LIFE));
+		//check for existing cache
+		$query = $this->db->prepare('select * from games_random where `limit` = ?');
+		$query->execute(array($limit));
+		$random = $query->fetch();
+		if(isset($random['games']) && !empty($random['games'])){
+			$games = explode(',',$random['games']);
+			$in = null;
+			for($i=0;$i<count($games);$i++){
+				$inc = isset($inc) ? ',' : '';
+				$in .= $inc.'?';
+			}
+			$query = $this->db->prepare('select * from games where game_id in('.$in.')');
+			$query->execute($games);
+			return $query->fetchAll();
+		} else {
+			$is_active = 1; $is_deleted = 0;
+			$sql = 'select * from games where is_active = ?  and is_deleted = ? order by RAND()';
+			if($limit) $sql .= ' limit '.$limit;
+			$query = $this->db->prepare($sql);
+			$query->execute(array($is_active,$is_deleted));
+			$games = $query->fetchAll();
+			$ids = array();
+			foreach($games as $game) $ids[] = $game['game_id'];
+			//store in random cache
+			$query = $this->db->prepare('insert into games_random (expires,`limit`,games)values(?,?,?)');
+			$query->execute(array((time()+self::RANDOM_LIFE),$limit,implode(',',$ids)));
+			return $games;
+		}
 	}
 
 	public function createParams(){

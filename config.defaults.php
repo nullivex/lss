@@ -49,8 +49,19 @@ $config['api']['password'] = '';
 $config['crawler']['enabled'] = false;
 $config['crawler']['publisher_id'] = '';
 $config['crawler']['base_url'] = 'http://www.mochimedia.com/feeds/games/[[pub]]/all/all';
-$config['crawler']['chunk'] = 10; //games
-$config['crawler']['advance'] = 7; //games
-$config['crawler']['throttle'] = 200; //ms
-$config['crawler']['sleep'] = 1; //secs
+$config['crawler']['chunk'] = 500; //games
+$config['crawler']['advance'] = 495; //games
+$config['crawler']['throttle'] = 2000; //ms
+$config['crawler']['sleep'] = 5; //secs
 $config['crawler']['verbose'] = true; //show output
+
+//list
+$config['list']['home_featured'] = 4;
+$config['list']['home_most_played'] = 9;
+$config['list']['home_most_played_row'] = 3;
+$config['list']['home_recently_played'] = 6;
+$config['list']['home_random'] = 6;
+$config['list']['home_recently_added'] = 6;
+$config['list']['home_recently_played_row'] = 2;
+$config['list']['home_random_row'] = 2;
+$config['list']['home_recently_added_row'] = 2;

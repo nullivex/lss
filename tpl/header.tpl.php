@@ -50,26 +50,24 @@ $tpl['header'] = <<<HTML
 		<div class="mlmenu horizontal fade inaccesible">
 			<ul>
 				<li class="page_item page-item-2"><a href="{url_page}about" title="About">About</a></li>
-<li class="page_item games"><a href="#" title="Game Categories">Games</a>
-<ul class="fade" style="z-index: 100; display: none; opacity: 0;">
-	<li class="page_item category-1"><a href="#" title="Archives">Action</a></li>
-	<li class="page_item category-2"><a href="#" title="Full Width">Adventure</a></li>
-	<li class="page_item category-3"><a href="#" title="Links">Sports</a></li>
-</ul>
-</li>
-<li class="page_item page-item-43"><a href="{url_page}advertise" title="Theme Options">Advertise</a></li>
+				<li class="page_item games"><a href="#" title="Game Categories">Games</a>
+				<ul class="fade" style="z-index: 100; display: none; opacity: 0;">
+					<li class="page_item category-1"><a href="#" title="Archives">Action</a></li>
+					<li class="page_item category-2"><a href="#" title="Full Width">Adventure</a></li>
+					<li class="page_item category-3"><a href="#" title="Links">Sports</a></li>
+				</ul>
+				</li>
+				<li class="page_item page-item-43"><a href="{url_page}advertise" title="Theme Options">Advertise</a></li>
 				<li>
 				<form method="get" id="searchform" action="index.php">
 				<input type="hidden" name="act" value="search" />
-
 				  <div id="search">
-    <input type="hidden" name="cx" value="014838308468683311433:spe8e_fvvo4" />
-    <input type="hidden" name="cof" value="FORID:10" />
-    <input type="hidden" name="ie" value="UTF-8" />
-	<input class="searchinput-google" value="Search this site... " onclick="this.value='';" name="q" id="s" type="text">
-	<input class="searchsubmit" name="sa" value="Search" type="submit">
-<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
-
+					<input type="hidden" name="cx" value="014838308468683311433:spe8e_fvvo4" />
+					<input type="hidden" name="cof" value="FORID:10" />
+					<input type="hidden" name="ie" value="UTF-8" />
+					<input class="searchinput-google" value="Search this site... " onclick="this.value='';" name="q" id="s" type="text">
+					<input class="searchsubmit" name="sa" value="Search" type="submit">
+					<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
 				  </div>
 				</form>
 				</li>
@@ -78,8 +76,6 @@ $tpl['header'] = <<<HTML
 	</div> <!--end: right-->
 	<div class="clear"></div>
 </div> <!--headline-->
-
-
 
 <div id="wrapper">
 {alert}

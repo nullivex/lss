@@ -80,6 +80,7 @@ experience at Online Flash Games. You can register as a player for FREE and impr
 <!--end: footer-->
 <div id="bottom">
 	© 2010 <a href="#">SloppyGames.com</a> · Subscribe:<span class="rss"><a href="#">Posts</a></span><span class="rss"><a href="#">Game Archive</a></span> · <a  href="#">Trade Traffic</a>
+	<small>{script_stats}</small>
 	<div class="clear"></div>
 </div> <!--end: bottom-->
 <!--<script type='text/javascript'>

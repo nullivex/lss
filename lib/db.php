@@ -61,7 +61,12 @@ class Db {
 		return $this->query_count;
 	}
 
+	public function close(){
+		static $inst = false;
+	}
+
 	public function __call($function_name, $parameters) {
+		if(!is_array($parameters)) $parameters = array();
 		return call_user_func_array(array($this->pdo, $function_name), $parameters);
 	}
 

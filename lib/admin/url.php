@@ -12,6 +12,8 @@ class Url {
 	static $urls = array(
 		'home',
 		'traffic',
+		'ads',
+		'ad_create',
 		'categories',
 		'category_create',
 		'games',
@@ -55,6 +57,18 @@ class Url {
 
 	public static function game_status($status){
 		return self::games().'&do=list&status='.$status;
+	}
+
+	public static function ads(){
+		return self::prep().'admin.php?act=ads';
+	}
+
+	public static function ad_create(){
+		return self::ads().'&do=create';
+	}
+
+	public static function ad_manage($ad_id){
+		return self::ads().'&do=manage&ad_id='.$ad_id;
 	}
 
 	public static function categories(){

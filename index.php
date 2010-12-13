@@ -56,7 +56,14 @@ try {
 	//setup main menu
 	Tpl::_get()->setConstant('main_menu',Tpl::_get()->parse('global','main_menu',array(),true));
 
+	require_once(ROOT.'/lib/ads.php');
+	Ads::_get()->publish();
+
 	switch(get('act')){
+
+		case 'ads':
+			require_once(ROOT.'/router/ads.php');
+			break;
 
 		case 'pages':
 			require_once(ROOT.'/router/pages.php');

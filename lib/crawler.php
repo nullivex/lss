@@ -31,7 +31,14 @@ class Crawler {
 
 	public function gameList($pub,$url,&$seed,$chunk,$advance){
 		$url = str_replace('[[pub]]',$pub,$url);
-		$games = simplexml_load_string(file_get_contents($url.'?limit='.$chunk.'&offset='.$seed.'&tag=-zh-cn'));
+		$i = 0;
+		do{
+			$games = file_get_contents($url.'?limit='.$chunk.'&offset='.$seed.'&tag=-zh-cn');
+			$i++;
+			if($i > 10) throw new Exception("retrieving game list failed");
+			elseif($games === false) sleep(2);
+		} while($games === false);
+		$games = simplexml_load_string($games);
 		if(count($games->entry) == 0) return false;
 		$seed += $advance;
 		return $games->entry;

@@ -118,7 +118,7 @@ $tpl['main_menu'] = <<<HTML
 		</div>
 
 	<div class="ad160x600">
-	<a href="http://www.theme-junkie.com/" target="_blank"><img src="include/160x600.jpg"></a></div>
+	<a href="http://www.theme-junkie.com/" target="_blank"><img src="http://beta.sloppygames.com/include/160x600.jpg"></a></div>
 
 <!--<img src="http://www.webpencil.com/banneroutlines/160x600.gif" />-->	</div> <!--end: leftsidebar-->
 

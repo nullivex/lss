@@ -39,9 +39,6 @@ try {
 		apiAuth($username,$password);
 	}
 
-	//load db connection
-	Db::_get()->setConfig(Config::_get()->get('db'))->connect();
-
 	//load tpl
 	Tpl::_get()->setPath(Config::_get()->get('tpl','path'));
 	Tpl::_get()->setThemePath(Config::_get()->get('tpl','theme_path'));
