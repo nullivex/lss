@@ -65,3 +65,23 @@ $config['list']['home_recently_added'] = 6;
 $config['list']['home_recently_played_row'] = 2;
 $config['list']['home_random_row'] = 2;
 $config['list']['home_recently_added_row'] = 2;
+$config['list']['info_featured'] = 12;
+$config['list']['info_featured_row'] = 4;
+$config['list']['info_related'] = 12;
+$config['list']['info_related_row'] = 4;
+$config['list']['play_featured'] = 10;
+$config['list']['play_featured_row'] = 5;
+$config['list']['play_related'] = 6;
+$config['list']['play_related_row'] = 3;
+$config['list']['category_row'] = 4;
+$config['list']['game_row'] = 4;
+$config['list']['game'] = 20;
+
+//game
+$config['game']['fullpage_min_width'] = 780;
+
+//tags
+$config['tags']['min'] = 3;
+$config['tags']['skip'] = array('a','and','the','in','a','you','i');
+$config['tags']['size_min'] = 8;
+$config['tags']['size_max'] = 22;

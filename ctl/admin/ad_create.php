@@ -18,7 +18,7 @@ if(post('create')){
 	}
 }
 
-$params = Ad::_get()->createParams();
+$params = Ads::_get()->createParams();
 $params = array_merge($params,post());
 Tpl::_get()->parse('ads','create',$params);
 

@@ -100,6 +100,43 @@ class Games {
 		return $query->fetchAll();
 	}
 
+	public function categoryGames($category_id,$limit=null,$page=null,$sort=null){
+		if($page < 1) $page = 1;
+		$page--;
+		$is_active = 1; $is_deleted = 0;
+		$sql = '
+			select *,(select count(*) from games g where g.category_id = ?) as game_count
+			from games
+			where is_active = ?  and is_deleted = ? and category_id = ?
+		';
+		if($sort){
+			list($sort,$meth) = explode(':',$sort);
+			$meth = $meth == 'desc' ? 'desc' : 'asc';
+			switch($sort){
+				case 'name':
+					$sql .= ' order by name '.$meth;
+					break;
+				case 'plays':
+					$sql .= ' order by plays '.$meth;
+					break;
+				case 'created':
+					$sql .= ' order by created '.$meth;
+					break;
+				case 'last_played':
+					$sql .= ' order by last_played '.$meth;
+					break;
+				default:
+					//void
+					break;
+			}
+		}
+		if($limit && !$page) $sql .= ' limit '.$limit;
+		elseif($limit && $page) $sql .= ' limit '.($limit*$page).','.$limit;
+		$query = $this->db->prepare($sql);
+		$query->execute(array($category_id,$is_active,$is_deleted,$category_id));
+		return $query->fetchAll();
+	}
+
 	public function gamesFeatured($limit=null){
 		$is_featured = $is_active = 1; $is_deleted = 0;
 		$sql = '
@@ -173,6 +210,38 @@ class Games {
 			$query->execute(array((time()+self::RANDOM_LIFE),$limit,implode(',',$ids)));
 			return $games;
 		}
+	}
+
+	public function relatedGames($game_id,$limit=null){
+		$sql = '
+			select g.*,c.name as category from games g
+			left join categories c on c.category_id = g.category_id
+			where g.game_id in (
+				select t.game_id from game_tags t
+				left join tags v on v.tag_id = t.tag_id
+				where t.tag_id in (
+					select u.tag_id from game_tags u
+					where u.game_id = ?
+				)
+				order by v.size desc
+			)
+		';
+		if($limit) $sql .= ' limit '.$limit;
+		$query = $this->db->prepare($sql);
+		$query->execute(array($game_id));
+		return $query->fetchAll();
+	}
+
+	public function get($game_id){
+		$query = $this->db->prepare('
+			select g.*,c.name as category from games g
+			left join categories c on c.category_id = g.category_id
+			where g.game_id = ? limit 1
+		');
+		$query->execute(array($game_id));
+		$game = $query->fetch(); $query->closeCursor();
+		if(!isset($game['game_id']) || empty($game['game_id'])) throw new Exception('games: no game found');
+		return $game;
 	}
 
 	public function createParams(){
@@ -289,4 +358,14 @@ class Games {
 		return data('game_id');
 	}
 
+	public function addMetrics($game_id){
+		$query = $this->db->prepare('
+			update games
+			set last_played = ?, plays = plays+1, plays_today = plays_today+1
+			where game_id = ?
+			limit 1
+		');
+		$query->execute(array(time(),$game_id));
+	}
+	
 }

@@ -19,8 +19,14 @@ class Categories {
 
 	public function categoryList(){
 		$query = $this->db->prepare('
-			select c.*,(select count(*) from games g where g.category_id = c.category_id) as games
+			select 
+				c.*,(select count(*) from games g where g.category_id = c.category_id) as games,
+				(
+					select thumb from games h where h.category_id = c.category_id
+					order by h.plays desc limit 1
+				) as thumb
 			from categories c
+			order by c.name asc
 		');
 		$query->execute();
 		return $query->fetchAll();

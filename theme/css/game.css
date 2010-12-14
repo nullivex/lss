@@ -13,7 +13,6 @@
 
 .gameinfodesc {
 	width: 285px;
-	height: 90px;
 	display: block;
 	float: left;
 	margin: 3px;
@@ -22,8 +21,6 @@
 
 .gameinfoplay a {
 	width: 285px;
-	height: 102px;
-
 	display: block;
 	float: left;
 	margin-left: 3px;

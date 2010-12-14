@@ -38,7 +38,12 @@ $tpl['header'] = <<<HTML
 
 <div id="header">
 	<div class="left"><a class="imagelogo" href="{url_home}"></a></div>
-	<div class="right"><div class="ad468x60"><a href="{url_home}" target="_blank"><img src="{theme}/468x60.gif"></a></div></div>
+	
+	<div class="right">
+	
+	{ad_home_right_468x60}
+	
+	</div>
 </div>
 <div id="headline">
 	<div class="left">
@@ -50,7 +55,7 @@ $tpl['header'] = <<<HTML
 		<div class="mlmenu horizontal fade inaccesible">
 			<ul>
 				<li class="page_item page-item-2"><a href="{url_page}about" title="About">About</a></li>
-				<li class="page_item games"><a href="#" title="Game Categories">Games</a>
+				<li class="page_item games"><a href="{url_game_list}" title="Game Categories">Games</a>
 				<ul class="fade" style="z-index: 100; display: none; opacity: 0;">
 					<li class="page_item category-1"><a href="#" title="Archives">Action</a></li>
 					<li class="page_item category-2"><a href="#" title="Full Width">Adventure</a></li>

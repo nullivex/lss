@@ -11,6 +11,7 @@ class Url {
 	
 	static $urls = array(
 		'home',
+		'tags',
 		'games',
 		'game_list',
 		'game_info',
@@ -61,6 +62,14 @@ class Url {
 	public static function logout(){
 		return self::account().'&do=logout';
 	}
+
+	public static function tags(){
+		return self::prep().inc.'index.php?act=tags';
+	}
+
+	public static function tag($tag_id){
+		return self::tags().'&do=view&tag_id='.$tag_id;
+	}
 	
 	public static function games(){
 		return self::prep().inc.'index.php?act=games';
@@ -70,12 +79,16 @@ class Url {
 		return self::games().'&do=list';
 	}
 
+	public static function game_list_category($category_id){
+		return self::game_list().'&category_id='.$category_id;
+	}
+
 	public static function game_info($game_id=null){
 		return self::games().'&do=info&game_id='.$game_id;
 	}
 	
-	public static function game_play(){
-		return self::games().'&do=play';
+	public static function game_play($game_id=null){
+		return self::games().'&do=play&game_id='.$game_id;
 	}
 	
 	public static function traffic(){

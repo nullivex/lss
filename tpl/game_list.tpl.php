@@ -8,211 +8,99 @@
 $tpl = array();
 
 $tpl['game_list'] = <<<HTML
-
 <div id="pagewrapper">
-
 {main_menu}
-
-
 	<div id="content">
-<div class="right">
+		<div class="right">
+			<form method="get" id="searchform" action="{url_game_list}">
+			<input type="hidden" name="act" value="games" />
+			<input type="hidden" name="do" value="list" />
+			<input type="hidden" name="page_no" value="{page_no}" />
+			<input type="hidden" name="category_id" value="{category_id}" />
+			<input type="hidden" name="page_count" value="{page_count}" />
+			<div id="search">
+				Sort by :
+				<select name="sort">
+					<option value="name:asc" {sort_name}>Name</option>
+					<option value="plays:desc" {sort_plays}>Most Played</option>
+					<option value="created:desc" {sort_created}>Recently Added</option>
+					<option value="last_played:desc" {sort_last_played}>Recently Played</option>
+				</select>
+				<input class="searchsubmit" value="GO" type="submit">
+			</div>
+			</form></div>
 
-				<form method="get" id="searchform" action="#">
-
-				  <div id="search">
-
-Sort by : <select><option>Name</option><option>Most Played</option></select>
-	<input class="searchsubmit" name="sa" value="GO" type="submit">
-<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&amp;lang=en"></script>
-
-				  </div>
-				</form></div>
-
-	<p class="browse">You Are Here: <a href="http://www.theme-junkie.com/demo/portal">Games</a> ? Action Games</p>
-
-
-<div class="archive" align="center">
-
-<table style="width: 1%;" cellpadding="3" cellspacing="0">
-			<tbody>
-	<tr>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/airwar/5226/">
-
-			<img src="http://www.sloppygames.com/content/icons/airwar-icon-1.jpg" class="small_thumb" alt="Airwar" height="100" width="120"><br>
-			<strong>Airwar</strong>
-
-		</a>
-		<br>
-		<div>
-			<div>Plays: 2119</div>
+		<p class="browse">You Are Here: <a href="{url_game_list}">Games</a> -&gt; <a href="{url_category}">Action Games</a></p>
+		<div class="archive" align="center">
+			<table style="width: 1%;" cellpadding="3" cellspacing="0">
+			<tbody><tr>
+			{games}
+			</tr></tbody>
+			</table>
+			<div class="pagination">
+				<form action="{url_game_list}" method="get">
+				<input type="hidden" name="act" value="games" />
+				<input type="hidden" name="do" value="list" />
+				<input type="hidden" name="category_id" value="{category_id}" />
+				<input type="hidden" name="page_count" value="{page_count}" />
+				Pages: <input class="searchsubmit" name="prev" value="&lt;&lt; Previous" type="submit">
+				{page_no} of {page_count}
+				<input class="searchsubmit" name="next" value="Next &gt;&gt;" type="submit">
+				<input type="text" name="page_no" value="{page_no}" size="3" />
+				<input class="searchsubmit" name="goto" value="Go &gt;&gt;" type="submit">
+				</forn>
+			</div>
 		</div>
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-
-		<a href="/index.php/games/aki-goes-to-grandma/4974/">
-
-			<img src="http://www.sloppygames.com/content/icons/aki-goes-to-grandma-icon-1.png" class="small_thumb" alt="AKI goes to grand" height="100" width="120"><br>
-			<strong>AKI goes to grand</strong>
-		</a>
-		<br>
-		<div>
-			<div>Plays: 1329</div>
-		</div>
-
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/ale-alien/4622/">
-			<img src="http://www.sloppygames.com/content/icons/ale-alien-icon-1.jpg" class="small_thumb" alt="Ale Alien" height="100" width="120"><br>
-			<strong>Ale Alien</strong>
-		</a>
-		<br>
-		<div>
-			<div>Plays: 5946</div>
-
-		</div>
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/alex-the-adventurer-and-the-lost-marbles/5861/">
-			<img src="http://www.sloppygames.com/content/icons/alex-the-adventurer-and-the-lost-marbles-icon-1.jpg" class="small_thumb" alt="Alex the Adventur" height="100" width="120"><br>
-			<strong>Alex the Adventur</strong>
-		</a>
-		<br>
-
-		<div>
-
-			<div>Plays: 9121</div>
-		</div>
-	</td>	</tr>
-
-	<tr>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/alex-trax/5966/">
-
-			<img src="http://www.sloppygames.com/content/icons/alex-trax-icon-1.jpg" class="small_thumb" alt="Alex Trax" height="100" width="120"><br>
-			<strong>Alex Trax</strong>
-
-		</a>
-		<br>
-		<div>
-			<div>Plays: 8511</div>
-		</div>
-
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/alfies-north-pole-adventure/5118/">
-			<img src="http://www.sloppygames.com/content/icons/alfies-north-pole-adventure-icon-1.jpg" class="small_thumb" alt="Alfies North Pole" height="100" width="120"><br>
-
-			<strong>Alfies North Pole</strong>
-		</a>
-		<br>
-		<div>
-
-			<div>Plays: 7290</div>
-		</div>
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-
-		<a href="/index.php/games/alien-abduction/4899/">
-			<img src="http://www.sloppygames.com/content/icons/alien-abduction_v1-icon-1.jpg" class="small_thumb" alt="Alien Abduction" height="100" width="120"><br>
-			<strong>Alien Abduction</strong>
-		</a>
-
-		<br>
-		<div>
-			<div>Plays: 1868</div>
-		</div>
-
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/alien-annihilation/5901/">
-			<img src="http://www.sloppygames.com/content/icons/alien-annihilatiion-icon-1.jpg" class="small_thumb" alt="Alien Annihilatio" height="100" width="120"><br>
-
-			<strong>Alien Annihilatio</strong>
-		</a>
-		<br>
-		<div>
-			<div>Plays: 5779</div>
-
-		</div>
-	</td>	</tr>
-
-	<tr>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/alien-crash-site/4991/">
-			<img src="http://www.sloppygames.com/content/icons/alien-crash-site-icon-1.jpg" class="small_thumb" alt="Alien Crash Site" height="100" width="120"><br>
-			<strong>Alien Crash Site</strong>
-		</a>
-
-		<br>
-		<div>
-
-			<div>Plays: 1040</div>
-		</div>
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/aliens/5076/">
-			<img src="http://www.sloppygames.com/content/icons/aliens_v1-icon-1.jpg" class="small_thumb" alt="ALIENS" height="100" width="120"><br>
-			<strong>ALIENS</strong>
-
-		</a>
-
-		<br>
-		<div>
-			<div>Plays: 3380</div>
-		</div>
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-		<a href="/index.php/games/aliens-crazy-taxi/4915/">
-			<img src="http://www.sloppygames.com/content/icons/alientopia-icon-1.jpg" class="small_thumb" alt="Aliens Crazy Taxi" height="100" width="120"><br>
-
-			<strong>Aliens Crazy Taxi</strong>
-		</a>
-		<br>
-		<div>
-			<div>Plays: 3524</div>
-		</div>
-	</td>	<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
-
-		<a href="/index.php/games/alkirian-the-nine-pages/4985/">
-			<img src="http://www.sloppygames.com/content/icons/alkirian-the-nine-pages-icon-1.jpg" class="small_thumb" alt="Alkirian  the nin" height="100" width="120"><br>
-			<strong>Alkirian  the nin</strong>
-		</a>
-		<br>
-		<div>
-			<div>Plays: 8581</div>
-
-		</div>
-
-	</td>	</tr>
-
-			</tbody></table>
-
-
-<div class="pagination">
-		
-		Pages : <input class="searchsubmit" name="sa" value="&lt;&lt; Previous" type="submit">
-			<a href="/index.php/categories/board-game-games/3/page/1/"><span class="bold">1</span></a>	<a href="/index.php/categories/board-game-games/3/page/2/">2</a>	<a href="/index.php/categories/board-game-games/3/page/3/">3</a>	<a href="/index.php/categories/board-game-games/3/page/4/">4</a>	<a href="/index.php/categories/board-game-games/3/page/5/">5</a>	<a href="/index.php/categories/board-game-games/3/page/6/">6</a>	<a href="/index.php/categories/board-game-games/3/page/7/">7</a>	<a href="/index.php/categories/board-game-games/3/page/8/">8</a>	<a href="/index.php/categories/board-game-games/3/page/9/">9</a>	<a href="/index.php/categories/board-game-games/3/page/10/">10</a>
-
-			 ... <a href="/index.php/categories/board-game-games/3/page/28/">28</a>
-<input class="searchsubmit" name="sa" value="Next &gt;&gt;" type="submit">
-	</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
     	<div class="clear"></div>
-<!--end: pagenavi-->
-	    </div> <!--end: content-->
-</div> <!--end: pagewrapper-->
-
-<div id="pageright">
-	<div class="ad160x600">
-
-	<a href="http://www.theme-junkie.com/" target="_blank"><img src="http://beta.sloppygames.com/include/160x600.jpg"></a></div> 
-</div> <!--pageright-->	
-
-
-<div class="clear"></div>
+	</div> <!--end: content-->
 </div>
+<div id="pageright">
+	{ad_list_160x600}
+	<div class="clear"></div>
+</div>
+HTML;
 
+$tpl['game_row'] = <<<HTML
+{row}
+<td style="width: 25%; padding-right: 12px; padding-left: 12px;">
+	<a href="{url}">
+		<img src="{thumb}" class="small_thumb" alt="{name}" height="100" width="120"><br />
+		<strong>{name}</strong><br />
+		<small>Plays: {plays}</small>
+	</a>
+</td>
+HTML;
+
+$tpl['category_list'] = <<<HTML
+<div id="pagewrapper">
+{main_menu}
+	<div id="content">
+		<p class="browse">You Are Here: <a href="{url_game_list}">Games</a> -&gt; Categories</a></p>
+		<div class="archive" align="center">
+			<table style="width: 100%;" cellpadding="3" cellspacing="0">
+			<tbody><tr>
+			{categories}
+			</tr></tbody>
+			</table>
+		</div>
+    	<div class="clear"></div>
+	</div> <!--end: content-->
+</div>
+<div id="pageright">
+	{ad_list_160x600}
+	<div class="clear"></div>
+</div>
+HTML;
+
+$tpl['category_row'] = <<<HTML
+{row}
+<td>
+	<h2 style="border: 1px solid black; margin: 5px; padding: 5px;">
+	<a href="{url}">
+		<img src="{thumb}" alt="{name}" height="100" width="120" /><br />
+		{name}<br />
+		<small style="font-size: 11px;">Total Games: {games}</small>
+	</a>
+	</h2>
+</td>
 HTML;

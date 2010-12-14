@@ -187,5 +187,5 @@ $tpl['comment_row'] = <<<HTML
 HTML;
 
 $tpl['tag_link'] = <<<HTML
-<a href="{url}" class="tag-link-{tag_id}" title="{tag}" style="font-size: {size}pt;">{tag}</a>
+<a href="{url}" class="tag-link-{tag_id}" title="{tag}" style="font-size: {size}pt;">{tag}</a> 
 HTML;
