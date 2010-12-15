@@ -28,6 +28,8 @@ if(!get('category_id')){
 	exit;
 }
 
+$_category = Categories::_get()->get(get('category_id'));
+
 //deal with paging
 if(get('next')) get('page_no',get('page_no')+1);
 if(get('prev')) get('page_no',get('page_no')-1);
@@ -49,6 +51,8 @@ $params = array_merge(get(),$params);
 $params['games'] = $games;
 $params['page_no'] = get('page_no') ? get('page_no') : 1;
 $params['page_count'] = $page_count;
+$params['category'] = $_category['name'];
+$params['url_category'] = Url::game_list_category($_category['category_id']);
 
 //deal with sorting
 $params['sort_name'] = preg_match('/name/',get('sort')) ? 'selected="selected"' : '';

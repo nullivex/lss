@@ -30,7 +30,7 @@ $tpl['game_list'] = <<<HTML
 			</div>
 			</form></div>
 
-		<p class="browse">You Are Here: <a href="{url_game_list}">Games</a> -&gt; <a href="{url_category}">Action Games</a></p>
+		<p class="browse">You Are Here: <a href="{url_game_list}">Games</a> -&gt; <a href="{url_category}">{category} Games</a></p>
 		<div class="archive" align="center">
 			<table style="width: 1%;" cellpadding="3" cellspacing="0">
 			<tbody><tr>

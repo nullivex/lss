@@ -12,7 +12,7 @@ $tpl['game_play'] = <<<HTML
 	<div id="content-gameplay" style="margin-bottom:10px;">
 		<p class="browse">Playing -&gt; <a href="{url_category}">{category}</a> -&gt; <a href="{url_game}">{name}</a></p>
 		<div class="archive" align="center">
-		<p style="1px solid #cccccc;"> <a href="#">instructions</a> | <a href="#">description</a> | <a href="#">rate</a> | <a href="#">-</a> zoom <a href="#">+</a> </p> <br />
+		<p style="1px solid #cccccc;"> <a href="#">instructions</a> | <a href="#">description</a> | <a href="#">rate</a> | <a href="#">-</a> zoom <a href="#">+</a> | <a href="#">full screen</a> </p> <br />
 			<embed src="{media}" menu="false" quality="high" width="{width}" height="{height}" type="{media_type}" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
 		</div>
 	</div>
@@ -78,7 +78,7 @@ HTML;
 $tpl['game_play_full'] = <<<HTML
 <div id="pagewrapper" style="width: 100%;">
 	<div id="content-gameplay" style="margin-bottom:10px; width: 935px;">
-		<p class="browse">Playing -&gt; <a href="{url_category}">{category}</a> -&gt; <a href="{url_game}">SmileyTrap</a></p>
+		<p class="browse">Playing -&gt; <a href="{url_category}">{category}</a> -&gt; <a href="{url_game}">{name}</a></p>
 		<div class="archive" align="center">
 		<p style="1px solid #cccccc;"> <a href="#">instructions</a> | <a href="#">description</a> | <a href="#">rate</a> | <a href="#">-</a> zoom <a href="#">+</a> | <a href="#">full screen</a> </p> <br />
 			<embed src="{media}" menu="false" quality="high" width="{width}" height="{height}" type="{media_type}" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>

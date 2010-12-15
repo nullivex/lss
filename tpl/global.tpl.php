@@ -87,35 +87,19 @@ $tpl['main_menu'] = <<<HTML
 
 
 
-	<div class="leftsidebar">
-			<h3><a href="#">Recent News</a></h3>
-		<div class="box">
-						<div class="leftnews">
-				<div class="thumb">
-					<a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/timthumb_006.png" alt="ITV appoints Royal Mail boss Crozier CEO"></a>
-				</div> <!--end: thumb-->
-				<span><a href="#" rel="bookmark">ITV appoints Royal Mail boss Crozier CEO</a></span>
-				<div class="clear"></div>
-			</div> <!--leftnews-->
+<div class="leftsidebar">
 
-						<div class="leftnews">
-				<div class="thumb">
-					<a href="#" rel="bookmark"><img src="http://beta.sloppygames.com/include/timthumb_004.png" alt="The Apple iPad: It’s just ahead of its time ‎"></a>
-				</div> <!--end: thumb-->
-				<span><a href="#" rel="bookmark">The Apple iPad: It’s just ahead of its time ‎</a></span>
-				<div class="clear"></div>
-			</div> <!--leftnews-->
 
-					</div>
-
-					<h3>Partner Sites</h3><div class="clear"></div><div class="box">		<ul>
+<!--<h3>Partner Sites</h3><div class="clear"></div>
+<div class="box">		
+<ul>
 <li><a href="#">Addicting Games</a></li>
 <li>Free Flash Games</li>
 <li>Mario Games</li>
 <li>Fun Games Online</li>
 <li>Play Free Arcade</li>
 				</ul>
-		</div>
+		</div>-->
 
 {ad_home_left_160x600}
 

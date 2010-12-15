@@ -32,6 +32,14 @@ class Categories {
 		return $query->fetchAll();
 	}
 
+	public function get($category_id){
+		$query = $this->db->prepare('select * from categories where category_id = ?');
+		$query->execute(array($category_id));
+		$result = $query->fetch(); $query->closeCursor();
+		if(empty($result['category_id'])) throw new Exception("categories: no categories found");
+		return $result;
+	}
+
 	public function categoryDrop($name='category_id',$category_id=null){
 		$assigned = '';
 		foreach($this->categoryList() as $category){
@@ -56,7 +64,7 @@ class Categories {
 	public function editParams($category_id){
 		$query = $this->db->prepare('select * from categories where category_id = ?');
 		$query->execute(array($category_id));
-		$result = $query->fetch();
+		$result = $query->fetch(); $query->closeCursor();
 		if(empty($result['category_id'])) throw new Exception("categories: no categories found");
 		return $result;
 	}
