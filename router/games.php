@@ -14,6 +14,10 @@ switch(get('do')){
 	case 'info':
 		require_once(ROOT.'/ctl/game_info.php');
 		break;
+
+	case 'info_short':
+		require_once(ROOT.'/ctl/game_info_short.php');
+		break;
 	
 	default:
 	case 'list':

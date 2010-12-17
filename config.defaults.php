@@ -57,9 +57,9 @@ $config['crawler']['verbose'] = true; //show output
 
 //list
 $config['list']['home_featured'] = 4;
-$config['list']['home_most_played'] = 9;
+$config['list']['home_most_played'] = 12;
 $config['list']['home_most_played_row'] = 3;
-$config['list']['home_recently_played'] = 6;
+$config['list']['home_recently_played'] = 8;
 $config['list']['home_random'] = 6;
 $config['list']['home_recently_added'] = 6;
 $config['list']['home_recently_played_row'] = 2;
@@ -75,7 +75,10 @@ $config['list']['play_related'] = 6;
 $config['list']['play_related_row'] = 3;
 $config['list']['category_row'] = 4;
 $config['list']['game_row'] = 4;
-$config['list']['game'] = 20;
+$config['list']['game'] = 32;
+$config['list']['search'] = 12;
+$config['list']['search_row'] = 6;
+$config['list']['search_all'] = 36;
 
 //game
 $config['game']['fullpage_min_width'] = 780;

@@ -100,3 +100,31 @@ HTML;
 $tpl['tag_link'] = <<<HTML
 <a href="{url}" class="tag-link-{tag_id}" title="{tag}" style="font-size: {size}pt;">{tag}</a>
 HTML;
+
+$tpl['short_description'] = <<<HTML
+<html
+<head>
+<title>{name} | {site_name}</title>
+<link type="text/css" rel="stylesheet" media="screen" href="{css}/short.css" />
+</head>
+<body>
+<h1>{name}</h1>
+<h4>Description</h4>
+<p>{desc}</p>
+</body>
+</html>
+HTML;
+
+$tpl['short_instructions'] = <<<HTML
+<html
+<head>
+<title>{name} | {site_name}</title>
+<link type="text/css" rel="stylesheet" media="screen" href="{css}/short.css" />
+</head>
+<body>
+<h1>{name}</h1>
+<h4>Instructions</h4>
+<p>{inst}</p>
+</body>
+</html>
+HTML;

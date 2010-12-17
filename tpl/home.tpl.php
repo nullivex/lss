@@ -33,12 +33,12 @@ $tpl['home'] = <<<HTML
 	</div>
 	<div class="clear"></div>
     <div class="postbox left">
-		<h1><a href="#">Recently Played Games</a></h1>
+		<h1><a href="#">Recently Added Games</a></h1>
 		<div class="boxcontent">
 			<div class="thumb">
 				<table cellpadding="0" cellspacing="0" width="100%">
 				<tbody><tr>
-				{recently_played_games}
+				{recently_added_games}
 				</tr></tbody>
 				</table>
 		    </div>
@@ -62,12 +62,12 @@ $tpl['home'] = <<<HTML
 <div id="sidebar">
 	{ad_home_tr_300x250}
 	<div class="fullwidget">
-		<h3>Recently Added Games</h3>
+		<h3>Recently Played Games</h3>
 		<div class="boxcontent">
 			<div class="thumb">
 				<table cellpadding="0" cellspacing="0" width="100%">
 				<tbody><tr>
-				{recently_added_games}
+				{recently_played_games}
 				</tr></tbody>
 				</table>
 			</div>
@@ -75,12 +75,12 @@ $tpl['home'] = <<<HTML
 	</div> <!--end: fullwidget-->
 	<div class="tabber">
 		<ul id="tabs" class="tabs">
-			<li><a href="#popular-posts" rel="popular-posts" class="selected">Top Players</a></li>
-			<li><a class="" href="#recent-comments" rel="recent-comments">Comments</a></li>
+			<!--<li><a href="#popular-posts" rel="popular-posts" class="selected">Top Players</a></li>
+			<li><a class="" href="#recent-comments" rel="recent-comments">Comments</a></li>-->
 			<li><a class="" href="#tag-cloud" rel="tag-cloud">Tags</a></li>
 		</ul>
 		<div class="clear"></div>
-		<ul style="display: block;" id="popular-posts" class="tabcontent">
+		<!--<ul style="display: block;" id="popular-posts" class="tabcontent">
 			<table width="98%" border="0" cellpadding="20" cellspacing="0" class="table-noborder">
 			<tr>
 				<td valign="middle" align="left" width="3%"></td>
@@ -92,7 +92,7 @@ $tpl['home'] = <<<HTML
 		</ul>
 		<ul style="display: none;" id="recent-comments" class="tabcontent">
 			{comments}
-		</ul>
+		</ul>-->
 		<ul style="display: none;" id="tag-cloud" class="tabcontent">
 			{tags}
 		</ul>
@@ -152,7 +152,7 @@ $tpl['featured_nav_row'] = <<<HTML
 </li>
 HTML;
 
-$tpl['most_played_row'] =  $tpl['recently_added_row'] = <<<HTML
+$tpl['most_played_row'] =  $tpl['recently_played_row'] = <<<HTML
 {row}
 <td style="height: 90px;" align="center" valign="middle">
 	<a href="{url}">
@@ -162,7 +162,7 @@ $tpl['most_played_row'] =  $tpl['recently_added_row'] = <<<HTML
 </td>
 HTML;
 
-$tpl['recently_played_row'] = $tpl['random_row'] = <<<HTML
+$tpl['recently_added_row'] = $tpl['random_row'] = <<<HTML
 {row}
 <td style="height: 90px;" align="center" valign="middle">
 	<a href="{url}">

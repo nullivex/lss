@@ -41,70 +41,17 @@ HTML;
 
 $tpl['main_menu'] = <<<HTML
 <div id="column1">
-
-
-
-<div class="mlmenu vertical blindv delay inaccesible">
+	<div class="mlmenu vertical blindv delay inaccesible">
 		<ul>
-
-
-				<li class="haschild hide"><a href="http://beta.sloppygames.com/topnews.php" title="View all posts filed under Top News">Top News</a>
-<ul style="overflow: visible; z-index: 100; display: none; height: 93px;" class="blindv">
-	<li class="cat-item cat-item-53haschild"><a href="http://beta.sloppygames.com/page.php" title="View all posts filed under Category #1">Post</a>
-	<ul style="z-index: 100; display: none;" class="blindv">
-	<li class="cat-item cat-item-58"><a href="http://beta.sloppygames.com/page.php" title="View all posts filed under Category #1 #1">Category #1 #1</a>
-</li>
-	<li class="cat-item cat-item-59"><a href="#" title="View all posts filed under Category #1 #2">Category #1 #2</a>
-</li>
-	<li class="cat-item cat-item-60"><a href="#" title="View all posts filed under Category #1 #3">Category #1 #3</a>
-</li>
-	</ul>
-</li>
-	<li class="cat-item cat-item-54"><a href="{url_game_list}" title="">Category Games</a>
-</li>
-	<li class="cat-item cat-item-55"><a href="http://beta.sloppygames.com/register.php" title="View all posts filed under Category #3">Register</a>
-</li>
-</ul>
-</li>
-
-	<li class="haschild hide"><a href="#" title="View all posts filed under Sports">Play Game</a>
-<ul style="overflow: visible; z-index: 100; display: none; height: 121px;" class="blindv">
-	<li class="cat-item cat-item-61"><a href="{url_game_info}" title="">Game Info</a>
-</li>
-	<li class="cat-item cat-item-62"><a href="{url_game_play}" title="">Game Play</a>
-</li>
-	<li class="cat-item cat-item-63"><a href="{url_traffic_stats}" title="">Traffic Stats</a>
-</li>
-	<li class="cat-item cat-item-64"><a href="http://beta.sloppygames.com/member-stats.php" title="">Member Stats</a>
-</li>
-</ul>
-</li>
-<li class="cat-item cat-item-6"><a href="#" title="View all posts filed under Technology">Technology</a>
-</li>
-
+			{main_menu_categories}
 		</ul>
 	</div> <!--end: menu-->
+	<div class="leftsidebar">
+	{ad_home_left_160x600}
+	</div>
+</div>
+HTML;
 
-
-
-<div class="leftsidebar">
-
-
-<!--<h3>Partner Sites</h3><div class="clear"></div>
-<div class="box">		
-<ul>
-<li><a href="#">Addicting Games</a></li>
-<li>Free Flash Games</li>
-<li>Mario Games</li>
-<li>Fun Games Online</li>
-<li>Play Free Arcade</li>
-				</ul>
-		</div>-->
-
-{ad_home_left_160x600}
-
-<!--<img src="http://www.webpencil.com/banneroutlines/160x600.gif" />-->	</div> <!--end: leftsidebar-->
-
-
-</div> <!--end: column1-->
+$tpl['main_menu_category_row'] = <<<HTML
+<li class="haschild hide"><a href="{url}" title="{name}">{name}</a>
 HTML;

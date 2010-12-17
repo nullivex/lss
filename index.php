@@ -56,6 +56,11 @@ try {
 	//setup main menu
 	Tpl::_get()->setConstant('main_menu',Tpl::_get()->parse('global','main_menu',array(),true));
 
+	//set nav constants
+	require_once(ROOT.'/lib/categories.php');
+	Tpl::_get()->setConstant('header_nav_categories',Categories::nav('header','category_row'));
+	Tpl::_get()->setConstant('main_menu_categories',Categories::nav('global','main_menu_category_row'));
+
 	require_once(ROOT.'/lib/ads.php');
 	Ads::_get()->publish();
 
@@ -83,6 +88,10 @@ try {
 			
 		case 'search':
 			require_once(ROOT.'/router/search.php');
+			break;
+
+		case 'tags':
+			require_once(ROOT.'/router/tags.php');
 			break;
 		
 		case 'home':

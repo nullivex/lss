@@ -18,10 +18,15 @@ $tpl['header'] = <<<HTML
 <meta name="description" content="Play over 15000 FREE games here at SloppyGames.com, including free online games, arcade games, racing games, shooting games, and flash games!" />
 <link rel="stylesheet" type="text/css" href="{css}/game.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{css}/style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{js}/shadowbox/shadowbox.css" media="screen" />
 <script language="javascript" type="text/javascript" src="{js}/ajaxtabs.js"></script>
 <script type="text/javascript" src="{js}/menu.js"></script>
 <script type="text/javascript" src="{js}/jquery.js"></script>
 <script type="text/javascript" src="{js}/jquery-ui.js"></script>
+<script type="text/javascript" src="{js}/shadowbox/shadowbox.js"></script>
+<script type="text/javascript">
+	Shadowbox.init();
+</script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$("#featured > ul").tabs({fx:{opacity: "toggle"}}).tabs("rotate", 3500, true);
@@ -55,11 +60,10 @@ $tpl['header'] = <<<HTML
 		<div class="mlmenu horizontal fade inaccesible">
 			<ul>
 				<li class="page_item page-item-2"><a href="{url_page}about" title="About">About</a></li>
+				<li class="page_item games"><a href="{url_game_list}" title="Categories">Categories</a>
 				<li class="page_item games"><a href="{url_game_list}" title="Game Categories">Games</a>
 				<ul class="fade" style="z-index: 100; display: none; opacity: 0;">
-					<li class="page_item category-1"><a href="#" title="Archives">Action</a></li>
-					<li class="page_item category-2"><a href="#" title="Full Width">Adventure</a></li>
-					<li class="page_item category-3"><a href="#" title="Links">Sports</a></li>
+					{header_nav_categories}
 				</ul>
 				</li>
 				<li class="page_item page-item-43"><a href="{url_page}advertise" title="Theme Options">Advertise</a></li>
@@ -85,3 +89,8 @@ $tpl['header'] = <<<HTML
 <div id="wrapper">
 {alert}
 HTML;
+
+$tpl['category_row'] = <<<HTML
+<li class="page_item category-{category_id}"><a href="{url}" title="{name}">{name}</a></li>
+HTML;
+

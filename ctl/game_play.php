@@ -19,6 +19,8 @@ $games->addMetrics($_game['game_id']);
 $params['url_category'] = Url::game_list_category($_game['category_id']);
 $params['url_game'] = Url::game_info($_game['game_id']);
 $params['url_game_play'] = Url::game_play($_game['game_id']);
+$params['url_instructions'] = Url::game_info_short('instructions',$_game['game_id']);
+$params['url_description'] = Url::game_info_short('description',$_game['game_id']);
 
 //define section
 $params['comments'] = $params['featured_games'] = $params['related_games'] = '';

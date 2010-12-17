@@ -17,6 +17,17 @@ class Categories {
 		$this->db = Db::_get();
 	}
 
+	public static function nav($file,$tpl){
+		$list = Categories::_get()->categoryList();
+		$cats = '';
+		foreach($list as $category){
+			$params = $category;
+			$params['url'] = Url::game_list_category($category['category_id']);
+			$cats .= Tpl::_get()->parse($file,$tpl,$params,true);
+		}
+		return $cats;
+	}
+
 	public function categoryList(){
 		$query = $this->db->prepare('
 			select 

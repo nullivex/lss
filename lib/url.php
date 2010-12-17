@@ -47,6 +47,10 @@ class Url {
 		return self::prep().inc.'index.php?act=search';
 	}
 
+	public static function search_all($q){
+		return self::search().'&do=all&q='.$q;
+	}
+
 	public static function account(){
 		return self::prep().inc.'index.php?act=account';
 	}
@@ -85,6 +89,10 @@ class Url {
 
 	public static function game_info($game_id=null){
 		return self::games().'&do=info&game_id='.$game_id;
+	}
+
+	public static function game_info_short($type,$game_id){
+		return self::games().'&do=info_short&game_id='.$game_id.'&type='.$type;
 	}
 	
 	public static function game_play($game_id=null){

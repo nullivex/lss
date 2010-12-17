@@ -68,7 +68,8 @@ class Games {
 		return $query->fetchAll();
 	}
 
-	public function gameSearch($keywords,$type=null){
+	// this is the admin one
+	public function gameSearch($keywords,$type=null,$limit=25){
 		list($status,$values) = $this->gameStatus($type);
 		$sql = '
 			select
@@ -96,8 +97,49 @@ class Games {
 				$i++;
 			}
 		}
+		if($limit) $sql .= ' limit '.$limit;
 		$query = $this->db->prepare($sql); $query->execute($values);
 		return $query->fetchAll();
+	}
+
+	public function search($keywords,$limit=null,$page=null){
+		if($page < 1) $page = 1;
+		$page--; $values = array();
+		$sql = '
+			select
+			g.*,(select count(*) from game_tags t where t.game_id = g.game_id) as tags,
+			c.name as category
+			from games g
+			left join categories c on c.category_id = g.category_id
+		';
+		$where = '';
+		if(substr($keywords,0,1) == '"' && substr($keywords,strlen($keywords)-1,1) == '"'){
+			$where .= ' where g.name like ? ';
+			$values[] = '%'.str_replace('"','',$keywords).'%';
+		} elseif(preg_match('/\d+/',trim($keywords))){
+			$where .=  'where g.game_id = ? ';
+			$values[] = trim($keywords);
+		} else {
+			$keywords = preg_replace('/\W+/',' ',$keywords);
+			$keywords = preg_replace('/\s+/',' ',$keywords);
+			$words = explode(' ',$keywords); $lim = count($words);
+			foreach($words as $word){
+				$inc = isset($inc) ? ' or ' : ' where ';
+				$where .= $inc.' g.name like ? ';
+				$values[] = '%'.$word.'%';
+			}
+		}
+		//get result count the good way
+		$count_sql = 'select count(*) as amount from games g '.$where;
+		$query = $this->db->prepare($count_sql);
+		$query->execute($values);
+		$count = $query->fetch(); $query->closeCursor(); $count = $count['amount'];
+		//do actual query
+		$sql .= $where;
+		if($limit && !$page) $sql .= ' limit '.$limit;
+		elseif($limit && $page) $sql .= ' limit '.($limit*$page).','.$limit;
+		$query = $this->db->prepare($sql); $query->execute($values);
+		return array($count,$query->fetchAll());
 	}
 
 	public function categoryGames($category_id,$limit=null,$page=null,$sort=null){

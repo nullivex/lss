@@ -12,7 +12,13 @@ $tpl['game_play'] = <<<HTML
 	<div id="content-gameplay" style="margin-bottom:10px;">
 		<p class="browse">Playing -&gt; <a href="{url_category}">{category}</a> -&gt; <a href="{url_game}">{name}</a></p>
 		<div class="archive" align="center">
-		<p style="1px solid #cccccc;"> <a href="#">instructions</a> | <a href="#">description</a> | <a href="#">rate</a> | <a href="#">-</a> zoom <a href="#">+</a> | <a href="#">full screen</a> </p> <br />
+			<p style="1px solid #cccccc;">
+				<a href="{url_instructions}" rel="shadowbox;height=300;width=500;">instructions</a> |
+				<a href="{url_description}" rel="shadowbox;height=300;width=500;">description</a>
+				<!--<a href="#">rate</a> |
+				<a href="#">-</a> zoom <a href="#">+</a> |
+				<a href="#">full screen</a>-->
+			</p>
 			<embed src="{media}" menu="false" quality="high" width="{width}" height="{height}" type="{media_type}" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
 		</div>
 	</div>
@@ -21,8 +27,8 @@ $tpl['game_play'] = <<<HTML
 			<ul id="tabs" class="tabs-gameplay">
 				<li><a href="#popular-posts" rel="popular-posts" class="selected">Related Games</a></li>
 				<li><a class="" href="#recent-comments" rel="recent-comments">Featured Games</a></li>
-				<li><a class="" href="#monthly-archives" rel="monthly-archives">Tags</a></li>
-				<li><a class="" href="#tag-cloud" rel="tag-cloud">Comments</a></li>
+				<!--<li><a class="" href="#monthly-archives" rel="monthly-archives">Tags</a></li>
+				<li><a class="" href="#tag-cloud" rel="tag-cloud">Comments</a></li>-->
 			</ul>
 			<div class="clear"></div>
 			<ul style="display: block;" id="popular-posts" class="tabcontent-gameplay">
@@ -80,7 +86,13 @@ $tpl['game_play_full'] = <<<HTML
 	<div id="content-gameplay" style="margin-bottom:10px; width: 935px;">
 		<p class="browse">Playing -&gt; <a href="{url_category}">{category}</a> -&gt; <a href="{url_game}">{name}</a></p>
 		<div class="archive" align="center">
-		<p style="1px solid #cccccc;"> <a href="#">instructions</a> | <a href="#">description</a> | <a href="#">rate</a> | <a href="#">-</a> zoom <a href="#">+</a> | <a href="#">full screen</a> </p> <br />
+			<p style="1px solid #cccccc;">
+				<a href="{url_instructions}" rel="shadowbox;height=300;width=500;">instructions</a> |
+				<a href="{url_description}" rel="shadowbox;height=300;width=500;">description</a>
+				<!--<a href="#">rate</a> |
+				<a href="#">-</a> zoom <a href="#">+</a> |
+				<a href="#">full screen</a>-->
+			</p>
 			<embed src="{media}" menu="false" quality="high" width="{width}" height="{height}" type="{media_type}" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
 		</div>
 	</div>

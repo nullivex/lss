@@ -19,6 +19,13 @@ class Tags {
 		$this->db = Db::_get();
 	}
 
+	public function get($tag_id){
+		$query = $this->db->prepare('select * from tags where tag_id = ?');
+		$query->execute(array($tag_id));
+		$result = $query->fetch(); $query->closeCursor();
+		return $result;
+	}
+
 	public function tagList(){
 		$query = $this->db->prepare('select * from tags');
 		$query->execute();
@@ -82,6 +89,11 @@ class Tags {
 			}
 			while($tag['size'] < $min_size) $tag['size'] = $tag['size'] / $factor_min;
 			if($tag['size'] > $max_size) $tag['size'] = $tag['size'] / $factor_max;
+		}
+		//pass 3 - correct sizes
+		foreach($tags as &$tag){
+			if($tag['size'] > $max_size) $tag['size'] = $max_size;
+			if($tag['size'] < $min_size) $tag['size'] = $min_size;
 		}
 		return $tags;
 	}
