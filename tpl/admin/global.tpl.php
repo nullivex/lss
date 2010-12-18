@@ -41,23 +41,13 @@ HTML;
 
 $tpl['admin_nav'] = <<<HTML
 <div class='nav'>
-	<a href="{url_traffic}">Traffic</a> |
-	<a href="{url_categories}">Categories</a> |
-	<a href="{url_games}">Games</a> |
 	<a href="{url_pages}">Pages</a> |
-	<a href="{url_ads}">Ads</a> | 
-	<a href="{url_members}">Members</a> |
 	<a href="{url_staff}">Staff</a>
 </div>
 HTML;
 
 $tpl['staff_nav'] = <<<HTML
 <div class='nav'>
-	<a href="{url_traffic}">Traffic</a> |
-	<a href="{url_categories}">Categories</a> |
-	<a href="{url_games}">Games</a> |
-	<a href="{url_pages}">Pages</a> |
-	<a href="{url_ads}">Ads</a> | 
-	<a href="{url_members}">Members</a>
+	<a href="{url_pages}">Pages</a> 
 </div>
 HTML;

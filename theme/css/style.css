@@ -92,9 +92,9 @@ a img { border: none; }
 .searchsubmit { background: url(images/searchbg.gif) repeat-x center; height: 19px; padding: 1px 2px 1px 2px; font-size: 11px; font-weight: bold; color: #333; border: 1px solid #e6e6e6; cursor: pointer; }
 	
 /* 6. Header */
-#header { width: 980px; height: 60px; margin: 0px auto 0px auto; padding-top: 5px; line-height: 60px; background-image: url(images/bg.jpg); }
+#header { width: 980px; height: 80px; margin: 0px auto 0px auto; padding-top: 5px; line-height: 60px; background-image: url(images/bg.jpg); }
 #headline {  background: #fff; width: 980px; margin: 0px auto; padding: 5px 0px 5px 0px; font-size: .9em; line-height: 22px; border-bottom: 2px solid #16387c; }	
-.imagelogo { float: left; background: url(images/logo.png) no-repeat; width: 382px; height: 60px; cursor: pointer; }
+.imagelogo { float: left; background: url(images/openlss-logo.png) no-repeat; width: 382px; height: 80px; cursor: pointer; }
 .textlogo {float: left; margin: 0px 0px 0px 5px; font-family: impact; font-size: 48px;line-height: 60px; }	
 .textlogo a, .textlogo a:hover { color: #16387c; text-decoration: none; }
 

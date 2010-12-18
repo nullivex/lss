@@ -43,15 +43,11 @@ $tpl['main_menu'] = <<<HTML
 <div id="column1">
 	<div class="mlmenu vertical blindv delay inaccesible">
 		<ul>
-			{main_menu_categories}
+			<li class="haschild hide"><a href="{url}" title="{name}">{name}</a>
 		</ul>
 	</div> <!--end: menu-->
 	<div class="leftsidebar">
-	{ad_home_left_160x600}
 	</div>
 </div>
 HTML;
 
-$tpl['main_menu_category_row'] = <<<HTML
-<li class="haschild hide"><a href="{url}" title="{name}">{name}</a>
-HTML;
