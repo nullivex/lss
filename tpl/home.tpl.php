@@ -1,7 +1,7 @@
 <?php
 /*
- * Sloppygames - Arcade gaming
- * Light, sturdy, stupid simple
+ * Sloppygames - Arcade Gaming
+ * OpenLSS - Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
 
@@ -104,36 +104,31 @@ $tpl['home'] = <<<HTML
 		</script>
 	</div>
 	<div class="clear"></div>
-  	<div class="leftwidget">
+  <!--<div class="leftwidget">
 		<h3>Pages</h3>
 		<div class="clear"></div>
 		<div class="box">
 			<ul>
-				<li class="page_item page-item-2"><a href="http://www.theme-junkie.com/demo/portal/about/" title="About">About</a></li>
-				<li class="page_item page-item-29"><a href="http://www.theme-junkie.com/demo/portal/elements/" title="Elements">Elements</a></li>
+				<li class="page_item page-item-2"><a href="#" title="About">About</a></li>
+				<li class="page_item page-item-29"><a href="#" title="Elements">Elements</a></li>
 				<li class="page_item page-item-31">
-					<a href="http://www.theme-junkie.com/demo/portal/page-templates/" title="Page Templates">Page Templates</a>
+					<a href="#" title="Page Templates">Page Templates</a>
 					<ul>
-						<li class="page_item page-item-39"><a href="http://www.theme-junkie.com/demo/portal/page-templates/links/" title="Links">Links</a></li>
+						<li class="page_item page-item-39"><a href="#" title="Links">Links</a></li>
 					</ul>
 				</li>
-				<li class="page_item page-item-43"><a href="http://www.theme-junkie.com/demo/portal/theme-options/" title="Theme Options">Theme Options</a></li>
 			</ul>
 		</div>
-	</div>
-  	<div class="rightwidget">
+	</div>-->
+  	<!--<div class="rightwidget">
 		<h3>Blogroll</h3>
 		<div class="clear"></div>
 		<div class="box">
 			<ul class="xoxo blogroll">
-				<li><a href="http://wordpress.org/development/">Development Blog</a></li>
-				<li><a href="http://codex.wordpress.org/">Documentation</a></li>
-				<li><a href="http://wordpress.org/extend/plugins/">Plugins</a></li>
-				<li><a href="http://wordpress.org/extend/ideas/">Suggest Ideas</a></li>
-				<li><a href="http://wordpress.org/support/">Support Forum</a></li>
+				<li><a href="#">Links</a></li>
 			</ul>
 		</div>
-	</div>
+	</div>-->
 </div> <!--end: sidebar-->
 HTML;
 

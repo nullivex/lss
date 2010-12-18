@@ -1,5 +1,6 @@
 <?php
 
+$config['db']['database'] = 'sg_dev';
 $config['db']['password'] = 'est2008';
 
 //api

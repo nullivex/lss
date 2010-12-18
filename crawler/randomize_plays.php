@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
 /*
- * Sloppygames - Arcade gaming
- * Light, sturdy, stupid simple
+ * Sloppygames - Arcade Gaming
+ * OpenLSS - Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
 

@@ -1,7 +1,7 @@
 <?php
 /*
- * Sloppygames - Arcade gaming
- * Light, sturdy, stupid simple
+ * Sloppygames - Arcade Gaming
+ * OpenLSS - Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
 
@@ -60,8 +60,8 @@ $config['list']['home_featured'] = 4;
 $config['list']['home_most_played'] = 12;
 $config['list']['home_most_played_row'] = 3;
 $config['list']['home_recently_played'] = 8;
-$config['list']['home_random'] = 6;
-$config['list']['home_recently_added'] = 6;
+$config['list']['home_random'] = 8;
+$config['list']['home_recently_added'] = 8;
 $config['list']['home_recently_played_row'] = 2;
 $config['list']['home_random_row'] = 2;
 $config['list']['home_recently_added_row'] = 2;
