@@ -1,6 +1,6 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * Simple CMS
  * OpenLSS - Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
