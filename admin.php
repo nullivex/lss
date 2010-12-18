@@ -1,6 +1,6 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * Simple CMS
  * OpenLSS - Light, sturdy, stupid simple
  * (c) Nullivex LLC, All Rights Reserved.
  */
@@ -17,7 +17,7 @@ include_once('config.php');
 date_default_timezone_set($config['info']['default_timezone']);
 
 //set root path
-define("ROOT",$config['paths']['sg']);
+define("ROOT",$config['paths']['openlss']);
 
 //load base libs
 require_once(ROOT.'/src/func.php');
@@ -29,7 +29,7 @@ require_once(ROOT.'/lib/admin/url.php');
 require_once(ROOT.'/lib/validate.php');
 
 //set constants
-define("SG_VERSION","1.0.0");
+define("OPENLSS_VERSION","1.0.0");
 
 try {
 
@@ -43,7 +43,7 @@ try {
 	Tpl::_get()->setPath(Config::_get()->get('tpl','admin_path'));
 	Tpl::_get()->setThemePath(Config::_get()->get('tpl','admin_theme_path'));
 	Tpl::_get()->initConstants();
-	Tpl::_get()->setConstant('sg_version',SG_VERSION);
+	Tpl::_get()->setConstant('openlss_version',OPENLSS_VERSION);
 
 	//do the login requirements
 	Login::_get(Config::_get()->get('root_user'))->check();
@@ -53,14 +53,6 @@ try {
 	Tpl::_get()->adminNav(Login::$user);
 
 	switch(get('act')){
-
-		case 'ads':
-			require_once(ROOT.'/router/admin/ads.php');
-			break;
-		
-		case 'pages':
-			require_once(ROOT.'/router/admin/pages.php');
-			break;
 		
 		case 'staff':
 			require_once(ROOT.'/router/admin/staff.php');
@@ -69,22 +61,10 @@ try {
 		case 'profile':
 			require_once(ROOT.'/router/admin/profile.php');
 			break;
-		
-		case 'members':
-			require_once(ROOT.'/router/admin/members.php');
-			break;
 
-		case 'categories':
-			require_once(ROOT.'/router/admin/categories.php');
-			break;
-		
-		case 'games':
-			require_once(ROOT.'/router/admin/games.php');
-			break;
-		
-		case 'traffic':
 		default:
-			require_once(ROOT.'/router/admin/traffic.php');
+		case 'pages':
+			require_once(ROOT.'/router/admin/pages.php');
 			break;
 
 	}
