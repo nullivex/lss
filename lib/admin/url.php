@@ -1,8 +1,22 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * LSS Core
  * OpenLSS - Light, sturdy, stupid simple
- * (c) Nullivex LLC, All Rights Reserved.
+ * 2010 Nullivex LLC, All Rights Reserved.
+ * Bryan Tong <contact@nullivex.com>
+ *
+ *   OpenLSS is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenLSS is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 define('inc','/');
@@ -11,13 +25,6 @@ class Url {
 
 	static $urls = array(
 		'home',
-		'traffic',
-		'ads',
-		'ad_create',
-		'categories',
-		'category_create',
-		'games',
-		'game_create',
 		'staff',
 		'staff_create',
 		'pages',
@@ -43,46 +50,6 @@ class Url {
 		return self::prep().inc.'admin.php';
 	}
 
-	public static function games(){
-		return self::prep().'admin.php?act=games';
-	}
-
-	public static function game_create(){
-		return self::games().'&do=create';
-	}
-
-	public static function game_manage($game_id){
-		return self::games().'&do=manage&game_id='.$game_id;
-	}
-
-	public static function game_status($status){
-		return self::games().'&do=list&status='.$status;
-	}
-
-	public static function ads(){
-		return self::prep().'admin.php?act=ads';
-	}
-
-	public static function ad_create(){
-		return self::ads().'&do=create';
-	}
-
-	public static function ad_manage($ad_id){
-		return self::ads().'&do=manage&ad_id='.$ad_id;
-	}
-
-	public static function categories(){
-		return self::prep().'admin.php?act=categories';
-	}
-
-	public static function category_create(){
-		return self::categories().'&do=create';
-	}
-
-	public static function category_manage($category_id){
-		return self::categories().'&do=manage&category_id='.$category_id;
-	}
-
 	public static function pages(){
 		return self::prep().'admin.php?act=pages';
 	}
@@ -105,10 +72,6 @@ class Url {
 
 	public static function member_manage($member_id){
 		return self::members().'&do=manage&member_id='.$member_id;
-	}
-	
-	public static function traffic(){
-		return self::prep().'admin.php?act=traffic';
 	}
 
 	public static function staff(){

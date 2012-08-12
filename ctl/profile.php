@@ -23,20 +23,19 @@ require_once(ROOT.'/lib/members.php');
 
 page_header();
 
-if(post('create')){
+if(post('edit')){
 	try {
-		Members::_get()->create(post());
-		alert('member added successfully',true,true);
-		redirect(Url::members());
+		Members::_get()->profile($_POST);
+		alert('member profile updated successfully',true,true);
+		redirect(Url::profile());
 	} catch (Exception $e){
 		alert($e->getMessage(),false);
 	}
 }
 
-$params = Members::_get()->createParams();
-$params = array_merge($params,post());
-$params['is_affiliate'] = post('is_affiliate') ? 'checked="checked"' : '';
-Tpl::_get()->parse('members','create',$params);
+$params = Members::_get()->editParams(Login::memberId());
+$params = array_merge($params,$_POST);
+Tpl::_get()->parse('profile','profile',$params);
 
 page_footer();
 output(Tpl::_get()->output());

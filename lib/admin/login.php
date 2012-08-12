@@ -1,8 +1,22 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * LSS Core
  * OpenLSS - Light, sturdy, stupid simple
- * (c) Nullivex LLC, All Rights Reserved.
+ * 2010 Nullivex LLC, All Rights Reserved.
+ * Bryan Tong <contact@nullivex.com>
+ *
+ *   OpenLSS is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenLSS is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 class Login {
@@ -69,6 +83,7 @@ class Login {
 				loginError($e->getMessage());
 			}
 		}
+		return $this;
 	}
 
 	protected function verify(){
@@ -151,6 +166,12 @@ class Login {
 			if(preg_match('/'.preg_quote($part).'/i',$url)) return null;
 		}
 		return $url;
+	}
+
+	public function adminNav($user){
+		Tpl::_get()->setConstant('admin_nav',Tpl::_get()->parse('global','staff_nav',array(),true));;
+		if(!isset($user['is_manager']) || !$user['is_manager']) return;
+		Tpl::_get()->setConstant('admin_nav',Tpl::_get()->parse('global','admin_nav',array(),true));
 	}
 
 }

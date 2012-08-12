@@ -1,8 +1,22 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * LSS Core
  * OpenLSS - Light, sturdy, stupid simple
- * (c) Nullivex LLC, All Rights Reserved.
+ * 2010 Nullivex LLC, All Rights Reserved.
+ * Bryan Tong <contact@nullivex.com>
+ *
+ *   OpenLSS is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenLSS is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 ob_start();
@@ -17,7 +31,7 @@ include_once('config.php');
 date_default_timezone_set($config['info']['default_timezone']);
 
 //set root path
-define("ROOT",$config['paths']['sg']);
+define("ROOT",$config['paths']['lss']);
 
 //load base libs
 require_once(ROOT.'/src/func.php');
@@ -27,9 +41,6 @@ require_once(ROOT.'/lib/admin/login.php');
 require_once(ROOT.'/lib/tpl.php');
 require_once(ROOT.'/lib/admin/url.php');
 require_once(ROOT.'/lib/validate.php');
-
-//set constants
-define("SG_VERSION","1.0.0");
 
 try {
 
@@ -43,24 +54,13 @@ try {
 	Tpl::_get()->setPath(Config::_get()->get('tpl','admin_path'));
 	Tpl::_get()->setThemePath(Config::_get()->get('tpl','admin_theme_path'));
 	Tpl::_get()->initConstants();
-	Tpl::_get()->setConstant('sg_version',SG_VERSION);
+	Tpl::_get()->setConstant('lss_version',LSS_VERSION);
 
 	//do the login requirements
-	Login::_get(Config::_get()->get('root_user'))->check();
+	Login::_get(Config::_get()->get('root_user'))->check()->adminNav(Login::$user);
 	Tpl::_get()->setConstant('user_username',Login::$user['username']);
 
-	//setup admin nav
-	Tpl::_get()->adminNav(Login::$user);
-
 	switch(get('act')){
-
-		case 'ads':
-			require_once(ROOT.'/router/admin/ads.php');
-			break;
-		
-		case 'pages':
-			require_once(ROOT.'/router/admin/pages.php');
-			break;
 		
 		case 'staff':
 			require_once(ROOT.'/router/admin/staff.php');
@@ -73,18 +73,10 @@ try {
 		case 'members':
 			require_once(ROOT.'/router/admin/members.php');
 			break;
-
-		case 'categories':
-			require_once(ROOT.'/router/admin/categories.php');
-			break;
 		
-		case 'games':
-			require_once(ROOT.'/router/admin/games.php');
-			break;
-		
-		case 'traffic':
+		case 'pages':
 		default:
-			require_once(ROOT.'/router/admin/traffic.php');
+			require_once(ROOT.'/router/admin/pages.php');
 			break;
 
 	}

@@ -1,8 +1,22 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * LSS Core
  * OpenLSS - Light, sturdy, stupid simple
- * (c) Nullivex LLC, All Rights Reserved.
+ * 2010 Nullivex LLC, All Rights Reserved.
+ * Bryan Tong <contact@nullivex.com>
+ *
+ *   OpenLSS is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenLSS is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 $tpl = array();
@@ -10,87 +24,27 @@ $tpl = array();
 $tpl['header'] = <<<HTML
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
-
 <title>{site_title}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="cache-control" content="no-cache" />
-<meta name="keywords" content="free games, free online games, games, online games, play games, racing games, car games, sports games, action games, adventure games, arcade games, shooting games, addicting games" />
-<meta name="description" content="Play over 15000 FREE games here at SloppyGames.com, including free online games, arcade games, racing games, shooting games, and flash games!" />
-<link rel="stylesheet" type="text/css" href="{css}/game.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{css}/style.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="{js}/shadowbox/shadowbox.css" media="screen" />
-<script language="javascript" type="text/javascript" src="{js}/ajaxtabs.js"></script>
-<script type="text/javascript" src="{js}/menu.js"></script>
-<script type="text/javascript" src="{js}/jquery.js"></script>
-<script type="text/javascript" src="{js}/jquery-ui.js"></script>
-<script type="text/javascript" src="{js}/shadowbox/shadowbox.js"></script>
-<script type="text/javascript">
-	Shadowbox.init();
-</script>
-<script type="text/javascript">
-	$(document).ready(function(){
-		$("#featured > ul").tabs({fx:{opacity: "toggle"}}).tabs("rotate", 3500, true);
-	});
-</script>
-
-<!--[if lt IE 7]>
-<script type="text/javascript" src="http://www.theme-junkie.com/demo/portal/wp-content/themes/portal/javascripts/unitpngfix.js"></script>
-<link rel="stylesheet" type="text/css" href="http://www.theme-junkie.com/demo/portal/wp-content/themes/portal/ie.css" />
-<![endif]-->
-
 </head>
 <body>
-
 <div id="header">
-	<div class="left"><a class="imagelogo" href="{url_home}"></a></div>
-	
-	<div class="right">
-	
-	{ad_home_right_468x60}
-	
-	</div>
+	<h1><a href="{url_home}">{site_name}</a></h1>
+	{member_bar}
 </div>
-<div id="headline">
-	<div class="left">
-		<span class="home-icon"><a href="{url_home}" title="Home">Home</a></span>
-		<span class="login-icon"><a href="{url_login}" title="Login">Login</a></span>
-		<span class="register-icon"><a href="{url_register}" title="Register">Register</a></span>
-	</div>
-	<div class="right">
-		<div class="mlmenu horizontal fade inaccesible">
-			<ul>
-				<li class="page_item page-item-2"><a href="{url_page}about" title="About">About</a></li>
-				<li class="page_item games"><a href="{url_game_list}" title="Categories">Categories</a>
-				<li class="page_item games"><a href="{url_game_list}" title="Game Categories">Games</a>
-				<ul class="fade" style="z-index: 100; display: none; opacity: 0;">
-					{header_nav_categories}
-				</ul>
-				</li>
-				<li class="page_item page-item-43"><a href="{url_page}advertise" title="Theme Options">Advertise</a></li>
-				<li>
-				<form method="get" id="searchform" action="index.php">
-				<input type="hidden" name="act" value="search" />
-				  <div id="search">
-					<input type="hidden" name="cx" value="014838308468683311433:spe8e_fvvo4" />
-					<input type="hidden" name="cof" value="FORID:10" />
-					<input type="hidden" name="ie" value="UTF-8" />
-					<input class="searchinput-google" value="Search this site... " onclick="this.value='';" name="q" id="s" type="text">
-					<input class="searchsubmit" name="sa" value="Search" type="submit">
-					<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
-				  </div>
-				</form>
-				</li>
-			</ul>
-		</div> <!--end: menu-->
-	</div> <!--end: right-->
-	<div class="clear"></div>
-</div> <!--headline-->
-
 <div id="wrapper">
 {alert}
 HTML;
 
-$tpl['category_row'] = <<<HTML
-<li class="page_item category-{category_id}"><a href="{url}" title="{name}">{name}</a></li>
+$tpl['member_bar'] = <<<HTML
+<div>
+	Welcome <strong>{user_username}</strong>
+	<a href="{url_profile}">Profile</a> | <a href="{url_logout}">Logout</a>
+</div>
 HTML;
 
+$tpl['login_bar'] = <<<HTML
+<div><a href="{url_login}">Login</a> | <a href="{url_register}">Register</a></div>
+HTML;

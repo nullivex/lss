@@ -1,8 +1,22 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * LSS Core
  * OpenLSS - Light, sturdy, stupid simple
- * (c) Nullivex LLC, All Rights Reserved.
+ * 2010 Nullivex LLC, All Rights Reserved.
+ * Bryan Tong <contact@nullivex.com>
+ *
+ *   OpenLSS is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenLSS is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 class Members {
@@ -57,6 +71,15 @@ class Members {
 		return $this->db->lastInsertId();
 	}
 
+	public function register($data){
+		data($data);
+		self::validate($data);
+		if(data('password') != data('confirm_password')) throw new Exception('member: password mismatch');
+		$query = $this->db->prepare('insert into members(username,`password`,email)values(?,?,?)');
+		$query->execute(array(data('username'),md5(data('password')),data('email')));
+		return $this->db->lastInsertId();
+	}
+
 	public function edit($data){
 		data($data);
 		self::validate($data,false);
@@ -80,6 +103,25 @@ class Members {
 		$query = $this->db->prepare('update member set is_active = ? where member_id = ?');
 		$query->execute(array(0,data('member_id')));
 		return data('member_id');
+	}
+
+	public function profile($data){
+		if(!isset($data['member_id'])) throw new Exception('members: no member id');
+		if(!isset($data['username'])) throw new Exception('members: no username');
+		if(!isset($data['email'])) throw new Exception('members: no email');
+		if(
+			isset($data['password']) && isset($data['confirm_password']) &&
+			!empty($data['password']) && !empty($data['confirm_password'])
+		){
+			if($data['password'] != $data['confirm_password']) throw new Exception('members: password mismatch');
+			$query = $this->db->prepare('update members set `password` = ? where member_id = ?');
+			$query->execute(array(md5($data['password']),$data['member_id']));
+			//update session
+			Login::updateLivePassword(md5($data['password']));
+		}
+		$query = $this->db->prepare('update members set username = ?, email = ? where member_id = ?');
+		$query->execute(array($data['username'],$data['email'],$data['member_id']));
+		return $data['staff_id'];
 	}
 
 }

@@ -1,8 +1,22 @@
 <?php
 /*
- * Sloppygames - Arcade Gaming
+ * LSS Core
  * OpenLSS - Light, sturdy, stupid simple
- * (c) Nullivex LLC, All Rights Reserved.
+ * 2010 Nullivex LLC, All Rights Reserved.
+ * Bryan Tong <contact@nullivex.com>
+ *
+ *   OpenLSS is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   OpenLSS is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 $tpl = array();
@@ -41,11 +55,7 @@ HTML;
 
 $tpl['admin_nav'] = <<<HTML
 <div class='nav'>
-	<a href="{url_traffic}">Traffic</a> |
-	<a href="{url_categories}">Categories</a> |
-	<a href="{url_games}">Games</a> |
 	<a href="{url_pages}">Pages</a> |
-	<a href="{url_ads}">Ads</a> | 
 	<a href="{url_members}">Members</a> |
 	<a href="{url_staff}">Staff</a>
 </div>
@@ -53,11 +63,7 @@ HTML;
 
 $tpl['staff_nav'] = <<<HTML
 <div class='nav'>
-	<a href="{url_traffic}">Traffic</a> |
-	<a href="{url_categories}">Categories</a> |
-	<a href="{url_games}">Games</a> |
 	<a href="{url_pages}">Pages</a> |
-	<a href="{url_ads}">Ads</a> | 
 	<a href="{url_members}">Members</a>
 </div>
 HTML;

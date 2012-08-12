@@ -1,4 +1,4 @@
-body{font-family:Arial,Helvetica,sans-serif;width: 850px;font-family: arial,sans-serif;background-color:#39424B;text-align: center;margin: 0 auto;font-size: 11px}
+body{width: 80%;font-family: arial,sans-serif;text-align: center;margin: 0 auto;font-size: 11px}
 a {color: blue; text-decoration: none;}
 a:hover {text-decoration: underline;}
 
@@ -15,28 +15,23 @@ a:hover {text-decoration: underline;}
 
 .side_margins{margin-left:5px;margin-right:5px;}
 
-#header_frame{width:848px;border:1px solid;height:100px;background-color:#0F1923;}
-.banner_nav{float:right;font-size:12px;color:#F0F0F0;}
-#site_name{margin-top:30px;font-size:40px;font-weight: bold;margin-left:30px;text-align:left;}
-#site_name a{color:#F0F0F0;}
-#site_name a:hover{text-decoration:none;color:#F0F0F0;}
-.mainNavFrame{width:840px;padding: 5px;margin-left:0px;background-color:#2C3033;text-align:left;}
-.mainNav{margin-left:5px;font-size:14px;color:#df7401;font-weight:bold;}
-.banner_nav a,.mainNav a{ color:#F0F0F0;text-decoration:none;}
-.banner_nav a:hover,.mainNav a:hover{color:#F0F0F0;text-decoration:underline;}
-.content{background-color:#F0F0F0;margin-top:0px;width:838px;border:1px solid;text-align:left;padding:5px;}
-#footer{width:848px;border:1px solid #000000;height:30px;background-color:#0F1923;text-align:center;color:#F0F0F0;font-size: 12px;}
+#header_frame{padding: 20px;}
+.banner_nav{float:left;font-size:12px;}
+#site_name{margin-top:30px;font-size:40px;font-weight: bold;text-align:left;}
+.mainNavFrame{width:840px;padding: 5px;margin-left:0px;text-align:left;}
+.mainNav{margin-left:5px;font-size:14px;font-weight:bold;}
+.banner_nav a,.mainNav a{text-decoration:none;}
+.banner_nav a:hover,.mainNav a:hover{text-decoration:underline;}
+.content{margin-top:0px;width:838px;text-align:left;padding:5px;}
+#footer{width:848px;height:30px;text-align:center;font-size: 12px;}
 #footer div{margin-top:5px;}
-
-.content a,.redirection a{color:#9A1726;}
-.content a:hover,.redirection a:hover{color:#9A1726;}
 
 #add_task{font-size:13px;}
 h1,h4{margin-left:5px;}
 
 table {margin-bottom:25px;}
 .tbl {margin-left:10px;margin-right:10px;width:97%; font-size: 11px;}
-table th {background-color:#9A1726;font-weight:bold;font-size:13px;color:#F0F0F0;text-align:center;}
+table th {font-weight:bold;font-size:13px;text-align:center;}
 table .odd {background-color:#F9F9F9;}
 table .even {background-color:#EFEFEF;}
 
@@ -44,10 +39,10 @@ table .even {background-color:#EFEFEF;}
 .action_link{margin-left:10px;margin-bottom:20px;font-weight:bold;}
 
 .form_tbl {margin-left:10px;width:70%;margin-right:40px;font-size:12px;}
-.form_tbl .label {width:150px; background: #eaeaea;}
+.form_tbl .label {width:150px;}
 
 .form_tbl small {font-size:9px;}
 .input_fields, .search input[type="text"] {width:400px;}
 
-.redirection {margin-top:200px;background-color:#F0F0F0;}
+.redirection {margin-top:200px;}
 .redirection h1{margin-bottom:10px;}
