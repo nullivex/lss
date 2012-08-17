@@ -19,6 +19,8 @@
  *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//made a change
+
 ob_start();
 session_start();
 define('START',microtime(true));
