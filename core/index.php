@@ -85,7 +85,7 @@ try {
 		
 		case 'home':
 		default:
-			require_once(ROOT.'/router/home.php');
+			require_once(ROOT.'/rtr/home.php');
 			break;
 
 	}

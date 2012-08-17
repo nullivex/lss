@@ -63,20 +63,20 @@ try {
 	switch(get('act')){
 		
 		case 'staff':
-			require_once(ROOT.'/router/admin/staff.php');
+			require_once(ROOT.'/rtr/admin/staff.php');
 			break;
 
 		case 'profile':
-			require_once(ROOT.'/router/admin/profile.php');
+			require_once(ROOT.'/rtr/admin/profile.php');
 			break;
 		
 		case 'members':
-			require_once(ROOT.'/router/admin/members.php');
+			require_once(ROOT.'/rtr/admin/members.php');
 			break;
 		
 		case 'pages':
 		default:
-			require_once(ROOT.'/router/admin/pages.php');
+			require_once(ROOT.'/rtr/admin/pages.php');
 			break;
 
 	}
