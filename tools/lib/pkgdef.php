@@ -6,8 +6,8 @@ require_once('tools/lib/func.php');
 // - val should be an array that matches what it should be in the def
 function defAdd($pkg,$val,$repo=REPO_MAIN){
 	if(!is_array($val) || !count($val)) throw new Exception('Invalid value to add: '.print_r($val,true));
-	$def = readDef($pkg,$repo);
-	return writeDef($pkg,ksort(array_merge($def,$val)));
+	$def = array_merge(readDef($repo.'/'.$pkg),$val);
+	return writeDef($repo.'/'.$pkg,$def,true);
 }
 
 //update a value in a def (can be a whole subsection)
@@ -19,14 +19,14 @@ function defUpdate($pkg,$val,$repo=REPO_MAIN){
 //deletes a single item from a def
 // - val should be a key definition as a string: ex "['keyname']['anothername']['etc']"
 function defDel($pkg,$val,$repo=REPO_MAIN){
-	$def = readDef($pkg,$repo);
+	$def = readDef($repo.'/'.$pkg);
 	dfa($def,$val);
-	return writeDef($pkg,$def,$repo);
+	return writeDef($repo.'/'.$pkg,$def,true);
 }
 
 function readDef($pkg = ''){
 // returns parsed content, or an empty array on any error
-	if($pkg == '') return false;
+	if($pkg == '') return array();
 	$def_file = DEF_PATH.$pkg.".lss";
 	if(file_exists($def_file) && $fh = fopen($def_file,'r'))
 		return parseDef(fread($fh,filesize($def_file)));
@@ -49,16 +49,17 @@ function parseDef($def_data = ''){
 	return $pkgdef;
 }
 
-function writeDef($pkg_dir = '',$def = false,$clobber = false){
+function writeDef($pkg = '',$def = false,$clobber = false){
 // returns true if content was written, or false on any error
 // optional $clobber allows overwriting file if it exists (otherwise fails)
-	if(!is_array($def) || count($def) === 0) return false;
+	if(!is_array($def) || count($def) === 0) throw new Exception('writeDef() def is not an array or is empty');
 	$def_file = DEF_PATH.$pkg.".lss";
 	if(file_exists($def_file))
 		if($clobber)
 			run('mv '.$def_file.' '.$def_file.'.bak'); // why not save the previous version
 		else
-			return false;
+			throw new Exception('writeDef() file exists and clobber not allowed');
+	@mkdir(dirname($def_file),0755,true);
 	$fh = fopen($def_file,'w');
 	fprintf($fh,'<?php'."\n");
 	fprintf($fh,'// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY'."\n"."\n");
@@ -69,16 +70,18 @@ function writeDef($pkg_dir = '',$def = false,$clobber = false){
 	return true;
 }
 
-function dumpDef($fh=null,$def=false,$parents=array()){
+function dumpDef($fh=null,$def=array(),$parents=array()){
 	if(!is_resource($fh)) throw new Exception('dumpDef file handle invalid');
-	$parent_nodes = (count($parents) != 0) ? '['.join($parents,'][').']' : '';
+	$parent_nodes = (count($parents) != 0) ? "['".join("']['",$parents)."']" : '';
+//	ksort($def);
 	foreach($def as $def_key => $def_val){
 		if(is_array($def_val)){
 			fprintf($fh,'$pkgdef%s[\'%s\'] = array();'."\n",$parent_nodes,$def_key);
-			array_unshift($parent_nodes,$def_key);
-			dumpDef($fh,$def_val,$parent_nodes);
+			array_unshift($parents,$def_key);
+			dumpDef($fh,$def_val,$parents);
 		} else {
-			fprintf($fh,'$pkgdef%s[\'%s\'] = \'%s\';'."\n",$parent_nodes,$def_key,$def_val);
+			if(!is_numeric($def_key)) $def_key = "'".$def_key."'";
+			fprintf($fh,'$pkgdef%s[%s] = \'%s\';'."\n",$parent_nodes,$def_key,$def_val);
 		}
 	}
 }

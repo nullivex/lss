@@ -1,0 +1,10 @@
+<?php
+// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
+
+$pkgdef = array();
+$pkgdef['manifest'] = array();
+$pkgdef['manifest'][] = 'lib/ohfuck.php';
+$pkgdef['manifest'][] = 'lib/diditwork.php';
+$pkgdef['a'] = array();
+$pkgdef['a']['b'] = array();
+$pkgdef['a']['b'][] = 'joomla';
