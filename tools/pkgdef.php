@@ -1,4 +1,4 @@
-!/usr/bin/php
+#!/usr/bin/php
 <?php
 
 require('boot.php');
@@ -8,11 +8,8 @@ require_once(ROOT.'/tools/lib/func.php');
 require_once(ROOT.'/tools/lib/pkg.php');
 require_once(ROOT.'/tools/lib/pkgdef.php');
 
-//parse arguments
-$pkg = gfa($argv,0);
-if(!$pkg) throw new Exception('Package must be supplied: pkgdef <package name> <action>');
-
 //figure out our opts
+$pkg = gfa($argv,1); unset($GLOBALS['argv'][1]);
 $so = '';
 $lo = array(
 	'help',
@@ -23,23 +20,26 @@ $lo = array(
 $opts = getopt($so,$lo); unset($so,$lo);
 
 //validate package
-$repo = gfa($opts,'repo') ? gfa($opts,'repo') ? REPO_MAIN;
+if(!$pkg) throw new Exception('No package supplied: '.$pkg);
+$repo = gfa($opts,'repo') ? gfa($opts,'repo') : REPO_MAIN;
 if(!pkgExists($pkg,$repo)) throw new Exception('Package does not exist: '.$pkg);
 
-switch(array_keys($opts)){
-	case 'addfile':
-		addFile($pkg,$opts['addfile'],$repo);
-		break;
-	case 'delfile':
-		delFile($pkg,$opts['delfile'],$repo);
-		break;
-	case 'help':
-		displayHelp();
-		break;
-	default:
-		//error out
-		throw new Exception('No action supplied, see --help');
-		break;
+foreach(array_keys($opts) as $act){
+	switch($act){
+		case 'addfile':
+			addFile($pkg,$opts['addfile'],$repo);
+			break;
+		case 'delfile':
+			delFile($pkg,$opts['delfile'],$repo);
+			break;
+		case 'help':
+			displayHelp();
+			break;
+		default:
+			//error out
+			throw new Exception('No action supplied, see --help');
+			break;
+	}
 }
 
 //add a file

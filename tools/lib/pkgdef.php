@@ -1,6 +1,6 @@
 <?php
 //require sources
-require_once('bin/lib/func.php');
+require_once('tools/lib/func.php');
 
 //add a single item to a def
 // - val should be an array that matches what it should be in the def
@@ -49,10 +49,10 @@ function parseDef($def_data = ''){
 	return $pkgdef;
 }
 
-function writeDef($pkg_dir = '',$def_data = false,$clobber = false){
+function writeDef($pkg_dir = '',$def = false,$clobber = false){
 // returns true if content was written, or false on any error
 // optional $clobber allows overwriting file if it exists (otherwise fails)
-	if(!is_array($def_data) || count($def_data) === 0) return false;
+	if(!is_array($def) || count($def) === 0) return false;
 	$def_file = DEF_PATH.$pkg.".lss";
 	if(file_exists($def_file))
 		if($clobber)
@@ -63,8 +63,22 @@ function writeDef($pkg_dir = '',$def_data = false,$clobber = false){
 	fprintf($fh,'<?php'."\n");
 	fprintf($fh,'// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY'."\n"."\n");
 	fprintf($fh,'$pkgdef = array();'."\n");
-	foreach($def_data as $def_item) fprintf($fh,'$deffest[] = \'%s\';'."\n",$def_item);
+	dumpDef($fh,$def);
 	fprintf($fh,"\n");
 	fclose($fh);
 	return true;
+}
+
+function dumpDef($fh=null,$def=false,$parents=array()){
+	if(!is_resource($fh)) throw new Exception('dumpDef file handle invalid');
+	$parent_nodes = (count($parents) != 0) ? '['.join($parents,'][').']' : '';
+	foreach($def as $def_key => $def_val){
+		if(is_array($def_val)){
+			fprintf($fh,'$pkgdef%s[\'%s\'] = array();'."\n",$parent_nodes,$def_key);
+			array_unshift($parent_nodes,$def_key);
+			dumpDef($fh,$def_val,$parent_nodes);
+		} else {
+			fprintf($fh,'$pkgdef%s[\'%s\'] = \'%s\';'."\n",$parent_nodes,$def_key,$def_val);
+		}
+	}
 }
