@@ -50,7 +50,7 @@ if(gfa($opts,'seeds')){
 		dolog('install seed '.$seed);
 		$manifest = readManifest(ROOT.$seed_path);
 		foreach($manifest as $mani_item)
-			run('cp -av '.ROOT.$seed_path.$mani_item.' '.$dest.$seed_path.$mani_item);
+			run('cp -av '.ROOT.$seed_path.$mani_item.' '.ROOT.$dest.$seed_path.$mani_item);
 	}
 	dolog('done installing seeds');
 }
@@ -69,7 +69,7 @@ if(gfa($opts,'roots')){
 		dolog('install root '.$root);
 		$manifest = readManifest(ROOT.$root_path);
 		foreach($manifest as $mani_item)
-			run('cp -av '.ROOT.$root_path.$mani_item.' '.$dest.$root_path.$mani_item);
+			run('cp -av '.ROOT.$root_path.$mani_item.' '.ROOT.$dest.$root_path.$mani_item);
 	}
 	dolog('done installing roots');
 }
@@ -88,7 +88,7 @@ if(gfa($opts,'leafs')){
 		dolog('installing leaf '.$leaf);
 		$manifest = readManifest(ROOT.$leaf_path);
 		foreach($manifest as $mani_item)
-			run('cp -av '.ROOT.$leaf_path.$mani_item.' '.$dest.$leaf_path.$mani_item);
+			run('cp -av '.ROOT.$leaf_path.$mani_item.' '.ROOT.$dest.$leaf_path.$mani_item);
 	}
 	dolog('done installing leafs');
 }
