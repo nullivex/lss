@@ -1,8 +1,7 @@
 #!/usr/bin/php
 <?php
 
-//figure out where we are
-define('ROOT',dirname(dirname(__FILE__)));
+require('boot.php');
 
 //require sources
 require_once('bin/lib/phpkg.php');

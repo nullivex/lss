@@ -1,11 +1,19 @@
 <?php
 
-function gfa(){
+function gfa($data){
 	$args = func_get_args();
-	$data = array_shift($args);
+	array_shift($args);
 	$var = ''; foreach($args as $arg) $var .= '[\''.$arg.'\']';
 	eval('$val = isset($data'.$var.') ? $data'.$var.' : null;');
 	return $val;
+}
+
+function dfa(&$data){
+	$args = func_get_args();
+	array_shift($args);
+	$var = ''; foreach($args as $arg) $var .= '[\''.$arg.'\']';
+	eval('@unset($data'.$var.');');
+	return true;
 }
 
 function run($cmd,&$return=null){
