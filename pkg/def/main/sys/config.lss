@@ -2,9 +2,17 @@
 // THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
 
 $pkgdef = array();
+$pkgdef['info'] = array();
+$pkgdef['info']['fqn'] = 'main/sys/config';
+$pkgdef['info']['sqn'] = 'sys/config';
+$pkgdef['info']['repo'] = 'main';
+$pkgdef['info']['class'] = 'sys';
+$pkgdef['info']['name'] = 'config';
+$pkgdef['info']['version'] = '0.0.1';
+$pkgdef['dep'] = array();
+$pkgdef['dep']['main/util/func'] = array();
+$pkgdef['dep']['main/util/func']['versions'] = array();
+$pkgdef['dep']['main/util/func']['versions'][0] = '0.0.1';
 $pkgdef['manifest'] = array();
-$pkgdef['manifest'][] = 'lib/ohfuck.php';
-$pkgdef['manifest'][] = 'lib/diditwork.php';
-$pkgdef['a'] = array();
-$pkgdef['a']['b'] = array();
-$pkgdef['a']['b'][] = 'joomla';
+$pkgdef['manifest'][0] = 'config.defaults.php';
+$pkgdef['manifest'][1] = 'lib/config.php';

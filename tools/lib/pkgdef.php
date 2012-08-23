@@ -1,87 +1,122 @@
 <?php
-//require sources
-require_once('tools/lib/func.php');
 
-//add a single item to a def
-// - val should be an array that matches what it should be in the def
-function defAdd($pkg,$val,$repo=REPO_MAIN){
-	if(!is_array($val) || !count($val)) throw new Exception('Invalid value to add: '.print_r($val,true));
-	$def = array_merge(readDef($repo.'/'.$pkg),$val);
-	return writeDef($repo.'/'.$pkg,$def,true);
-}
+require_once(ROOT.'/tools/lib/def.php');
 
-//update a value in a def (can be a whole subsection)
-// - val shold be an array that matches what it should be in the def
-function defUpdate($pkg,$val,$repo=REPO_MAIN){
-	return defAdd($pkg,$val,$repo);
-}
+final class PkgDef extends Def {
+	
+	//meta info
+	private $fqn 	 = null;
+	private $sqn	 = null;
+	private $repo	 = null;
+	private $class	 = null;
+	private $name	 = null;
 
-//deletes a single item from a def
-// - val should be a key definition as a string: ex "['keyname']['anothername']['etc']"
-function defDel($pkg,$val,$repo=REPO_MAIN){
-	$def = readDef($repo.'/'.$pkg);
-	dfa($def,$val);
-	return writeDef($repo.'/'.$pkg,$def,true);
-}
-
-function readDef($pkg = ''){
-// returns parsed content, or an empty array on any error
-	if($pkg == '') return array();
-	$def_file = DEF_PATH.$pkg.".lss";
-	if(file_exists($def_file) && $fh = fopen($def_file,'r'))
-		return parseDef(fread($fh,filesize($def_file)));
-	return array();
-}
-
-function parseDef($def_data = ''){
-// returns a populated array, or empty array on any error
-	$pkgdef = array();
-	if($def_data != ''){
-		$proc = proc_open('php',array(0=>array('pipe','r'),1=>array('pipe','w')),$p);
-		if(is_resource($proc)){
-			fwrite($p[0],$def_data . 'print(serialize($pkgdef));');
-			fclose($p[0]);
-			$pkgdef = unserialize(stream_get_contents($p[1]));
-			fclose($p[1]);
-			proc_close($proc);
+	function __construct(){
+		list($pkg,$repo,$ro) = array_merge(func_get_args(),array('main',self::READONLY));
+		// handle if given $pkg and $ro (without $repo in the middle)
+		if(is_bool($repo)){
+			$ro = $repo;
+			$repo = 'main';
 		}
+		//deal with iostate
+		if(!is_bool($ro)) $ro = self::READONLY;
+		$this->iostate = $ro;
+		// TODO: if short pkg name given, resolve in pkgdb
+		$this->filename = self::getDefFile($repo,$pkg);
+		//set some meta info for quicker reference
+		$this->fqn   = $this->getFQN();
+		$this->sqn   = $this->getSQN();
+		$this->repo  = $this->getRepo();
+		$this->name  = $this->getName();
+		$this->class = $this->getClass();
+		return $this->read();
 	}
-	return $pkgdef;
-}
 
-function writeDef($pkg = '',$def = false,$clobber = false){
-// returns true if content was written, or false on any error
-// optional $clobber allows overwriting file if it exists (otherwise fails)
-	if(!is_array($def) || count($def) === 0) throw new Exception('writeDef() def is not an array or is empty');
-	$def_file = DEF_PATH.$pkg.".lss";
-	if(file_exists($def_file))
-		if($clobber)
-			run('mv '.$def_file.' '.$def_file.'.bak'); // why not save the previous version
-		else
-			throw new Exception('writeDef() file exists and clobber not allowed');
-	@mkdir(dirname($def_file),0755,true);
-	$fh = fopen($def_file,'w');
-	fprintf($fh,'<?php'."\n");
-	fprintf($fh,'// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY'."\n"."\n");
-	fprintf($fh,'$pkgdef = array();'."\n");
-	dumpDef($fh,$def);
-	fprintf($fh,"\n");
-	fclose($fh);
-	return true;
-}
-
-function dumpDef($fh=null,$def=array(),$parents=array()){
-	if(!is_resource($fh)) throw new Exception('dumpDef file handle invalid');
-	$parent_nodes = (count($parents) != 0) ? "['".join("']['",$parents)."']" : '';
-//	ksort($def);
-	foreach($def as $def_key => $def_val){
-		if(is_array($def_val)){
-			fprintf($fh,'$pkgdef%s[\'%s\'] = array();'."\n",$parent_nodes,$def_key);
-			array_unshift($parents,$def_key);
-			dumpDef($fh,$def_val,$parents);
-		} else {
-			if(!is_numeric($def_key)) $def_key = "'".$def_key."'";
-			fprintf($fh,'$pkgdef%s[%s] = \'%s\';'."\n",$parent_nodes,$def_key,$def_val);
-		}
+	function __destruct(){
+		$this->write();
 	}
+
+	public static function getDefFile($repo,$pkg){
+		return DEF_PATH.'/'.$repo.'/'.$pkg.'.lss';
+	}
+
+	public static function createPkg($repo,$pkg){
+		$def_file = ROOT.'/'.self::getDefFile($repo,$pkg);
+		@mkdir(dirname($def_file),0755,true);
+		@touch($def_file);
+		return true;
+	}
+
+	public static function deletePkg($repo,$pkg){
+		$def_file = ROOT.'/'.self::getDeffile($repo,$pkg);
+		@unlink($def_file);
+		//rmdir(dirname($def_file));
+		return true;
+	}
+
+	public function getFQN(){
+		if(!is_null($this->fqn)) return $this->fqn;
+		$start = strlen(DEF_PATH)+1; //include the trailing slash
+		$len = strlen($this->filename) - $start - 4;
+		return substr($this->filename,$start,$len);
+	}
+	
+	public function getSQN(){
+		if(!is_null($this->sqn)) return $this->sqn;
+		$start = strlen($this->getRepo()) + 1;
+		$len = strlen($this->getFQN()) - $start;
+		return substr($this->getFQN(),$start,$len);
+	}
+	
+	public function getRepo(){
+		if(!is_null($this->repo)) return $this->repo;
+		$len = strpos($this->getFQN(),'/');
+		return substr($this->getFQN(),0,$len);
+	}
+	
+	public function getName(){
+		if(!is_null($this->name)) return $this->name;
+		$start = strrpos($this->getFQN(),'/') + 1;
+		$len = strlen($this->getFQN()) - $start;
+		return substr($this->getFQN(),$start,$len);
+	}
+	
+	public function getClass(){
+		if(!is_null($this->class)) return $this->class;
+		$start = strlen($this->getRepo()) + 1;
+		$len = strlen($this->getFQN()) - $start - strlen($this->getName()) - 1;
+		return substr($this->getFQN(),$start,$len);
+	}
+
+	protected function dataSanitizer(){
+		if(!is_array($this->data))
+			$this->data = array();
+		// ensure that 'manifest' is an array, create it if necessary
+		if(!isset($this->data['manifest']))
+			$this->data['manifest'] = array();
+		else if(!is_array($this->data['manifest']))
+			$this->data['manifest'] = array($this->data['manifest']);
+		// ensure there is a dep array
+		if(!isset($this->data['dep']))
+			$this->data['dep'] = array();
+		else if(!is_array($this->data['dep']))
+			$this->data['dep'] = array($this->data['dep']);
+		//deal with uniques in the manifest
+		$tmp = array_unique($this->data['manifest'],SORT_STRING);
+		sort($tmp,SORT_STRING);
+		$this->data['manifest'] = array_merge($tmp);
+		unset($tmp);
+		//setup defaults for package info
+		if(!isset($this->data['info'])) $this->data['info'] = array();
+		$this->data['info']['fqn'    ] = $this->getFQN();
+		$this->data['info']['sqn'    ] = $this->getSQN();
+		$this->data['info']['repo'   ] = $this->getRepo();
+		$this->data['info']['class'  ] = $this->getClass();
+		$this->data['info']['name'   ] = $this->getName();
+		if(!gfa($this->data,'info','version'))
+			$this->data['info']['version'] = DEFAULT_VERSION;
+
+		return $this;
+	}
+	
 }
