@@ -1,0 +1,14 @@
+<?php
+// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
+
+$pkgdef = array();
+$pkgdef['manifest'] = array();
+$pkgdef['dep'] = array();
+$pkgdef['info'] = array();
+$pkgdef['info']['fqn'] = 'main/test/blah';
+$pkgdef['info']['sqn'] = 'test/blah';
+$pkgdef['info']['repo'] = 'main';
+$pkgdef['info']['class'] = 'test';
+$pkgdef['info']['name'] = 'blah';
+$pkgdef['info']['version'] = '0.0.1';
+
