@@ -4,21 +4,20 @@
 
 class PkgDb {
 
-	static $db = false;
-	static $inst = false;	
+	public $db = false;
 	
-	public static function _get(){
-		if(!self::$inst) self::$inst = new PkgDb();
-		return self::$inst;
+	public static function _get($dbfile=null){
+		if(is_null($dbfile)) $dbfile = CACHE.'/pkg.db';
+		return new PkgDb($dbfile);
 	}
 	
-	private function __construct(){
-		self::$db = $this->connectDb();
+	private function __construct($dbfile){
+		$this->db = $this->connectDb($dbfile);
 	}
 	
-	private function connectDb(){
+	private function connectDb($dbfile){
 		return new PDO(
-			'sqlite:'.ROOT.'/pkg/pkg.db', //dsn
+			'sqlite:'.$dbfile, //dsn
 			null, //user
 			null, //pass
 			array(
@@ -29,33 +28,34 @@ class PkgDb {
 	}
 	
 	public function clearDb(){
-		self::$db->prepare('drop table if exists pkg')->execute();
-		self::$db->prepare('drop table if exists pkg_dep')->execute();
-		self::$db->prepare('drop table if exists pkg_dep_ver')->execute();
-		self::$db->prepare('drop table if exists pkg_manifest')->execute();
+		$this->db->prepare('drop table if exists pkg')->execute();
+		$this->db->prepare('drop table if exists pkg_dep')->execute();
+		$this->db->prepare('drop table if exists pkg_dep_ver')->execute();
+		$this->db->prepare('drop table if exists pkg_manifest')->execute();
 		return true;
 	}
 	
 	public function initDb(){
-		self::$db->prepare(DB_TBL_PKG)->execute();
-		self::$db->prepare(DB_TBL_PKG_DEP)->execute();
-		self::$db->prepare(DB_TBL_PKG_DEP_VER)->execute();
-		self::$db->prepare(DB_TBL_PKG_MANIFEST)->execute();
+		$this->db->prepare(DB_TBL_PKG)->execute();
+		$this->db->prepare(DB_TBL_PKG_DEP)->execute();
+		$this->db->prepare(DB_TBL_PKG_DEP_VER)->execute();
+		$this->db->prepare(DB_TBL_PKG_MANIFEST)->execute();
 		return true;
 	}
 	
 	public function addToDb(PkgDef $pkg){
 		//insert initial package
-		$query = self::$db->prepare('
+		$query = $this->db->prepare('
 			INSERT INTO pkg (
 				fqn,
 				sqn,
 				name,
 				class,
 				repo,
+				description,
 				version,
 				version_int
-			) VALUES (?,?,?,?,?,?,?)
+			) VALUES (?,?,?,?,?,?,?,?)
 		');
 		$query->execute(array(
 			gfa($pkg->data,'info','fqn'),
@@ -63,13 +63,14 @@ class PkgDb {
 			gfa($pkg->data,'info','name'),
 			gfa($pkg->data,'info','class'),
 			gfa($pkg->data,'info','repo'),
+			gfa($pkg->data,'info','description') ? gfa($pkg->data,'info','description') : DEFAULT_DESCRIPTION,
 			gfa($pkg->data,'info','version'),
 			ip2long(gfa($pkg->data,'info','version'))
 		));
-		$pkg_id = self::$db->lastInsertId();
+		$pkg_id = $this->db->lastInsertId();
 		//insert package deps
 		foreach(gfa($pkg->data,'dep') as $dep_fqn => $dep){
-			$query = self::$db->prepare('
+			$query = $this->db->prepare('
 				INSERT INTO pkg_dep (
 					pkg_id,
 					fqn
@@ -79,10 +80,10 @@ class PkgDb {
 				$pkg_id,
 				$dep_fqn
 			));
-			$pkg_dep_id = self::$db->lastInsertId('pkg_dep_id');
+			$pkg_dep_id = $this->db->lastInsertId('pkg_dep_id');
 			//insert dep versions
 			foreach(gfa($dep,'versions') as $version){
-				$query = self::$db->prepare('
+				$query = $this->db->prepare('
 					INSERT INTO pkg_dep_ver (
 						pkg_dep_id,
 						pkg_id,
@@ -100,7 +101,7 @@ class PkgDb {
 		}
 		//insert the manifest
 		foreach(gfa($pkg->data,'manifest') as $manifest){
-			$query = self::$db->prepare('
+			$query = $this->db->prepare('
 				INSERT INTO pkg_manifest (
 					pkg_id,
 					file
@@ -153,7 +154,6 @@ class PkgDb {
 			foreach($defs[$repo] as $pkg){
 				printf(" [PKG %s]\n",$pkg);
 				$def = new pkgDef($pkg,$repo,pkgDef::READONLY);
-var_dump($def);
 				$skip = false;
 				if($pkg != $def->data['info']['class'].'/'.$def->data['info']['name']){
 					printf("WARNING: Package '%s' claims to be '%s/%s' in file '%s', skipping...\n"
@@ -164,24 +164,37 @@ var_dump($def);
 					);
 					$skip = true;
 				}
-				// TODO: sanity check more things here?
 				if($skip === true){
 					unset($def);
 					continue;
 				}
 
-				// TODO: database magic
 				$pkg_id = $this->addToDb($def);
 				unset($def);
 			}
 		}
 	}
 	
+	public static function export($src,$dest){
+		//grab db file
+		$buff = file_get_contents($src);
+		file_put_contents($dest,$buff);
+		return true;
+	}
+	
+	public static function update($src){
+		$dest = CACHE.'/pkg.db';
+		$buff = file_get_contents($src);
+		@mkdir(dirname($dest),0755,true);
+		file_put_contents($dest,$buff);
+		return true;
+	}
+	
 	public function show(){
 		$out = '';
 		$repo = null;
 		//grab all our data then show it
-		$query = self::$db->prepare('SELECT ROWID,* FROM pkg ORDER BY fqn ASC');
+		$query = $this->db->prepare('SELECT ROWID,* FROM pkg ORDER BY fqn ASC');
 		$query->execute();
 		foreach($query->fetchAll() as $pkg){
 			//print repo stuff if we need to
@@ -193,24 +206,74 @@ var_dump($def);
 			$out .= "  [PKG ".$pkg['sqn']."]\n";
 			$out .= "    [VERSION: ".$pkg['version']."]\n";
 			//get the deps
-			$qa = self::$db->prepare('SELECT ROWID,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
+			$qa = $this->db->prepare('SELECT ROWID,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
 			$qa->execute(array($pkg['rowid']));
 			foreach($qa->fetchAll() as $pkg_dep){
 				$out .= "    [DEP ".$pkg_dep['fqn']."]\n";
-				$qb = self::$db->prepare('SELECT ROWID,* FROM pkg_dep_ver WHERE pkg_dep_id = ? ORDER BY version_int ASC');
+				$qb = $this->db->prepare('SELECT ROWID,* FROM pkg_dep_ver WHERE pkg_dep_id = ? ORDER BY version_int ASC');
 				$qb->execute(array($pkg_dep['rowid']));
 				foreach($qb->fetchAll() as $pkg_dep_ver)
 					$out .= "      [DEP VER ".$pkg_dep_ver['version']."]\n";
 			}
 			//get the manifest
 			$out .= "    [MANIFEST]\n";
-			$qa = self::$db->prepare('SELECT * FROM pkg_manifest WHERE pkg_id = ? ORDER BY file ASC');
+			$qa = $this->db->prepare('SELECT * FROM pkg_manifest WHERE pkg_id = ? ORDER BY file ASC');
 			$qa->execute(array($pkg['rowid']));
 			foreach($qa->fetchAll() as $pkg_manifest)
 				$out .= "      [FILE ".$pkg_manifest['file']."]\n";
 		}
 		return $out;
 	}
+	
+	public function search($keywords){
+		$query = $this->db->prepare('SELECT * FROM pkg WHERE fqn LIKE ? ORDER BY fqn ASC');
+		$query->execute(array('%'.$keywords.'%'));
+		$out = '';
+		foreach($query->fetchAll() as $pkg){
+			$out .= '  '.$pkg['fqn']."\t\t-\t".$pkg['description']."\n";
+		}
+		return $out;
+	}
+	
+	public function find($qn){
+		foreach(array('name','sqn','fqn') as $key){
+			try {
+				return $this->_find($qn,$key);
+			} catch(Exception $e){
+				if($e->getCode() == 3) continue;
+				else throw $e;
+			}	
+		}
+		throw new Exception('Could not find package matching: "'.$qn .'" maybe you meant one of these?',2);
+	}
+		
+	private function _find($qn,$key){
+		//try by key
+		$query = $this->db->prepare('SELECT rowid,* FROM pkg WHERE '.$key.' = ?');
+		$query->execute(array($qn));
+		$result = $query->fetchAll(); unset($query);
+		if(count($result) == 1){
+			return array_shift($result);
+		} elseif(count($result) > 1){
+			throw new Exception('Multiple packages match: '.$qn.' please be more specific',1);
+		}
+		throw new Exception('no results',3);
+	}
+	
+	public function getDeps($pkg_id){
+		$query = $this->db->prepare('SELECT rowid,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
+		$query->execute(array($pkg_id));
+		return $query->fetchAll();
+	}
+	
+	public function getByFQN($fqn){
+		$query = $this->db->prepare('SELECT rowid,* FROM pkg WHERE fqn = ? LIMIT 1');
+		$query->execute(array($fqn));
+		$result = $query->fetch(); $query->closeCursor();
+		if(!$result) throw new Exception('Could not find package by FQN: '.$fqn);
+		return $result;
+	}
+	
 }
 
 //some of the database structs
@@ -223,6 +286,7 @@ define('DB_TBL_PKG',
 		'name' VARCHAR ( 20 ) NOT NULL ,
 		'class' VARCHAR ( 20 ) NOT NULL DEFAULT 'misc' ,
 		'repo' VARCHAR ( 20 ) NOT NULL DEFAULT 'main' ,
+		'description' VARCHAR (100) NULL DEFAULT 'An OpenLSS Package',
 		'version' VARCHAR ( 16 ) NOT NULL DEFAULT '0.0' ,
 		'version_int' INT NOT NULL
 	)

@@ -11,6 +11,11 @@ class Pkg {
 		@mkdir(self::pkgPath($pkg,$repo,$root),0755,true);
 		return true;
 	}
+
+	public static function extract($archive,$dest){
+		$p = new PharData($archive);
+		return $p->extractTo($dest,null,true);
+	}
 	
 	public static function pkgPath($pkg,$repo=REPO_MAIN,$root=ROOT){
 		return $root.'/'.PKG_PATH.'/'.$repo.'/'.$pkg;

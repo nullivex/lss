@@ -5,6 +5,12 @@ $pkgdef = array();
 $pkgdef['info'] = array();
 $pkgdef['info']['fqn'] = 'main/util/func';
 $pkgdef['info']['version'] = '0.0.1';
+$pkgdef['info']['sqn'] = 'util/func';
+$pkgdef['info']['repo'] = 'main';
+$pkgdef['info']['class'] = 'util';
+$pkgdef['info']['name'] = 'func';
+$pkgdef['info']['description'] = 'Global functions for LSS packages';
 $pkgdef['dep'] = array();
 $pkgdef['manifest'] = array();
-$pkgdef['manifest'][1] = 'src/func.php';
+$pkgdef['manifest'][0] = 'src/func.php';
+

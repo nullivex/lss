@@ -1,0 +1,19 @@
+<?php
+// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
+
+$pkgdef = array();
+$pkgdef['manifest'] = array();
+$pkgdef['manifest'][0] = 'lib/router.php';
+$pkgdef['dep'] = array();
+$pkgdef['dep']['main/util/func'] = array();
+$pkgdef['dep']['main/util/func']['versions'] = array();
+$pkgdef['dep']['main/util/func']['versions'][0] = '0.0.1';
+$pkgdef['info'] = array();
+$pkgdef['info']['fqn'] = 'main/sys/router';
+$pkgdef['info']['sqn'] = 'sys/router';
+$pkgdef['info']['repo'] = 'main';
+$pkgdef['info']['class'] = 'sys';
+$pkgdef['info']['name'] = 'router';
+$pkgdef['info']['version'] = '0.0.1';
+$pkgdef['info']['description'] = 'Routes web calls to modules';
+

@@ -1,0 +1,37 @@
+<?php
+// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
+
+$pkgdef = array();
+$pkgdef['manifest'] = array();
+$pkgdef['manifest'][0] = 'admin.php';
+$pkgdef['manifest'][1] = 'admin/index.php';
+$pkgdef['manifest'][2] = 'conf.d/admin/defaults.php';
+$pkgdef['manifest'][3] = 'conf.d/admin/login.php';
+$pkgdef['manifest'][4] = 'conf.d/admin/tpl.php';
+$pkgdef['manifest'][5] = 'ctl/admin/home.php';
+$pkgdef['manifest'][6] = 'init.d/admin/login.php';
+$pkgdef['manifest'][7] = 'lib/admin/login.php';
+$pkgdef['manifest'][8] = 'lib/admin/url.php';
+$pkgdef['manifest'][9] = 'theme/admin/css/login.css';
+$pkgdef['manifest'][10] = 'theme/admin/css/main.css';
+$pkgdef['manifest'][11] = 'tpl/admin/footer.tpl.php';
+$pkgdef['manifest'][12] = 'tpl/admin/global.tpl.php';
+$pkgdef['manifest'][13] = 'tpl/admin/header.tpl.php';
+$pkgdef['manifest'][14] = 'tpl/admin/home.tpl.php';
+$pkgdef['manifest'][15] = 'tpl/admin/login.tpl.php';
+$pkgdef['dep'] = array();
+$pkgdef['dep']['main/io/web'] = array();
+$pkgdef['dep']['main/io/web']['versions'] = array();
+$pkgdef['dep']['main/io/web']['versions'][0] = '0.0.1';
+$pkgdef['dep']['main/sys/db'] = array();
+$pkgdef['dep']['main/sys/db']['versions'] = array();
+$pkgdef['dep']['main/sys/db']['versions'][0] = '0.0.1';
+$pkgdef['info'] = array();
+$pkgdef['info']['fqn'] = 'main/portal/admin';
+$pkgdef['info']['sqn'] = 'portal/admin';
+$pkgdef['info']['repo'] = 'main';
+$pkgdef['info']['class'] = 'portal';
+$pkgdef['info']['name'] = 'admin';
+$pkgdef['info']['version'] = '0.0.1';
+$pkgdef['info']['description'] = 'Admin portal for web interfaces';
+

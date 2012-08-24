@@ -3,6 +3,8 @@
 require_once(ROOT.'/tools/lib/def.php');
 
 final class PkgDef extends Def {
+
+	protected $container_var = 'pkgdef';
 	
 	//meta info
 	private $fqn 	 = null;
@@ -12,16 +14,14 @@ final class PkgDef extends Def {
 	private $name	 = null;
 
 	function __construct(){
-		list($pkg,$repo,$ro) = array_merge(func_get_args(),array('main',self::READONLY));
+		list($pkg,$repo,$iostate) = array_merge(func_get_args(),array('main',self::READONLY));
 		// handle if given $pkg and $ro (without $repo in the middle)
 		if(is_bool($repo)){
 			$ro = $repo;
 			$repo = 'main';
 		}
 		//deal with iostate
-		if(!is_bool($ro)) $ro = self::READONLY;
-		$this->iostate = $ro;
-		// TODO: if short pkg name given, resolve in pkgdb
+		$this->iostate = $iostate;
 		$this->filename = self::getDefFile($repo,$pkg);
 		//set some meta info for quicker reference
 		$this->fqn   = $this->getFQN();
@@ -30,10 +30,6 @@ final class PkgDef extends Def {
 		$this->name  = $this->getName();
 		$this->class = $this->getClass();
 		return $this->read();
-	}
-
-	function __destruct(){
-		$this->write();
 	}
 
 	public static function getDefFile($repo,$pkg){
@@ -102,10 +98,11 @@ final class PkgDef extends Def {
 		else if(!is_array($this->data['dep']))
 			$this->data['dep'] = array($this->data['dep']);
 		//deal with uniques in the manifest
-		$tmp = array_unique($this->data['manifest'],SORT_STRING);
-		sort($tmp,SORT_STRING);
-		$this->data['manifest'] = array_merge($tmp);
-		unset($tmp);
+		remove_dups($this->data['manifest']);
+		// $tmp = array_unique($this->data['manifest'],SORT_STRING);
+		// sort($tmp,SORT_STRING);
+		// $this->data['manifest'] = array_merge($tmp);
+		// unset($tmp);
 		//setup defaults for package info
 		if(!isset($this->data['info'])) $this->data['info'] = array();
 		$this->data['info']['fqn'    ] = $this->getFQN();

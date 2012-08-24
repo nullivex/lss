@@ -1,0 +1,40 @@
+<?php
+// THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
+
+$pkgdef = array();
+$pkgdef['manifest'] = array();
+$pkgdef['manifest'][0] = 'ctl/home.php';
+$pkgdef['manifest'][1] = 'index.php';
+$pkgdef['manifest'][2] = 'theme/css/style.css';
+$pkgdef['manifest'][3] = 'tpl/footer.tpl.php';
+$pkgdef['manifest'][4] = 'tpl/global.tpl.php';
+$pkgdef['manifest'][5] = 'tpl/header.tpl.php';
+$pkgdef['manifest'][6] = 'tpl/home.tpl.php';
+$pkgdef['dep'] = array();
+$pkgdef['dep']['main/util/func'] = array();
+$pkgdef['dep']['main/util/func']['versions'] = array();
+$pkgdef['dep']['main/util/func']['versions'][0] = '0.0.1';
+$pkgdef['dep']['main/sys/config'] = array();
+$pkgdef['dep']['main/sys/config']['versions'] = array();
+$pkgdef['dep']['main/sys/config']['versions'][0] = '0.0.1';
+$pkgdef['dep']['main/sys/router'] = array();
+$pkgdef['dep']['main/sys/router']['versions'] = array();
+$pkgdef['dep']['main/sys/router']['versions'][0] = '0.0.1';
+$pkgdef['dep']['main/sys/tpl'] = array();
+$pkgdef['dep']['main/sys/tpl']['versions'] = array();
+$pkgdef['dep']['main/sys/tpl']['versions'][0] = '0.0.1';
+$pkgdef['dep']['main/lib-sys/url'] = array();
+$pkgdef['dep']['main/lib-sys/url']['versions'] = array();
+$pkgdef['dep']['main/lib-sys/url']['versions'][0] = '0.0.1';
+$pkgdef['dep']['main/lib-sys/validate'] = array();
+$pkgdef['dep']['main/lib-sys/validate']['versions'] = array();
+$pkgdef['dep']['main/lib-sys/validate']['versions'][0] = '0.0.1';
+$pkgdef['info'] = array();
+$pkgdef['info']['fqn'] = 'main/io/web';
+$pkgdef['info']['sqn'] = 'io/web';
+$pkgdef['info']['repo'] = 'main';
+$pkgdef['info']['class'] = 'io';
+$pkgdef['info']['name'] = 'web';
+$pkgdef['info']['version'] = '0.0.1';
+$pkgdef['info']['description'] = 'I/O for web based calls';
+

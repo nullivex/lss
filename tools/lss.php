@@ -10,7 +10,11 @@ require_once(ROOT.'/tools/lib/pkgdef.php');
 require_once(ROOT.'/tools/lib/pkgdb.php');
 require_once(ROOT.'/tools/lib/usrdef.php');
 
-var_dump($GLOBALS); exit;
+//start the usrdef to handle default options
+$usrdef = new UsrDef($_SERVER['USER']);
+
+//set this to throw an error if there is no action
+$noerror = false;
 
 //figure our opts
 $so = array(
@@ -29,6 +33,7 @@ $so = array(
 	//db actions
 	'U', //update
 	'b', //build-db
+	'e', //export-db
 	'S', //show-db
 	
 	//working dir
@@ -51,7 +56,9 @@ $lo = array(
 	'purge:',
 	
 	//db actions
+	'db-file:',
 	'build-db',
+	'export-db',
 	'show-db',
 	'update',
 	
@@ -63,17 +70,36 @@ $lo = array(
 	
 	//defaults
 	'default-mirror:',
-	'default-target:'
+	'default-target:',
+	'default-cache:'
+	
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 
 //update defaults if needed
-if(gfa($opts,'default-target')) defaultTarget(gfa($opts,'default-target'));
-if(gfa($opts,'default-mirror')) defaultMirror(gfa($opts,'default-mirror'));
+if(gfa($opts,'default-target')){
+	$noerror = true;
+	$usrdef->iostate = UsrDef::READWRITE;
+	$usrdef->data['target'] = gfa($opts,'default-target');
+}
+if(gfa($opts,'default-mirror')){
+	$noerror = true;
+	$usrdef->iostate = UsrDef::READWRITE;
+	$usrdef->data['mirror'] = gfa($opts,'default-mirror');
+}
+if(gfa($opts,'default-cache')){
+	$noerror = true;
+	$usrdef->iostate = UsrDef::READWRITE;
+	$usrdef->data['cache'] = gfa($opts,'default-cache');
+}
 
 //figure out our target and mirror
-target(); //sets the constant 'TARGET'
-mirror(); //sets the constant 'MIRROR'
+target($opts,$usrdef); //sets the constant 'TARGET'
+mirror($opts,$usrdef); //sets the constant 'MIRROR'
+cache($usrdef); //sets the constant 'CACHE'
+
+//figure out our answer status
+if(!is_null(gfa($opts,'y')) || !is_null(gfa($opts,'yes'))) define('ANSWER_YES',true);
 
 //figure out what we are going to do
 foreach(array_keys($opts) as $act){
@@ -90,27 +116,32 @@ foreach(array_keys($opts) as $act){
 			break;
 		case 'build-db':
 		case 'b':
+			$noerror=true;
 			buildDb();
-			exit;
+			break;
+		case 'export-db':
+		case 'e':
+			$noerror=true;
+			exportDb();
 			break;
 		case 'show-db':
-		case 's':
-			showDb();
-			exit;
+		case 'S':
+			$noerror=true;
+			showDb($opts);
 			break;
 		case 'update':
 		case 'U':
+			$noerror=true;
 			update();
-			exit;
 			break;
 		case 'search':
-		case 'S':
+		case 's':
 			search(gfa($opts,'search') ? gfa($opts,'search') : gfa($opts,'s'));
 			exit;
 			break;
 		case 'install':
 		case 'i':
-			install(gfa($opts,'tree'),(gfa($opts,'install') ? gfa($opts,'install') : gfa($opts,'i')));
+			install(gfa($opts,'install') ? gfa($opts,'install') : gfa($opts,'i'));
 			exit;
 			break;
 		case 'remove':
@@ -130,27 +161,119 @@ foreach(array_keys($opts) as $act){
 }
 
 //no action was taken, error out
-throw new Exception('No action supplied see --help for details');
+if($noerror === false) throw new Exception('No action supplied see --help for details');
 
 //update our package db
 function update(){
-	PkgDb::_get()->update();
+	PkgDb::update(MIRROR.'/pkg.db');
 	echo "Package database updated.\n";
 }
 
 function buildDb(){
-	PkgDb::_get()->build();
+	PkgDb::_get(ROOT.'/pkg/pkg.db')->build();
 	echo "Package database has been built.\n";
 }
 
-function showDb(){
-	echo PkgDb::_get()->show();
+function exportDb(){
+	PkgDb::export(ROOT.'/pkg/pkg.db',MIRROR.'/pkg.db');
+	echo "Package database has been exported.\n";
+}
+
+function showDb($opts){
+	if(gfa($opts,'db-file')) $dbfile = gfa($opts,'db-file');
+	else $dbfile = MIRROR.'/pkg.db';
+	echo PkgDb::_get($dbfile)->show();
 	echo "Database dump complete.\n";
 }
 
 function upgrade($tree){echo "Upgrade\n";}
-function search($keywords){echo "Search\n";}
-function install($tree,$packages){echo "Install $packages\n";}
+
+function search($keywords){
+	echo "Searching for packages matching \"$keywords\"\n";
+	$db = PkgDb::_get();
+	echo $db->search($keywords);
+}
+
+function install($packages){
+	$db = PkgDb::_get();
+	//blow up packages and find them
+	$pkgs = array();
+	echo "Locating packages\n";
+	foreach(explode(',',$packages) as $pkg_qn){
+		//see if we can find the package
+		try {
+			$pkgs[] = $pkg = $db->find($pkg_qn);
+		} catch(Exception $e){
+			if($e->getCode() == 1 || $e->getCode() == 2){
+				echo $e->getMessage()."\n";
+				echo $db->search($pkg_qn);
+				return false;
+			} else throw $e;
+		}
+	}
+	
+	//now lets do some depsolving
+	echo "Selecting dependencies if needed\n";
+	foreach($pkgs as $pkg){
+		foreach($db->getDeps($pkg['rowid']) as $dep){
+			$pkgs[] = $db->getByFQN($dep['fqn']);
+		}
+	}
+	
+	//remove duplicates and print install list
+	echo "Removing duplicates\n";
+	$tmp_pkgs = array();
+	foreach($pkgs as $key => $pkg) $tmp_pkgs[$key] = $pkg['fqn'];
+	remove_dups($tmp_pkgs);
+	foreach($pkgs as $key => $pkg){
+		if(!in_array($key,array_keys($tmp_pkgs))) unset($pkgs[$key]);
+	}
+	echo "The following packages will be INSTALLED:\n";
+	foreach($pkgs as $pkg) echo '  '.$pkg['fqn']."\n";
+	
+	if(!defined('ANSWER_YES')){
+		if(!prompt_confirm("Are you sure you want to continue? (y/N):")) exit;
+	}
+	echo "Starting installation\n";
+	
+	//retrieve packages
+	echo "Downloading packages from mirror\n";
+	foreach($pkgs as $key => $pkg){
+		echo '  Downloading '.$pkg['fqn'];
+		$dest = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
+		$src = $pkgs[$key]['file'] = MIRROR.'/'.$pkg['fqn'].'.tar.bz2';
+		@mkdir(dirname($dest),0755,true);
+		$buff = @file_get_contents($src);
+		if(!$buff) throw new Exception('Could not download package: '.$src);
+		$rv = @file_put_contents($dest,$buff);
+		if(!$rv) throw new Exception('Failed to save package: '.$dest);
+		echo "... done\n";
+	}
+	
+	//extract packages
+	echo "Extracting packages to target\n";
+	foreach($pkgs as $pkg){
+		echo '  Extracting '.$pkg['fqn'];
+		Pkg::extract($pkg['file'],TARGET);
+		echo "... done\n";
+	}
+	
+	//process hooks
+	echo "Setting up new packages\n";
+	foreach($pkgs as $pkg){
+		echo '  Setting up '.$pkg['fqn'];
+		$hook_file = '/tmp/xyzf'; //TODO: figure out where we are putting the hookfiles
+		if(file_exists($hook_file)){
+			exec_hook($hook_file,'install');
+		}
+		echo "... done\n";
+	}
+	
+	//done
+	echo "Install complete.\n";
+	
+}
+
 function remove($tree,$packages,$purge=false){
 	if($purge) echo "Purging $packages\n";
 	else echo "Remove $packages\n";
@@ -174,21 +297,4 @@ Options:
  --local   	-l ..........	source the packages from a local source set
 
 HELP;
-}
-
-//utility
-function mirror($opts,$usrdef){
-	if(gfa($opts,'mirror')) $mirror = gfa($opts,'mirror');
-	elseif(gfa($opts,'m')) $mirror = gfa($opts,'m');
-	elseif(gfa($usrdef,'mirror')) $mirror = gfa($usrdef,'mirror');
-	else $mirror = DEFAULT_MIRROR;
-	define('MIRROR',$mirror);
-}
-
-function target($opts,$usrdef){
-	if(gfa($opts,'target')) $target = gfa($opts,'target');
-	elseif(gfa($opts,'t')) $target = gfa($opts,'t');
-	elseif(gfa($usrdef,'target')) $target = gfa($usrdef,'target');
-	else $target = DEFAULT_TARGET;
-	define('TARGET',$target);
 }

@@ -3,7 +3,8 @@
 
 $pkgdef = array();
 $pkgdef['manifest'] = array();
-$pkgdef['manifest'][0] = 'lib/url.php';
+$pkgdef['manifest'][0] = 'conf.d/url.php';
+$pkgdef['manifest'][1] = 'lib/url.php';
 $pkgdef['dep'] = array();
 $pkgdef['dep']['main/util/func'] = array();
 $pkgdef['dep']['main/util/func']['versions'] = array();
@@ -14,5 +15,5 @@ $pkgdef['info']['sqn'] = 'lib-sys/url';
 $pkgdef['info']['repo'] = 'main';
 $pkgdef['info']['class'] = 'lib-sys';
 $pkgdef['info']['name'] = 'url';
-$pkgdef['info']['version'] = '0.0.1';
+$pkgdef['info']['version'] = '0.0.2';
 

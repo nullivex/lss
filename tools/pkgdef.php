@@ -23,6 +23,7 @@ $lo = array(
 	//update args
 	'update',
 	'pkg-version:',
+	'pkg-description:',
 	
 	//delete
 	'delete',
@@ -38,6 +39,11 @@ $lo = array(
 	'delfile:'
 );
 $opts = getopt($so,$lo); unset($so,$lo);
+
+if(!is_null(gfa($opts,'help'))){
+	displayHelp();
+	exit;
+}
 
 //validate package
 $pkg = gfa($opts,'pkg');
@@ -55,7 +61,8 @@ foreach(array_keys($opts) as $act){
 			updateDef(
 				$repo,
 				$pkg,
-				gfa($opts,'pkg-version')
+				gfa($opts,'pkg-version'),
+				gfa($opts,'pkg-description')
 			);
 			exit;
 		case 'delete':
@@ -99,9 +106,10 @@ function createDef($repo,$pkg){
 }
 
 //update package info
-function updateDef($repo,$pkg_sqn,$version=null){
+function updateDef($repo,$pkg_sqn,$version=null,$description=null){
 	$def = new PkgDef($pkg_sqn,$repo,PkgDef::READWRITE);
 	if(!is_null($version)) $def->data['info']['version'] = $version;
+	if(!is_null($description)) $def->data['info']['description'] = $description;
 	return true;
 }
 
@@ -154,5 +162,25 @@ function delFile($repo,$pkg,$file){
 
 //help function
 function displayHelp(){
-	//TODO: write this function
+echo <<<'HELP'
+Example:
+    bin/pkgdef --repo main --pkg util/func --update --pkg-version=0.0.1 --pkg-description="Global functions"
+Options:
+ --help           ..........    display help info
+ --pkg            ..........    package to use, SQN required
+ --repo           ..........    repo to use, defaults to 'main'
+ --create         ..........    create def file and package root
+ --delete         ..........    delete def file (package root must be removed manually)
+ --update         ..........    update package information
+   --pkg-version  ..........    set the package version
+   --pkg-description .......    set the package description
+ --addfile        ..........    add a file to the package manifest
+ --delfile        ..........    remove a file from the package manifest
+ --adddep         ..........    add a dependency to the package
+   --dep-pkg      ..........    FQN of the dep to be added
+   --dep-version  ..........    CSV of compatible versions
+ --deldep         ..........    remove a dep from a package
+   --dep-pkg      ..........    FQN of dep to be removed
+
+HELP;
 }

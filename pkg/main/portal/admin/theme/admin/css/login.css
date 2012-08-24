@@ -1,0 +1,44 @@
+body{
+	width: 300px;
+	font-family: arial,sans-serif;
+	margin: 0 auto;
+	text-align:center;
+	margin-top:50px;
+}
+#login_frame{
+	width: 300px;
+	text-align:center;
+	border:1px solid;
+	height:230px;
+}
+#site_name{
+	text-align: center;
+	font-size:20px;
+	font-weight: bold;
+}
+#login_frame #table{
+	margin-top:20px;
+}
+#error_message{
+	width:290px;
+	height:20px;
+	margin-left:5px;
+	text-align:left;
+	font-size:14px;
+	margin-bottom:5px;
+}
+#success_message{
+	width:290px;
+	height:20px;
+	margin-left:5px;
+	text-align:left;
+	margin-bottom:5px;
+}
+#error_message span,#success_message span{
+	margin-left:5px;
+	font-size:14px;
+}
+.label, #submit{
+	margin-bottom:5px;margin-top:5px;;
+}
+#copy_rights{font-size:10px;}

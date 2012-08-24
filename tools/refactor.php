@@ -25,7 +25,7 @@ elseif(gfa($opts,'tree')) $wdir = ROOT.'/tree/'.gfa($opts,'tree');
 else throw new Exception('No working directory provided, use --tree or --dir');
 
 //validate package
-$pkg = gfa($opts,'pkg');
+$pkg = trim(gfa($opts,'pkg'));
 if(!$pkg) throw new Exception('No package supplied: '.$pkg);
 $repo = gfa($opts,'repo') ? gfa($opts,'repo') : REPO_MAIN;
 if(!Pkg::exists($pkg,$repo)) throw new Exception('Package does not exist: '.$pkg);
