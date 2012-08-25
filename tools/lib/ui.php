@@ -5,9 +5,34 @@ interface UIInt {
 	public static function init($type);
 	public static function _get();
 	public static function out($string,$err=false);
+
+	// ask(q,a) : ask a true/false question (or yes/no)
+	// - q       : the question string ("do you like grits?")
+	// - a       : an array such as array('true','false') or array('y','n')
+	// - default : which answer is default (optional)
+	// returns true or false based on user input (a[0] is always the truth value)
 	public function ask($q,$a,$default=false);
+
+	// input(q,a) : ask for a freeform value (like HTML INPUT field)
+	// - q should be the question string ("what is your username?")
+	// - a if != null, is displayed as the default answer
+	//     if == null, a sane default (from the pkgdef) is preselected
+	//     else, displayed as the default answer (editable)
+	//     on exit, set by reference to whatever string the user inputs
 	public function input($q,&$a);
+
+	// password(q,a) : ask for a freeform value but hidden (like HTML INPUT TYPE=PASSWORD field)
+	// - q should be the question string ("enter your password, heathen:")
+	// - a if != null, is displayed as the default answer
+	//     if == null, a sane default (autogenned randomly) is preselected and unmasked
+	//     else, displayed as the default answer (editable)
+	//     on exit, set by reference to whatever string the user inputs
 	public function password($q,&$a);
+
+	// select(q,a) : one-of-many box (like HTML SELECT)
+	// - q should be the question string ("select a flavor of syrup:")
+	// - a is an array of answers like array('optiontext'=>'optionvalue')
+	// returns the user-selected option value
 	public function select($q,&$a,$default=0);
 
 }
@@ -16,7 +41,7 @@ abstract class UI {
 	//base user interface object
 	static $inst   = false;
 	public $handle = false;
-	
+
 	static $debug = false;
 
 	//ui-type handling
@@ -27,10 +52,12 @@ abstract class UI {
 	const HTML    = 2;
 	const HTML_DESC = 'HTML';
 	public $type = self::TEXT; // simplest interface type by default
-	
+	public $is_a_tty = false;
+
 	public static function init($type=self::TEXT){
+		$is_a_tty = @posix_isatty(STDOUT);
 		// handle automatic fallback if we're piped
-		if(($type == self::MENU) && (!@posix_isatty(STDOUT)))
+		if(($type == self::MENU) && (!$is_a_tty))
 			$type = self::TEXT;
 		switch($type){
 			case self::TEXT:
@@ -47,19 +74,20 @@ abstract class UI {
 				break;
 		}
 		self::$inst->type = $type;
+		self::$inst->is_a_tty = $is_a_tty;
 		self::$inst->_init();
 	}
-	
+
 	public static function _get(){
 		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized');
 		return self::$inst;
 	}
-	
+
 	public static function switchType($type=self::TEXT){
 		self::$inst->_deinit();
 		self::init($type);
 	}
-	
+
 	public function __destruct(){
 		$this->_deinit();
 	}
@@ -87,7 +115,7 @@ abstract class UI {
 		foreach($a as $line) $this->__out($line,$err);
 		return $this;
 	}
-	
+
 	public static function out($string,$err=false){
 		return self::$inst->_out($string,$err);
 	}
@@ -100,46 +128,5 @@ abstract class UI {
 		}
 		return self::$inst;
 	}*/
-
-	// ask(q,a) : ask a true/false question (or yes/no)
-	// - q       : the question string ("do you like grits?")
-	// - a       : an array such as array('true','false') or array('y','n')
-	// - default : which answer is default (optional)
-	// returns true or false based on user input (a[0] is always the truth value)
-	//public function ask($q,$a,$default=false){
-		//this is to be implemented by the extender
-		//return $this->handle->ask($q,$a,$default);
-	//}
-
-	// input(q,a) : ask for a freeform value (like HTML INPUT field)
-	// - q should be the question string ("what is your username?")
-	// - a if != null, is displayed as the default answer
-	//     if == null, a sane default (from the pkgdef) is preselected
-	//     else, displayed as the default answer (editable)
-	//     on exit, set by reference to whatever string the user inputs
-	//public function input($q,&$a){
-		//this is to be implemented by the extender
-		//return $this->handle->input($q,&$a);
-	//}
-
-	// password(q,a) : ask for a freeform value but hidden (like HTML INPUT TYPE=PASSWORD field)
-	// - q should be the question string ("enter your password, heathen:")
-	// - a if != null, is displayed as the default answer
-	//     if == null, a sane default (autogenned randomly) is preselected and unmasked
-	//     else, displayed as the default answer (editable)
-	//     on exit, set by reference to whatever string the user inputs
-	//public function password($q,&$a){
-		//this is to be implemented by the extender
-		//return $this->handle->password($q,&$a);
-	//}
-
-	// select(q,a) : one-of-many box (like HTML SELECT)
-	// - q should be the question string ("select a flavor of syrup:")
-	// - a is an array of answers like array('optiontext'=>'optionvalue')
-	// returns the user-selected option value
-	//public function select($q,$a){
-		//this is to be implemented by the extender
-		//return $this->handle->select($q,$a);
-	//}
 
 }

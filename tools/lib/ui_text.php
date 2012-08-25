@@ -18,17 +18,21 @@ class UIText extends UI implements UIInt {
 	}
 
 	public function ask($q,$a,$default=false){
+		$question = $q.' ('.$a[0].'/'.$a[1].'): ';
 		$a[0] = ($default) ? strtoupper($a[0]) : strtolower($a[0]);
 		$a[1] = ($default) ? strtolower($a[1]) : strtoupper($a[1]);
 		$b = array(strtolower(substr($a[0],0,1)),strtolower(substr($a[1],0,1)));
-		$this->__out($q.' ('.$a[0].'/'.$a[1].'): ');
-		$in = (@posix_isatty(STDOUT)) ? null : $b[($default)?0:1];
+		$this->out($question);
+		$in = ($this->is_a_tty) ? null : $b[($default)?0:1];
 		while(is_null($in)){
 			$in = strtolower(substr(trim(fgets(STDIN)),0,1));
 			if($in == '') return $default;
-			if(!in_array($in,$b)) $in = null;
+			if(!in_array($in,$b)){
+				$in = null;
+				if($this->is_a_tty) $this->out($question);
+			}
 		}
-		$this->__out($in."\n");
+		if(!$this->is_a_tty) $this->out($in."\n");
 		if($in !== $b[0]) return false;
 		return true;
 	}

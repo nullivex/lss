@@ -105,27 +105,26 @@ $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 if(is_null(gfa($opts,'v')) && is_null(gfa($opts,'verbose'))) define('OUT_QUIET',true);
 
 //update defaults if needed
-if(gfa($opts,'default-target')){
+if(!is_null(gfa($opts,'default-target'))){
 	$noerror = true;
 	UsrDef::_get()->iostate = UsrDef::READWRITE;
 	UsrDef::_get()->data['target'] = gfa($opts,'default-target');
 }
-if(gfa($opts,'default-mirror')){
+if(!is_null(gfa($opts,'default-mirror'))){
 	$noerror = true;
 	UsrDef::_get()->iostate = UsrDef::READWRITE;
 	UsrDef::_get()->data['mirror'] = gfa($opts,'default-mirror');
 }
-if(gfa($opts,'default-cache')){
+if(!is_null(gfa($opts,'default-cache'))){
 	$noerror = true;
 	UsrDef::_get()->iostate = UsrDef::READWRITE;
 	UsrDef::_get()->data['cache'] = gfa($opts,'default-cache');
 }
-if(gfa($opts,'default-ui')){
+if(!is_null(gfa($opts,'default-ui'))){
 	$noerror = true;
 	UsrDef::_get()->iostate = UsrDef::READWRITE;
 	UsrDef::_get()->data['ui'] = gfa($opts,'default-ui');
 }
-
 
 //figure out our target and mirror
 target($opts); //sets the constant 'TARGET'
