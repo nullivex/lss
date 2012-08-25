@@ -6,6 +6,6 @@ mkdir -p /var/cache/lss
 touch /var/log/openlss
 chmod 777 /var/log/openlss
 
-lss -update
+lss --update
 
 exit 0

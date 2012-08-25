@@ -21,15 +21,14 @@ class UIText extends UI implements UIInt {
 		$a[0] = ($default) ? strtoupper($a[0]) : strtolower($a[0]);
 		$a[1] = ($default) ? strtolower($a[1]) : strtoupper($a[1]);
 		$b = array(strtolower(substr($a[0],0,1)),strtolower(substr($a[1],0,1)));
-		$in = null;
+		$this->__out($q.' ('.$a[0].'/'.$a[1].'): ');
+		$in = (@posix_isatty(STDOUT)) ? null : $b[($default)?0:1];
 		while(is_null($in)){
-			print $q.' ('.$a[0].'/'.$a[1].'): ';
-			@flush();
-			@ob_flush();
 			$in = strtolower(substr(trim(fgets(STDIN)),0,1));
 			if($in == '') return $default;
 			if(!in_array($in,$b)) $in = null;
 		}
+		$this->__out($in."\n");
 		if($in !== $b[0]) return false;
 		return true;
 	}

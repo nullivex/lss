@@ -18,7 +18,7 @@ function exportDb(){
 
 function showDb($opts){
 	if(gfa($opts,'db-file')) $dbfile = gfa($opts,'db-file');
-	else $dbfile = MIRROR.'/pkg.db';
+	else $dbfile = null;
 	UI::out(PkgDb::_get($dbfile)->show());
 	UI::out("Database dump complete.\n");
 }
@@ -143,13 +143,15 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	$ui->out("Downloading packages from mirror\n");
 	foreach($pkgs as $key => $pkg){
 		$ui->out('  Downloading '.$pkg['fqn']);
-		$dest = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
-		$src = $pkgs[$key]['file'] = MIRROR.'/'.$pkg['fqn'].'.tar.bz2';
-		@mkdir(dirname($dest),0755,true);
-		$buff = @file_get_contents($src);
-		if(!$buff) throw new Exception('Could not download package: '.$src);
-		$rv = @file_put_contents($dest,$buff);
-		if(!$rv) throw new Exception('Failed to save package: '.$dest);
+		$dest = $pkgs[$key]['cache_file'] = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
+		if(!file_exists($dest)){
+			$src = $pkgs[$key]['file'] = MIRROR.'/'.$pkg['fqn'].'.tar.bz2';
+			@mkdir(dirname($dest),0755,true);
+			$buff = @file_get_contents($src);
+			if(!$buff) throw new Exception('Could not download package: '.$src);
+			$rv = @file_put_contents($dest,$buff);
+			if(!$rv) throw new Exception('Failed to save package: '.$dest);
+		}
 		$ui->out("... done\n");
 	}
 	
@@ -157,7 +159,7 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	$ui->out("Extracting packages to target\n");
 	foreach($pkgs as $pkg){
 		$ui->out('  Extracting '.$pkg['fqn']);
-		Pkg::extract($pkg['file'],TARGET);
+		Pkg::extract($pkg['cache_file'],TARGET);
 		$ui->out("... done\n");
 	}
 	
@@ -277,15 +279,20 @@ function remove($tgtdef,$packages,$purge=null,$backup=true){
 	
 	//remove files
 	$ui->out("Starting removal\n");
+	$dirs = array();
 	foreach($pkgs as $pkg){
 		$ui->out('  Removing package '.$pkg['fqn']."\n");
 		foreach($db->getManifest($pkg['rowid']) as $manifest){
 			$file = TARGET.'/'.$manifest['file'];
 			$ui->out('    Removing file '.$file."\n");
 			@unlink($file);
-			@unlink(dirname($file));
+			$dirs[] = dirname($file);
 		}
 	}
+	
+	//remove folders
+	rsort($dirs);
+	foreach($dirs as $dir) @rmdir($dir);
 	
 	//update the locally installed packages
 	$ui->out("Updating local package database...");

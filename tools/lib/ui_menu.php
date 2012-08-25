@@ -16,62 +16,68 @@ class UIMenu extends UI implements UIInt {
 
 	protected function _init(){
 		ncurses_init();
-		ncurses_savetty();
+//		ncurses_savetty();
 		ncurses_cbreak();
 		ncurses_noecho();
-		ncurses_erase();
+		ncurses_nonl();
+//		ncurses_intrflush(STDSCR,false);
+		ncurses_keypad(STDSCR,true);
 		ncurses_getmaxyx(STDSCR,&$this->rows,&$this->cols);
-		ncurses_border(0,0, 0,0, 0,0, 0,0); //border the main window
-		//title the main window
-		ncurses_attron(NCURSES_A_REVERSE);
-		ncurses_mvaddstr(0,1,' OpenLSS v'.LSSTOOLS_VERSION.' ');
-		ncurses_attroff(NCURSES_A_REVERSE);
-		ncurses_curs_set(0);
-		ncurses_refresh();
-		ncurses_flushinp();
-		$this->x = 2;
-		$this->y = 2;
+//		ncurses_curs_set(0);
+		$this->y = $this->rows-1;
+		$this->x = 0;
 	}
 
 	protected function _deinit(){
+//		ncurses_move(0,0);
+//		ncurses_insdelln(-1);
 		ncurses_refresh();
-		ncurses_resetty();
+//		ncurses_resetty();
+	$this->__out("[END]");
+		ncurses_getch();
 		ncurses_end();
 	}
 
 	public function __out($string,$err=false){
-		if($err) $string = '[ERR]'.$string;
+		if($err) ncurses_wattron(STDSCR,NCURSES_A_REVERSE);
 		$y_off = 0;
 		while(strrpos($string,"\n",-1) !== false){
 			$y_off++;
 			$string = substr($string,0,-1);
 		}
-		while($this->y >= $this->rows-1){
-			$this->y--;
-			ncurses_scrl(2);
+		$y_flow = ($this->y+$y_off) - ($this->rows - 1);
+		if($y_flow >= 0){
+			ncurses_move(0,0);
+			ncurses_deleteln(-1*$y_flow);
+			//if(strlen($string))
+				$this->y -= $y_flow;
 		}
 		ncurses_move($this->y,$this->x);
 		ncurses_addstr($string);
-		ncurses_refresh();
+//		ncurses_getyx(STDSCR,&$this->y,&$this->x);
 		$this->y += $y_off;
-		$this->x = ($y_off) ? 2 : ($this->x + strlen($string));
-//		fwrite(($err)?STDERR:STDOUT,$string);
-//		fflush(($err)?STDERR:STDOUT);
+		$this->x = ($y_off) ? 0 : ($this->x + strlen($string));
+//		if(!strlen($string))
+//			$this->x = 0;
+		ncurses_move($this->y,$this->x);
+		if($err) ncurses_wattroff(STDSCR,NCURSES_A_REVERSE);
+		ncurses_refresh();
+//		ncurses_getch();
 	}
 
 	public function ask($q,$a,$default=false){
 		$a[0] = ($default) ? strtoupper($a[0]) : strtolower($a[0]);
 		$a[1] = ($default) ? strtolower($a[1]) : strtoupper($a[1]);
 		$b = array(strtolower(substr($a[0],0,1)),strtolower(substr($a[1],0,1)));
-		$in = null;
+		$this->__out($q.' ('.$a[0].'/'.$a[1].'): ');
+		$in = (@posix_isatty(STDOUT)) ? null : $b[($default)?0:1];
 		while(is_null($in)){
-			print $q.' ('.$a[0].'/'.$a[1].'): ';
-			@flush();
-			@ob_flush();
-			$in = strtolower(substr(trim(fgets(STDIN)),0,1));
-			if($in == '') return $default;
+			$in = ncurses_getch();
+			if($in == 13) $in = ord($b[($default)?0:1]);
+			$in = strtolower(chr($in));
 			if(!in_array($in,$b)) $in = null;
 		}
+		$this->__out($in."\n");
 		if($in !== $b[0]) return false;
 		return true;
 	}

@@ -11,4 +11,4 @@ cp -a tools deb/usr/lss
 cp -a bin deb/usr/lss
 
 # build package
-dpkg -b deb lss_0.1.1_all.deb
+dpkg -b deb lss_0.0.1_all.deb

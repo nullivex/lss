@@ -4,7 +4,7 @@ Section: web
 Priority: optional
 Architecture: all
 Essential: no
-Depends: php5-cli, libssh2-php, php5-sqlite
+Depends: php5-cli, libssh2-php, php5-sqlite, bzip2
 Installed-Size: 983040
 Maintainer: Bryan Tong <contact@nullivex.com>
 Description: A simple OS style package manager for Websites

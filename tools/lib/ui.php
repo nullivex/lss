@@ -29,6 +29,9 @@ abstract class UI {
 	public $type = self::TEXT; // simplest interface type by default
 	
 	public static function init($type=self::TEXT){
+		// handle automatic fallback if we're piped
+		if(($type == self::MENU) && (!@posix_isatty(STDOUT)))
+			$type = self::TEXT;
 		switch($type){
 			case self::TEXT:
 				require_once(ROOT.'/tools/lib/ui_text.php');

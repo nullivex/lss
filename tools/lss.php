@@ -12,6 +12,8 @@ require_once(ROOT.'/tools/lib/tgtdef.php');
 //control funcs
 require_once(ROOT.'/tools/lib/func_lss.php');
 
+UI::out('OpenLSS v'.LSSTOOLS_VERSION."\n");
+
 //set this to throw an error if there is no action
 $noerror = false;
 

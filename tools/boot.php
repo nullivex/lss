@@ -13,9 +13,8 @@ define('DEFAULT_VERSION','0.0.1');
 define('DEFAULT_DESCRIPTION','An OpenLSS Package');
 define('DEFAULT_TARGET','/opt/lss');
 define('DEFAULT_LSS','/usr/lss');
-define('DEFAULT_MIRROR','/usr/lss/pkg');
+define('DEFAULT_MIRROR','http://mirror.openlss.org');
 define('DEFAULT_CACHE','/var/cache/lss');
-define('DEFAULT_HOOKS','/var/spool/lss');
 
 //load global deps
 require_once(ROOT.'/tools/lib/func.php');
