@@ -1,0 +1,69 @@
+<?php
+
+class UIText extends UI implements UIInt {
+
+	protected function _init(){
+	// needs to be here even if empty
+		if($this::$debug) $this->out("[UIText init()]\n");
+	}
+
+	protected function _deinit(){
+	// needs to be here even if empty
+		if($this::$debug) $this->out("[UIText deinit()]\n");
+	}
+
+	public function __out($string,$err=false){
+		fwrite(($err)?STDERR:STDOUT,$string);
+		fflush(($err)?STDERR:STDOUT);
+	}
+
+	public function ask($q,$a,$default=false){
+		$a[0] = ($default) ? strtoupper($a[0]) : strtolower($a[0]);
+		$a[1] = ($default) ? strtolower($a[1]) : strtoupper($a[1]);
+		$b = array(strtolower(substr($a[0],0,1)),strtolower(substr($a[1],0,1)));
+		$in = null;
+		while(is_null($in)){
+			print $q.' ('.$a[0].'/'.$a[1].'): ';
+			@flush();
+			@ob_flush();
+			$in = strtolower(substr(trim(fgets(STDIN)),0,1));
+			if($in == '') return $default;
+			if(!in_array($in,$b)) $in = null;
+		}
+		if($in !== $b[0]) return false;
+		return true;
+	}
+
+	public function input($q,&$a){
+		$command = "/usr/bin/env bash -c 'echo OK'";
+		if (rtrim(shell_exec($command)) !== 'OK') {
+			trigger_error("Can't invoke bash");
+			return;
+		}
+		$command = "/usr/bin/env bash -c 'read -s \""
+			. addslashes($prompt)
+			. "\" myinput && echo \$myinput'";
+		$val = rtrim(shell_exec($command));
+		echo "\n";
+		return $val;
+	}
+
+	public function password($q,&$a){
+		$command = "/usr/bin/env bash -c 'echo OK'";
+		if (rtrim(shell_exec($command)) !== 'OK') {
+			trigger_error("Can't invoke bash");
+			return;
+		}
+		$command = "/usr/bin/env bash -c 'read -s -p \""
+			. addslashes($prompt)
+			. "\" mypassword && echo \$mypassword'";
+		$val = rtrim(shell_exec($command));
+		echo "\n";
+		return $val;
+	}
+
+	public function select($q,&$a,$default=0){
+		//TODO: this.
+	}
+
+}

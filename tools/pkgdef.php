@@ -4,9 +4,12 @@
 require('boot.php');
 
 //require sources
-require_once(ROOT.'/tools/lib/func.php');
 require_once(ROOT.'/tools/lib/pkg.php');
 require_once(ROOT.'/tools/lib/pkgdef.php');
+
+//load the User Interface
+require_once(ROOT.'/tools/lib/ui.php');
+$ui = UI::_get(DEFAULT_UI);
 
 //figure out our opts
 $so = '';
@@ -24,6 +27,9 @@ $lo = array(
 	'update',
 	'pkg-version:',
 	'pkg-description:',
+	
+	//show def
+	'show',
 	
 	//delete
 	'delete',
@@ -64,6 +70,9 @@ foreach(array_keys($opts) as $act){
 				gfa($opts,'pkg-version'),
 				gfa($opts,'pkg-description')
 			);
+			exit;
+		case 'show':
+			showDef($repo,$pkg);
 			exit;
 		case 'delete':
 			deleteDef($repo,$pkg);
@@ -113,10 +122,17 @@ function updateDef($repo,$pkg_sqn,$version=null,$description=null){
 	return true;
 }
 
+//show the def
+function showDef($repo,$pkg){
+	$def = new PkgDef($pkg,$repo);
+	UI::out(print_r($def->data,true));
+	return true;
+}
+
 function deleteDef($repo,$pkg){
 	PkgDef::deletePkg($repo,$pkg);
-	echo 'The package folder must be manually removed: '.Pkg::pkgPath($pkg,$repo)."\n";
-	echo "Please rebuild the package DB.\n";
+	UI::out('The package folder must be manually removed: '.Pkg::pkgPath($pkg,$repo)."\n");
+	UI::out("Please rebuild the package DB.\n");
 	return;
 }
 
@@ -162,7 +178,7 @@ function delFile($repo,$pkg,$file){
 
 //help function
 function displayHelp(){
-echo <<<'HELP'
+	UI::out(<<<'HELP'
 Example:
     bin/pkgdef --repo main --pkg util/func --update --pkg-version=0.0.1 --pkg-description="Global functions"
 Options:
@@ -182,5 +198,6 @@ Options:
  --deldep         ..........    remove a dep from a package
    --dep-pkg      ..........    FQN of dep to be removed
 
-HELP;
+HELP
+);
 }

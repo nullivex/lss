@@ -25,9 +25,13 @@ abstract class Def {
 		return $this->dataRaw;
 	}
 	
+	public function get(){
+		return gfa($this->data,func_get_args());
+	}
+	
 	//add a single item to a def
 	// - val should be an array that matches what it should be in the def
-	public static function add($val){
+	public function add($val){
 		if(!is_array($val) || !count($val)) throw new Exception('Invalid value to add: '.print_r($val,true));
 		$def = array_merge($this->data,$val);
 		$this->data = $def;
@@ -37,14 +41,14 @@ abstract class Def {
 
 	//deletes a single item from a def
 	// - val should be a key definition as a string: ex "['keyname']['anothername']['etc']"
-	public static function del($val){
+	public function del($val){
 		dfa($this->data,$val);
 		return $this;
 	}
 
 	//update a value in a def (can be a whole subsection)
 	// - val shold be an array that matches what it should be in the def
-	public static function update($val){
+	public function update($val){
 		return $this->add($val);
 	}
 

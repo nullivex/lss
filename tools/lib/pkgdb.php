@@ -65,7 +65,7 @@ class PkgDb {
 			gfa($pkg->data,'info','repo'),
 			gfa($pkg->data,'info','description') ? gfa($pkg->data,'info','description') : DEFAULT_DESCRIPTION,
 			gfa($pkg->data,'info','version'),
-			ip2long(gfa($pkg->data,'info','version'))
+			Pkg::v2i(gfa($pkg->data,'info','version'))
 		));
 		$pkg_id = $this->db->lastInsertId();
 		//insert package deps
@@ -95,7 +95,7 @@ class PkgDb {
 					$pkg_dep_id,
 					$pkg_id,
 					$version,
-					ip2long($version)
+					Pkg::v2i($version)
 				));
 			}	
 		}
@@ -262,6 +262,12 @@ class PkgDb {
 	
 	public function getDeps($pkg_id){
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
+		$query->execute(array($pkg_id));
+		return $query->fetchAll();
+	}
+	
+	public function getManifest($pkg_id){
+		$query = $this->db->prepare('SELECT rowid,* FROM pkg_manifest WHERE pkg_id = ? ORDER BY file ASC');
 		$query->execute(array($pkg_id));
 		return $query->fetchAll();
 	}

@@ -1,3 +1,5 @@
 test
 users
 mirror
+deb/usr
+*.deb

@@ -15,5 +15,5 @@ $pkgdef['info']['sqn'] = 'lib-sys/url';
 $pkgdef['info']['repo'] = 'main';
 $pkgdef['info']['class'] = 'lib-sys';
 $pkgdef['info']['name'] = 'url';
-$pkgdef['info']['version'] = '0.0.2';
+$pkgdef['info']['version'] = '0.0.1';
 

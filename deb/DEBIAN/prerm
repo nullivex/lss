@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rm -rf /var/cache/lss
+rm -f /var/log/openlss
+rm -f /usr/bin/lss
+
+exit 0

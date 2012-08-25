@@ -13,13 +13,7 @@ final class PkgDef extends Def {
 	private $class	 = null;
 	private $name	 = null;
 
-	function __construct(){
-		list($pkg,$repo,$iostate) = array_merge(func_get_args(),array('main',self::READONLY));
-		// handle if given $pkg and $ro (without $repo in the middle)
-		if(is_bool($repo)){
-			$ro = $repo;
-			$repo = 'main';
-		}
+	function __construct($pkg,$repo=REPO_MAIN,$iostate=self::READONLY){
 		//deal with iostate
 		$this->iostate = $iostate;
 		$this->filename = self::getDefFile($repo,$pkg);
@@ -46,7 +40,6 @@ final class PkgDef extends Def {
 	public static function deletePkg($repo,$pkg){
 		$def_file = ROOT.'/'.self::getDeffile($repo,$pkg);
 		@unlink($def_file);
-		//rmdir(dirname($def_file));
 		return true;
 	}
 

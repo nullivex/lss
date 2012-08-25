@@ -1,8 +1,10 @@
 <?php
 
-function gfa($data){
-	$args = func_get_args();
-	array_shift($args);
+function gfa($data,$args=null){
+	if(!is_array($args)){
+		$args = func_get_args();
+		array_shift($args);
+	}
 	$var = ''; foreach($args as $arg) $var .= '[\''.$arg.'\']';
 	eval('$val = isset($data'.$var.') ? $data'.$var.' : null;');
 	return $val;
@@ -27,7 +29,7 @@ function run($cmd,&$return=null){
 
 function dolog($msg,$output=true){
 	$msg = date('m/d/y g:i:s').' -- '.$msg;
-	if($output && !defined('OUT_QUIET')) echo $msg."\n"; flush();
+	if($output && !defined('OUT_QUIET')) UI::out($msg."\n");
 	$handle = fopen('/var/log/openlss','a');
 	fwrite($handle,$msg."\n");
 	fclose($handle);
@@ -53,24 +55,24 @@ function file_array($path,$exclude='',$recursive=false){
 	return $result;
 }
 
-function mirror($opts,&$usrdef){
+function mirror($opts){
 	if(gfa($opts,'mirror')) $mirror = gfa($opts,'mirror');
 	elseif(gfa($opts,'m')) $mirror = gfa($opts,'m');
-	elseif(gfa($usrdef->data,'mirror')) $mirror = gfa($usrdef->data,'mirror');
+	elseif(UsrDef::_get()->get('mirror')) $mirror = UsrDef::_get()->get('mirror');
 	else $mirror = DEFAULT_MIRROR;
 	define('MIRROR',$mirror);
 }
 
-function target($opts,&$usrdef){
+function target($opts){
 	if(gfa($opts,'target')) $target = gfa($opts,'target');
 	elseif(gfa($opts,'t')) $target = gfa($opts,'t');
-	elseif(gfa($usrdef->data,'target')) $target = gfa($usrdef->data,'target');
+	elseif(UsrDef::_get()->get('target')) $target = UsrDef::_get()->get('target');
 	else $target = DEFAULT_TARGET;
 	define('TARGET',$target);
 }
 
-function cache(&$usrdef){
-	if(gfa($usrdef->data,'cache')) $cache = gfa($usrdef->data,'cache');
+function cache(){
+	if(UsrDef::_get()->get('cache')) $cache = UsrDef::_get()->get('cache');
 	else $cache = DEFAULT_CACHE;
 	define('CACHE',$cache);
 }
@@ -83,30 +85,17 @@ function remove_dups(&$arr){
 	unset($tmp);
 }
 
-function prompt_confirm($prompt=":"){
-	print $prompt;
-	@flush();
-	@ob_flush();
-	$confirmation = trim(fgets(STDIN));
-	if($confirmation !== 'y') return false;
-	return true;
-}
-
-function prompt_silent($prompt=":"){
-    $command = "/usr/bin/env bash -c 'echo OK'";
-    if (rtrim(shell_exec($command)) !== 'OK') {
-		trigger_error("Can't invoke bash");
-		return;
-    }
-    $command = "/usr/bin/env bash -c 'read -s -p \""
-		. addslashes($prompt)
-		. "\" mypassword && echo \$mypassword'";
-    $val = rtrim(shell_exec($command));
-    echo "\n";
-    return $val;
-}
-
 function exec_hook($hook_file,$act){
 	include($hook_file);
-	if(function_exists($act)) call_user_func($act);
+	if(isset($$act) && is_callable($$act)) $$act();
+}
+
+function urlname($name){
+	$name = preg_replace('/\W+/',' ',strtolower($name));
+	$name = preg_replace('/\s+/','-',$name);
+	return $name;
+}
+
+function shortname($name){
+	return preg_replace('/-/','',urlname($name));
 }

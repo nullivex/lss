@@ -4,7 +4,6 @@
 require('boot.php');
 
 //require sources
-require_once(ROOT.'/tools/lib/func.php');
 require_once(ROOT.'/tools/lib/pkg.php');
 require_once(ROOT.'/tools/lib/pkgdef.php');
 
@@ -36,10 +35,10 @@ if(!isset($def->data['manifest'])) throw new Exception('Package has no manifest 
 
 //go through the manifest
 foreach($def->data['manifest'] as $file){
-	echo "About to copy $file\n";
+	UI::out("About to copy $file\n");
 	$dest = ROOT.'/pkg/'.$repo.'/'.$pkg.'/'.$file;
 	@mkdir(dirname($dest),0755,true);
 	copy($wdir.'/'.$file,$dest);
 }
 
-echo "Done\n";
+UI::out("Done\n");

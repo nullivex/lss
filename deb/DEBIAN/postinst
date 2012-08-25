@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ln -s /usr/lss/bin/lss /usr/bin/lss
+chmod 777 /usr/lss/users
+mkdir -p /var/cache/lss
+touch /var/log/openlss
+chmod 777 /var/log/openlss
+
+lss -update
+
+exit 0
