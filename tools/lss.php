@@ -12,8 +12,6 @@ require_once(ROOT.'/tools/lib/tgtdef.php');
 //control funcs
 require_once(ROOT.'/tools/lib/func_lss.php');
 
-UI::out('OpenLSS v'.LSSTOOLS_VERSION."\n");
-
 //set this to throw an error if there is no action
 $noerror = false;
 
@@ -83,17 +81,18 @@ $lo = array(
 	'target:',
 	
 	//sources
-	'mirror:',
+	'mirror-add:',
+	'mirror-del:',
 	
 	//misc/utility
 	'int-version:',
+	'clear-cache',
 	
 	//defaults
 	'default-do-backup',
 	'default-no-backup',
 	'default-db-dump:',
 	'default-db-restore:',
-	'default-mirror:',
 	'default-target:',
 	'default-cache:',
 	'default-ui:',
@@ -109,11 +108,6 @@ if(!is_null(gfa($opts,'default-target'))){
 	$noerror = true;
 	UsrDef::_get()->iostate = UsrDef::READWRITE;
 	UsrDef::_get()->data['target'] = gfa($opts,'default-target');
-}
-if(!is_null(gfa($opts,'default-mirror'))){
-	$noerror = true;
-	UsrDef::_get()->iostate = UsrDef::READWRITE;
-	UsrDef::_get()->data['mirror'] = gfa($opts,'default-mirror');
 }
 if(!is_null(gfa($opts,'default-cache'))){
 	$noerror = true;
@@ -184,6 +178,16 @@ foreach(array_keys($opts) as $act){
 		case 'U':
 			$noerror=true;
 			update();
+			break;
+			
+		//mirror management
+		case 'mirror-add':
+			$noerror=true;
+			mirrorAdd(gfa($opts,'mirror-add'));
+			break;
+		case 'mirror-del':
+			$noerror=true;
+			mirrorDel(gfa($opts,'mirror-del'));
 			break;
 			
 		//package actions

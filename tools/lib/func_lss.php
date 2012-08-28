@@ -20,7 +20,7 @@ function showDb($opts){
 	if(gfa($opts,'db-file')) $dbfile = gfa($opts,'db-file');
 	else $dbfile = MIRROR.'/pkg.db';
 	UI::out(PkgDb::_get($dbfile)->show());
-	UI::out("Database dump complete.\n");
+	UI::out("Database display complete.\n");
 }
 
 function upgrade($tgtdef,$backup=true){

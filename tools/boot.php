@@ -25,7 +25,27 @@ require_once(ROOT.'/tools/lib/ui.php');
 UsrDef::init($_SERVER['USER']);
 
 //load the User Interface
-UI::init(UsrDef::_get()->get('ui'));
+UI::init(UsrDef::_get()->get('ui'),'OpenLSS v'.LSSTOOLS_VERSION);
+
+//setup signal catching
+declare(ticks = 1);
+function sig_handler($signo){
+	switch($signo){
+		case SIGWINCH:
+		case SIGHUP:
+			UI::resize();
+			break;
+		case SIGINT:
+		case SIGTERM:
+			UI::_get()->__destruct_by_signal();
+			exit(2);
+			break;
+	}
+}
+pcntl_signal(SIGWINCH,"sig_handler");
+pcntl_signal(SIGHUP  ,"sig_handler");
+pcntl_signal(SIGTERM ,"sig_handler");
+pcntl_signal(SIGINT  ,"sig_handler");
 
 //setup exception handling
 function sysError($e){

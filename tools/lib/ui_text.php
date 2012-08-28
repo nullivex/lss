@@ -4,6 +4,7 @@ class UIText extends UI implements UIInt {
 
 	protected function _init(){
 	// needs to be here even if empty
+		if($this->basetitle !== false) $this->out($this->basetitle."\n");
 		if($this::$debug) $this->out("[UIText init()]\n");
 	}
 

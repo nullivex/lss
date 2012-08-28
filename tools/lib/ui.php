@@ -1,10 +1,13 @@
 <?php
-
 interface UIInt {
 
 	public static function init($type);
 	public static function _get();
 	public static function out($string,$err=false);
+
+	// title(t) : ask a true/false question (or yes/no)
+	// - q : the title string ("SomeApp v3.2.1")
+	public static function title($t);
 
 	// ask(q,a) : ask a true/false question (or yes/no)
 	// - q       : the question string ("do you like grits?")
@@ -51,10 +54,13 @@ abstract class UI {
 	const MENU_DESC = 'Menu';
 	const HTML    = 2;
 	const HTML_DESC = 'HTML';
+
+	//screen definitions
 	public $type = self::TEXT; // simplest interface type by default
 	public $is_a_tty = false;
+	private $backtitle = false;
 
-	public static function init($type=self::TEXT){
+	public static function init($type=self::TEXT,$title=false){
 		$is_a_tty = @posix_isatty(STDOUT);
 		// handle automatic fallback if we're piped
 		if(($type == self::MENU) && (!$is_a_tty))
@@ -75,6 +81,7 @@ abstract class UI {
 		}
 		self::$inst->type = $type;
 		self::$inst->is_a_tty = $is_a_tty;
+		self::$inst->basetitle = $title;
 		self::$inst->_init();
 	}
 
@@ -89,7 +96,11 @@ abstract class UI {
 	}
 
 	public function __destruct(){
-		$this->_deinit();
+		$this->_deinit(false);
+	}
+
+	public function __destruct_by_signal(){
+		$this->_deinit(true);
 	}
 
 	public function __toString(){
@@ -117,16 +128,14 @@ abstract class UI {
 	}
 
 	public static function out($string,$err=false){
+		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized');
 		return self::$inst->_out($string,$err);
 	}
-	
-	/*
-		if(self::$inst == false) self::$inst = new UI($type);
-		if(($type !== false) && (self::$inst->type != $type)){
-			self::$inst->handle->deinit();
-			self::$inst->__construct($type);
-		}
+
+	public static function title($t=false){
+		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized');
+		self::$inst->basetitle = $t;
 		return self::$inst;
-	}*/
+	}
 
 }

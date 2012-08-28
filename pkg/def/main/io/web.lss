@@ -36,6 +36,6 @@ $pkgdef['info']['sqn'] = 'io/web';
 $pkgdef['info']['repo'] = 'main';
 $pkgdef['info']['class'] = 'io';
 $pkgdef['info']['name'] = 'web';
-$pkgdef['info']['version'] = '0.0.4';
+$pkgdef['info']['version'] = '0.0.1';
 $pkgdef['info']['description'] = 'I/O for web based calls';
 
