@@ -30,6 +30,7 @@ class PkgDb {
 	//this function originally copied a built database from our mirrors
 	//however, now we need to get a built database from multiple mirrors and merge them
 	public static function update(){
+		require_once(ROOT.'/tools/lib/pkg.php');
 		$tmp = CACHE.'/tmp.pkg.db';
 		//get db handle
 		$db = PkgDb::_get();
@@ -42,11 +43,10 @@ class PkgDb {
 		foreach($mirrors as $mirror){
 			//get the remote db
 			$src = $mirror.'/pkg.db';
-			$buff = file_get_contents($src);
-			if($buff === false){
-				UI::out("WARNING: $mirror is not a valid mirror\n",true);
-				continue;
-			}
+			$buff = Pkg::getFromMirror($mirror,$src,$mirrorauth);
+			//if we have a bad value continue on
+			if($buff === false) continue;
+			//write the new db
 			$rv = file_put_contents($tmp,$buff); unset($buff);
 			if($rv === false) throw new Exception('Failed to write tmp database: '.$tmp);
 			//setup the second db handle
@@ -54,7 +54,7 @@ class PkgDb {
 			foreach($srcdb->pkgList() as $pkg){
 				try {
 					$def = self::makePkg($srcdb,$pkg);
-					$db->addToDb($def,$mirror);
+					$db->addToDb($def,$mirror,$mirrorauth);
 				} catch(Exception $e){
 					if($e->getCode() == ERR_PKG_EXISTS){
 						UI::out('Ignored '.$pkg['fqn'].' from '.$mirror.' it was already defined.'."\n");
@@ -105,7 +105,7 @@ class PkgDb {
 		return true;
 	}
 
-	public function addToDb(PkgDef $pkg,$mirror=null){
+	public function addToDb(PkgDef $pkg,$mirror=null,$mirrorauth=null){
 		try {
 			$this->getByFQN($pkg->data['info']['fqn']);
 			throw new Exception('Package already exists in database.',ERR_PKG_EXISTS);
@@ -116,6 +116,7 @@ class PkgDb {
 		$query = $this->db->prepare('
 			INSERT INTO pkg (
 				mirror,
+				mirrorauth,
 				fqn,
 				sqn,
 				name,
@@ -124,10 +125,11 @@ class PkgDb {
 				description,
 				version,
 				version_int
-			) VALUES (?,?,?,?,?,?,?,?,?)
+			) VALUES (?,?,?,?,?,?,?,?,?,?)
 		');
 		$query->execute(array(
 			$mirror,
+			$mirrorauth,
 			gfa($pkg->data,'info','fqn'),
 			gfa($pkg->data,'info','sqn'),
 			gfa($pkg->data,'info','name'),
@@ -266,7 +268,7 @@ class PkgDb {
 			//package name and details
 			$out .= "  [PKG ".$pkg['sqn']."]\n";
 			$out .= "    [VERSION: ".$pkg['version']."]\n";
-			$out .= "    [MIRROR: ".$pkg['mirror']."]\n";
+			$out .= "    [MIRROR: ".$pkg['mirror'].(($pkg['mirrorauth'])?'[+AUTH]':'')."]\n";
 			//get the deps
 			$qa = $this->db->prepare('SELECT ROWID,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
 			$qa->execute(array($pkg['rowid']));
@@ -362,6 +364,7 @@ define('DB_TBL_PKG',
 	CREATE TABLE 'pkg' (
 		'pkg_id' INT PRIMARY KEY ,
 		'mirror' VARCHAR ( 255 ) NULL,
+		'mirrorauth' VARCHAR ( 255 ) NULL,
 		'fqn' VARCHAR ( 62 ) NOT NULL ,
 		'sqn' VARCHAR ( 41 ) NOT NULL ,
 		'name' VARCHAR ( 20 ) NOT NULL ,

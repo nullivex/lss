@@ -111,6 +111,21 @@ function getFromDefMerged($var){
 	return LsDef::_get()->get($var);
 }
 
+function getStatusCode($headers){
+	$status_code = false;
+	if(is_scalar($headers))
+		$headers = array($headers);
+	if(is_array($headers))
+		foreach($headers as $h){
+			$m = array ();
+			if(preg_match('/^HTTP\/\d\.\d\s+([0-9]{3})/',$h,$m)){
+				$status_code = (int)$m[1];
+				break;
+			}
+		}
+	return $status_code;
+}
+
 //--------------------------
 //Setting Functions
 //--------------------------
@@ -122,25 +137,36 @@ function setValue($def,$name=null,$value=null){
 	return true;
 }
 
-function addValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to set must be present');
+function addValue($def,$name=null,$value=null,$key=null){
+	if(is_null($name)) throw new Exception('Name of value to add must be present');
 	$def->iostate = $def::READWRITE;
 	//prepare the array
 	if(!isset($def->data[$name])) $def->data[$name] = array();
 	if(!is_array($def->data[$name])) throw new Exception('Trying to add a value to a non array');
 	//add value to the array
-	$def->data[$name][] = $value;
+	if(!is_null($key))
+		$def->data[$name][$key] = $value;
+	else
+		$def->data[$name][] = $value;
 	return true;
 }
 
-function delValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to set must be present');
+function delValue($def,$name=null,$value=null,$key=null){
+	if(is_null($name)) throw new Exception('Name of value to delete must be present');
 	$def->iostate = $def::READWRITE;
-	//remove value from the array
 	if(!isset($def->data[$name])) throw new Exception('Value array does not exist');
-	$keys = array_keys($def->data[$name],$value);
-	if(!is_array($keys) || !count($keys)) throw new Exception('Value could not be found for removal');
-	foreach($keys as $key) unset($def->data[$name][$key]);
+	if(is_null($key)){
+		//remove keys from the array by value
+		$keys = array_keys($def->data[$name],$value);
+		if(!is_array($keys) || !count($keys)) throw new Exception('Value could not be found for removal');
+		foreach($keys as $k) unset($def->data[$name][$k]);
+	} else {
+		//remove explicit key from the array
+		if(!is_null(gfa($def->data[$name],$key)))
+			unset($def->data[$name][$key]);
+		else
+			throw new Exception('Value could not be found for removal');
+	}
 	return true;
 }
 
@@ -150,4 +176,30 @@ function delValue($def,$name=null,$value=null){
 function intVersion($version){
 	Ui::out(Pkg::v2i($version)."\n");
 	return true;
+}
+
+function mirror_get_contents($mirror,$url,&$mirrorauth=null){
+	if(is_null($mirrorauth)) $mirrorauth = getFromDefMerged('mirrorauth');
+	$mirrorauth = gfa($mirrorauth,$mirror);
+	if($mirrorauth){
+		$buff = @file_get_contents($url,false
+			,stream_context_create(array('http'=>
+				array('header'=>"Authorization: Basic "
+				.base64_encode($mirrorauth)))
+			)
+		);
+	} else
+		$buff = @file_get_contents($url);
+	//verify we didnt have a problem
+	if($buff === false){
+		if(
+			isset($http_response_header) && 
+			is_array($http_response_header) && 
+			getStatusCode($http_response_header) == 401
+		)
+			throw new Exception($mirror.' authorization failed: '.(($mirrorauth) ? ' (mirrorauth incorrect)' : ' (set mirrorauth)'),ERR_MIRROR_AUTH_FAILED);
+		else
+			throw new Exception($mirror.' is not a valid mirror',ERR_MIRROR_INVALID);
+	}
+	return $buff;
 }

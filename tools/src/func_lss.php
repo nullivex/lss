@@ -74,6 +74,11 @@ function upgrade(){
 	}
 	//chain to install as it is the same process
 	install($tgtdef,trim($pkg_str,','),true);
+	
+	//connect to the db for any db hooks
+	if(in_array(PACKAGE_DB_FQN,array_keys($tgtdef->get('installed'))) || Pkg::isSelected(PACKAGE_DB_FQN,$pkgs)){
+		Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+	}
 
 	//now we have to manually do the upgrade hooks
 	UI::out("Upgrade packages.\n");
@@ -171,8 +176,15 @@ function install($packages,$upgrade=false){
 		$dest = $pkgs[$key]['file'] = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
 		$src = $pkg['mirror'].'/'.$pkg['fqn'].'.tar.bz2';
 		@mkdir(dirname($dest),0755,true);
-		$buff = @file_get_contents($src);
-		if(!$buff) throw new Exception('Could not download package: '.$src);
+		//download package
+		$buff = Pkg::getFromMirror(
+			$pkg['mirror'], //mirror to use
+			$src, //url to download from
+			gfa($pkg,'mirrorauth'), //mirror auth values
+			'Could not download package: '.$src //err message pre-text
+		);
+		if($buff === false) continue;
+		//write package
 		$rv = @file_put_contents($dest,$buff);
 		if(!$rv) throw new Exception('Failed to save package: '.$dest);
 		$ui->out("... done\n");
@@ -198,6 +210,12 @@ function install($packages,$upgrade=false){
 			if(file_exists($hook_file)) exec_hook($hook_file,'install');
 			$ui->out("... done\n");
 		}
+		
+		//connect to the db for any db hooks
+		if(in_array(PACKAGE_DB_FQN,array_keys($tgtdef->get('installed'))) || Pkg::isSelected(PACKAGE_DB_FQN,$pkgs)){
+			Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+		}
+		
 		foreach($pkgs as $pkg){
 			if(isset($pkg['pre']) && $pkg['pre'] === true) continue;
 			$ui->out('  Setting up '.$pkg['fqn']);
@@ -283,6 +301,11 @@ function remove($packages,$purge=null){
 
 	//set tgtdef writable
 	$tgtdef->iostate = TgtDef::READWRITE;
+	
+	//connect to the db for any db hooks
+	if(in_array(PACKAGE_DB_FQN,array_keys($tgtdef->get('installed'))) || Pkg::isSelected(PACKAGE_DB_FQN,$pkgs)){
+		Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+	}
 
 	//process hooks
 	$ui->out("Processing removals\n");

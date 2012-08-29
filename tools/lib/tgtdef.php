@@ -34,6 +34,7 @@ final class TgtDef extends Def {
 		//default arrays
 		if(!isset($this->data['installed'])) $this->data['installed'] = array();
 		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
+		if(!isset($this->data['mirrorauth'])) $this->data['mirrorauth'] = array();
 		return $this;
 	}
 

@@ -8,6 +8,7 @@ require_once(ROOT.'/tools/lib/pkg.php');
 require_once(ROOT.'/tools/lib/pkgdef.php');
 require_once(ROOT.'/tools/lib/pkgdb.php');
 require_once(ROOT.'/tools/lib/tgtdef.php');
+require_once(ROOT.'/tools/lib/db.php');
 
 //control funcs
 require_once(ROOT.'/tools/src/func_lss.php');
@@ -120,16 +121,32 @@ if( !is_null(gfa($opts,'set')) || !is_null(gfa($opts,'add')) || !is_null(gfa($op
 		case 'user':
 			$def = UsrDef::_get();
 			break;
-		default:
+		case 'sys':
 			$def = LsDef::_get();
+			break;
+		default:
+			throw new Exception('Invalid type "'.$type.'" (expecting [target|user|sys])');
 			break;
 	}
 	//figure out value action
 	try {
 		if(!is_null(gfa($opts,'set'))) setValue($def,gfa($opts,'name'),gfa($opts,'value'));
-		else if(!is_null(gfa($opts,'add'))) addValue($def,gfa($opts,'name'),gfa($opts,'value'));
-		else if(!is_null(gfa($opts,'del'))) delValue($def,gfa($opts,'name'),gfa($opts,'value'));
-		else throw new Exception('No proper action submitted for value modification');
+		else if(!is_null(gfa($opts,'add'))){
+			if(is_null(gfa($opts,'value'))) throw new Exception('Adding requires --value');
+			if(gfa($opts,'name') == 'mirrorauth'){
+				if(is_null(gfa($opts,'mirror'))) throw new Exception('Adding mirrorauth requires --mirror');
+				addValue($def,gfa($opts,'name'),gfa($opts,'value'),gfa($opts,'mirror'));
+			} else
+				addValue($def,gfa($opts,'name'),gfa($opts,'value'));
+		} else if(!is_null(gfa($opts,'del'))){
+			if(gfa($opts,'name') == 'mirrorauth'){
+				if(is_null(gfa($opts,'mirror'))) throw new Exception('Deleting mirrorauth requires --mirror');
+				delValue($def,gfa($opts,'name'),null,gfa($opts,'mirror'));
+			} else {
+				if(is_null(gfa($opts,'value'))) throw new Exception('Deleting requires --value');
+				delValue($def,gfa($opts,'name'),gfa($opts,'value'));
+			}
+		} else throw new Exception('No proper action submitted for value modification');
 	} catch(Exception $e){
 		//we dont want to write on error
 		$def->iostate = $def::READONLY;

@@ -35,6 +35,7 @@ final class UsrDef extends Def {
 		if(!isset($this->data['target'])) $this->data['target'] = LsDef::_get()->get('target');
 		//default arrays
 		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
+		if(!isset($this->data['mirrorauth'])) $this->data['mirrorauth'] = array();
 		return $this;
 	}
 

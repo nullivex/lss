@@ -14,6 +14,7 @@ define('DEFAULT_DESCRIPTION','An OpenLSS Package');
 define('DEFAULT_TARGET','/opt/lss');
 define('DEFAULT_LSS','/usr/lss');
 define('DEFAULT_CACHE','/var/cache/lss');
+define('PACKAGE_DB_FQN','main/sys/db');
 
 //load global src files
 require_ONCE(ROOT.'/tools/src/err.php');
