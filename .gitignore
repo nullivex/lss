@@ -3,3 +3,5 @@ users
 mirror
 deb/usr
 *.deb
+.lss
+.lss.bak
