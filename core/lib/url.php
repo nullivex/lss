@@ -22,7 +22,7 @@
 define('inc','/');
 
 class Url {
-	
+
 	static $urls = array(
 		'home',
 		'page',
@@ -47,15 +47,15 @@ class Url {
 	public static function home(){
 		return self::prep().inc.'index.php';
 	}
-	
+
 	public static function register(){
 		return self::prep().inc.'index.php?act=register';
 	}
-	
+
 	public static function login(){
 		return self::prep().inc.'index.php?act=login';
-	}	
-	
+	}
+
 	public static function logout(){
 		return self::prep().inc.'index.php?logout=true';
 	}
@@ -67,5 +67,5 @@ class Url {
 	public static function profile(){
 		return self::prep().inc.'index.php?act=profile';
 	}
-	
+
 }

@@ -170,7 +170,7 @@ class Tpl {
 		$this->resetBody();
 		return trim($body);
 	}
-	
+
 }
 
 

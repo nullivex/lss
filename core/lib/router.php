@@ -3,27 +3,27 @@
 class Router {
 
 	static $inst = null;
-	
+
 	const DEF = '__default__';
-	
+
 	private $default = null;
 	private $apps = array();
-	
+
 	public static function init(){
 		if(is_null(self::$inst)) self::$inst = new Router();
 	}
-	
+
 	public static function _get(){
 		if(!is_object(self::$inst)) throw new Exception('Router object not initialized');
 		return self::$inst;
 	}
-	
+
 	public function setDefault($dest){$this->default = $dest; return $dest;}
-	
+
 	public function register($act,$do=array()){
 		$this->apps[$act] = array('do'=>$do);
 	}
-	
+
 	public function route($act=null,$do=null,$fire=null){
 		$keys = array($act,$do,$fire); $i=0; $dest = null;
 		do {
@@ -35,7 +35,7 @@ class Router {
 		elseif(is_string($dest) && file_exists(ROOT.'/'.$dest)) return $dest;
 		else throw new Exception('Could not route request');
 	}
-	
+
 	protected function doRoute($key,$arr=null){
 		if(is_null($arr)) $arr = $this->apps;
 		foreach($arr as $act => $val){
@@ -45,5 +45,5 @@ class Router {
 		if(isset($arr[Router::DEF])) return $arr[Router::DEF];
 		return null;
 	}
-	
+
 }

@@ -5,16 +5,16 @@
 class PkgDb {
 
 	public $db = false;
-	
+
 	public static function _get($dbfile=null){
 		if(is_null($dbfile)) $dbfile = CACHE.'/pkg.db';
 		return new PkgDb($dbfile);
 	}
-	
+
 	private function __construct($dbfile){
 		$this->db = $this->connectDb($dbfile);
 	}
-	
+
 	private function connectDb($dbfile){
 		return new PDO(
 			'sqlite:'.$dbfile, //dsn
@@ -26,7 +26,7 @@ class PkgDb {
 			)
 		);
 	}
-	
+
 	//this function originally copied a built database from our mirrors
 	//however, now we need to get a built database from multiple mirrors and merge them
 	public static function update(){
@@ -64,7 +64,7 @@ class PkgDb {
 		}
 		return true;
 	}
-	
+
 	public static function makePkg($db,$pkg){
 		$arr = array('info'=>array(),'manifest'=>array(),'dep'=>array());
 		//set basic info
@@ -88,7 +88,7 @@ class PkgDb {
 		$obj->data = $arr;
 		return $obj;
 	}
-	
+
 	public function clearDb(){
 		$this->db->prepare('drop table if exists pkg')->execute();
 		$this->db->prepare('drop table if exists pkg_dep')->execute();
@@ -96,7 +96,7 @@ class PkgDb {
 		$this->db->prepare('drop table if exists pkg_manifest')->execute();
 		return true;
 	}
-	
+
 	public function initDb(){
 		$this->db->prepare(DB_TBL_PKG)->execute();
 		$this->db->prepare(DB_TBL_PKG_DEP)->execute();
@@ -104,7 +104,7 @@ class PkgDb {
 		$this->db->prepare(DB_TBL_PKG_MANIFEST)->execute();
 		return true;
 	}
-	
+
 	public function addToDb(PkgDef $pkg,$mirror=null){
 		try {
 			$this->getByFQN($pkg->data['info']['fqn']);
@@ -167,7 +167,7 @@ class PkgDb {
 					$version,
 					Pkg::v2i($version)
 				));
-			}	
+			}
 		}
 		//insert the manifest
 		foreach(gfa($pkg->data,'manifest') as $manifest){
@@ -184,7 +184,7 @@ class PkgDb {
 		}
 		return $pkg_id;
 	}
-	
+
 	public function build($cleardb=true){
 		//clear the database
 		if($cleardb){
@@ -238,20 +238,19 @@ class PkgDb {
 					unset($def);
 					continue;
 				}
-
 				$pkg_id = $this->addToDb($def);
 				unset($def);
 			}
 		}
 	}
-	
+
 	public static function export($src,$dest){
 		//grab db file
 		$buff = file_get_contents($src);
 		file_put_contents($dest,$buff);
 		return true;
 	}
-	
+
 	public function show(){
 		$out = '';
 		$repo = null;
@@ -287,13 +286,13 @@ class PkgDb {
 		}
 		return $out;
 	}
-	
+
 	public function pkgList(){
 		$query = $this->db->prepare('SELECT ROWID,* FROM pkg ORDER BY fqn ASC');
 		$query->execute();
 		return $query->fetchAll();
 	}
-	
+
 	public function search($keywords){
 		$query = $this->db->prepare('SELECT * FROM pkg WHERE fqn LIKE ? ORDER BY fqn ASC');
 		$query->execute(array('%'.$keywords.'%'));
@@ -303,7 +302,7 @@ class PkgDb {
 		}
 		return $out;
 	}
-	
+
 	public function find($qn){
 		foreach(array('name','sqn','fqn') as $key){
 			try {
@@ -311,11 +310,11 @@ class PkgDb {
 			} catch(Exception $e){
 				if($e->getCode() == 3) continue;
 				else throw $e;
-			}	
+			}
 		}
 		throw new Exception('Could not find package matching: "'.$qn .'" maybe you meant one of these?',2);
 	}
-		
+
 	private function _find($qn,$key){
 		//try by key
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg WHERE '.$key.' = ?');
@@ -328,25 +327,25 @@ class PkgDb {
 		}
 		throw new Exception('no results',3);
 	}
-	
+
 	public function getDeps($pkg_id){
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
 		$query->execute(array($pkg_id));
 		return $query->fetchAll();
 	}
-	
+
 	public function getDepVers($pkg_dep_id){
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg_dep_ver WHERE pkg_dep_id = ? ORDER BY version_int ASC');
 		$query->execute(array($pkg_dep_id));
 		return $query->fetchAll();
 	}
-	
+
 	public function getManifest($pkg_id){
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg_manifest WHERE pkg_id = ? ORDER BY file ASC');
 		$query->execute(array($pkg_id));
 		return $query->fetchAll();
 	}
-	
+
 	public function getByFQN($fqn){
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg WHERE fqn = ? LIMIT 1');
 		$query->execute(array($fqn));
@@ -354,7 +353,7 @@ class PkgDb {
 		if(!$result) throw new Exception('Could not find package by FQN: '.$fqn,ERR_PKG_NOT_FOUND);
 		return $result;
 	}
-	
+
 }
 
 //some of the database structs

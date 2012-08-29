@@ -74,7 +74,7 @@ function upgrade(){
 	}
 	//chain to install as it is the same process
 	install($tgtdef,trim($pkg_str,','),true);
-	
+
 	//now we have to manually do the upgrade hooks
 	UI::out("Upgrade packages.\n");
 	foreach($pkgs as $pkg){
@@ -90,12 +90,12 @@ function upgrade(){
 		}
 		UI::out("... done\n");
 	}
-	
+
 	UI::out("Updating local package database...");
 	foreach($pkgs as $pkg)
 		$tgtdef->data['installed'][$pkg['fqn']] = $pkg['version'];
 	UI::out(" done\n");
-	
+
 	UI::out("Upgrade complete.\n");
 }
 
@@ -121,7 +121,7 @@ function install($packages,$upgrade=false){
 			} else throw $e;
 		}
 	}
-	
+
 	//now lets do some depsolving
 	$ui->out("Selecting dependencies if needed\n");
 	foreach($pkgs as $pkg){
@@ -131,7 +131,7 @@ function install($packages,$upgrade=false){
 			$pkgs[] = $arr;
 		}
 	}
-	
+
 	//remove duplicates and print install list
 	$ui->out("Unselecting duplicates\n");
 	$tmp_pkgs = array();
@@ -140,30 +140,30 @@ function install($packages,$upgrade=false){
 	foreach($pkgs as $key => $pkg){
 		if(!in_array($key,array_keys($tmp_pkgs))) unset($pkgs[$key]);
 	}
-	
+
 	//remove locally installed packages
 	$ui->out("Unselecting locally installed packages\n");
 	foreach($pkgs as $key => $pkg)
 		if(array_key_exists($pkg['fqn'],$tgtdef->data['installed']) && $tgtdef->data['installed'][$pkg['fqn']] == $pkg['version']) unset($pkgs[$key]);
-	
+
 	//make sure we still have pkgs
 	if(!count($pkgs)){
 		$ui->out("No packages to be installed.\n",true);
 		exit;
 	}
-	
+
 	//review the install action
 	$ui->out("The following packages will be ".($upgrade === true ? 'UPGRADED' : 'INSTALLED').":\n");
 	foreach($pkgs as $pkg) $ui->out('  '.$pkg['fqn']."\n");
-	
+
 	if(!defined('ANSWER_YES')){
 		if(!$ui->ask("Are you sure you want to continue?",array('y','n'),false)) exit;
 	}
 	$ui->out("Starting process\n");
-	
+
 	//set tgtdef writable
 	$tgtdef->iostate = TgtDef::READWRITE;
-	
+
 	//retrieve packages
 	$ui->out("Downloading packages from mirror\n");
 	foreach($pkgs as $key => $pkg){
@@ -177,7 +177,7 @@ function install($packages,$upgrade=false){
 		if(!$rv) throw new Exception('Failed to save package: '.$dest);
 		$ui->out("... done\n");
 	}
-	
+
 	//extract packages
 	$ui->out("Extracting packages to target\n");
 	foreach($pkgs as $pkg){
@@ -185,7 +185,7 @@ function install($packages,$upgrade=false){
 		Pkg::extract($pkg['file'],TARGET);
 		$ui->out("... done\n");
 	}
-	
+
 	//process hooks
 	if($upgrade === false){
 		$ui->out("Setting up new packages\n");
@@ -206,7 +206,7 @@ function install($packages,$upgrade=false){
 			$ui->out("... done\n");
 		}
 	}
-	
+
 	//update the locally installed packages
 	if($upgrade === false){
 		$ui->out("Updating local package database...");
@@ -214,10 +214,10 @@ function install($packages,$upgrade=false){
 			$tgtdef->data['installed'][$pkg['fqn']] = $pkg['version'];
 		$ui->out(" done\n");
 	}
-	
+
 	//done
 	$ui->out("Install complete.\n");
-	
+
 }
 
 function remove($packages,$purge=null){
@@ -229,10 +229,10 @@ function remove($packages,$purge=null){
 	//are we purging or removing?
 	if($purge === true) $ui->out("Purging $packages\n");
 	else $ui->out("Remove $packages\n");
-	
+
 	//get db
 	$db = PkgDb::_get();
-	
+
 	//blow up packages and find them
 	$pkgs = array();
 	$ui->out("Locating packages\n");
@@ -248,11 +248,11 @@ function remove($packages,$purge=null){
 			} else throw $e;
 		}
 	}
-	
+
 	//figure out which packages are actually install
 	foreach($pkgs as $key => $pkg)
 		if(!isset($tgtdef->data['installed'][$pkg['fqn']])) unset($pkgs[$key]);
-	
+
 	//make sure packages arent depended on
 	$tmp_pkgs = array();
 	foreach($pkgs as $key => $pkg) $tmp_pkgs[$key] = $pkg['fqn'];
@@ -266,24 +266,24 @@ function remove($packages,$purge=null){
 			}
 		}
 	}
-	
+
 	//make sure we still have packages to process
 	if(!count($pkgs)){
 		$ui->out("No packages to be removed.\n",true);
 		exit;
 	}
-	
+
 	//review the install action
 	$ui->out("The following packages will be ".($purge === true ? 'PURGED' : 'REMOVED').":\n");
 	foreach($pkgs as $pkg) $ui->out('  '.$pkg['fqn']."\n");
-	
+
 	if(!defined('ANSWER_YES')){
 		if(!$ui->ask("Are you sure you want to continue?",array('y','n'),false)) exit;
 	}
-	
+
 	//set tgtdef writable
 	$tgtdef->iostate = TgtDef::READWRITE;
-	
+
 	//process hooks
 	$ui->out("Processing removals\n");
 	foreach($pkgs as $pkg){
@@ -294,7 +294,7 @@ function remove($packages,$purge=null){
 		}
 		$ui->out("... done\n");
 	}
-	
+
 	//process removal hooks only in a purge situation
 	if($purge){
 		//process hooks
@@ -308,7 +308,7 @@ function remove($packages,$purge=null){
 			$ui->out("... done\n");
 		}
 	}
-	
+
 	//remove files
 	$ui->out("Starting removal\n");
 	foreach($pkgs as $pkg){
@@ -320,13 +320,13 @@ function remove($packages,$purge=null){
 			@unlink(dirname($file));
 		}
 	}
-	
+
 	//update the locally installed packages
 	$ui->out("Updating local package database...");
 	foreach($pkgs as $pkg)
 		unset($tgtdef->data['installed'][$pkg['fqn']]);
 	$ui->out(" done\n");
-	
+
 	//done
 	$ui->out("Install complete.\n");
 }
@@ -337,12 +337,12 @@ function backup($name=null,$db_dump=null){
 	if(is_null($name) || $name === false) $name = time();
 	else $name = urlname($name);
 	UI::out("Starting backup to \"$name\"\n");
-	
+
 	//figure out some files
 	$file_db_backup = TARGET.'/.sql.bak';
 	$file_tmp_backup = '/tmp/'.$name.'.tar';
 	$file_backup = TARGET.'/.bak/'.$name.'.tar.bz2';
-	
+
 	//Back up database
 	$db_dump = !is_null($db_dump) ? $db_dump : $tgtdef->get('db-dump');
 	if($db_dump){
@@ -351,25 +351,25 @@ function backup($name=null,$db_dump=null){
 	} else {
 		UI::out("WARNING: No database dump command specified, NOT backing up database\n");
 	}
-	
+
 	//create an archive of the files
 	UI::out("Backing up files\n");
 	run('cd '.TARGET.'; tar -cvf '.$file_tmp_backup.' . --exclude=.bak');
-	
+
 	//compress backup
 	UI::out("Compressing backup\n");
 	run('bzip2 '.$file_tmp_backup);
-	
+
 	//moving backup
 	UI::out("Storing backup\n");
 	@mkdir(dirname($file_backup),0755,true);
 	run('/bin/cp -f --remove-destination '.$file_tmp_backup.'.bz2 '.$file_backup);
-	
+
 	//cleanup
 	UI::out("Cleaning up\n");
 	@unlink($file_db_backup);
 	@unlink($file_tmp_backup.'.bz2');
-	
+
 	UI::out("Backup complete\n");
 	return $file_backup;
 }
@@ -381,20 +381,20 @@ function restore($name=null,$db_restore=null,$file=null){
 	if(!is_null($file)) $backup_file = $file;
 	elseif(!is_null($name)) $backup_file = TARGET.'/.bak/'.$name.'.tar.bz2';
 	if(!file_exists($backup_file)) throw new Exception('Backup file does not exist: '.$backup_file);
-	
+
 	UI::out("Starting to restore backup \"$backup_file\"\n");
-	
+
 	//restoring files
 	UI::out("Restoring files\n");
 	run('tar -xvjf '.$backup_file.' -C '.TARGET);
-	
+
 	//restore database
 	$db_restore = !is_null($db_restore) ? $db_restore : $tgtdef->get('db-restore');
 	if($db_restore){
 		UI::out("Restoring database\n");
 		run($db_restore.' < '.TARGET.'/.sql.bak');
 	} else UI::out('WARNING: No db restore provided, database has NOT been restored');
-	
+
 	UI::out("Restoration complete\n");
 	return $backup_file;
 }
@@ -406,18 +406,18 @@ function migrate($dest,$db_dump=null){
 	UI::out("Starting backup\n");
 	$backup_file = backup($time,$db_dump);
 	$dest = $dest.'/.bak/'.basename($backup_file);
-	
+
 	//transport to destination
 	UI::out("Transporting to destination: $dest\n");
 	@mkdir(dirname($dest),0755,true);
 	file_put_contents($dest,file_get_contents($backup_file));
-	
+
 	//tell the user how to restore the migrated install
 	UI::out("Migration complete, please run:\n  lss -R=$time --db-restore=\"".$tgtdef->get('db-restore')."\" \non the destination\n");
-	
+
 	return $backup_file;
 }
-	
+
 function usage(){ 
 	UI::out(<<<'HELP'
 Options:
@@ -447,3 +447,4 @@ User Settings:
 HELP
 );
 }
+

@@ -15,32 +15,32 @@ $ui = UI::_get(DEFAULT_UI);
 $so = '';
 $lo = array(
 	'help',
-	
+
 	//package selction
 	'pkg:',
 	'repo:',
-	
+
 	//create
 	'create',
-	
+
 	//update args
 	'update',
 	'pkg-version:',
 	'pkg-description:',
-	
+
 	//show def
 	'show',
-	
+
 	//delete
 	'delete',
-	
+
 	//dep args
 	'adddep',
 	'deldep',
 	'dep-pkg:',
 	'dep-version:',
 	'pre',
-	
+
 	//manifest args
 	'addfile:',
 	'delfile:'

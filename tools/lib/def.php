@@ -9,14 +9,14 @@ abstract class Def {
 	protected $filename = null;
 	protected $dataMD5  = null;
 	protected $dataRaw  = null;
-	
+
 	protected $container_var = 'def';
-	
+
 	//io handling
 	const READONLY  = 1;
 	const READWRITE = 0;
 	public $iostate = self::READONLY; // read-only by default
-	
+
 	function __destruct(){
 		$this->write();
 	}
@@ -24,11 +24,11 @@ abstract class Def {
 	public function __toString(){
 		return $this->dataRaw;
 	}
-	
+
 	public function get(){
 		return gfa($this->data,func_get_args());
 	}
-	
+
 	//add a single item to a def
 	// - val should be an array that matches what it should be in the def
 	public function add($val){
@@ -89,7 +89,7 @@ HEADER;
 		$this->dataMD5 = md5($this->dataRaw);
 		return $this;
 	}
-	
+
 	protected function write(){
 		$this->sync();
 		if($this->iostate === self::READONLY) return $this;
@@ -101,7 +101,7 @@ HEADER;
 		fclose($fh);
 		return $this;
 	}
-	
+
 	protected function dataSanitizer(){
 		//this is to be implemented by the extender
 	}

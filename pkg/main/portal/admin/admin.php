@@ -77,7 +77,7 @@ try {
 		}
 		closedir($dir);
 	}
-	
+
 	//router
 	Router::init();
 	Router::_get()->setDefault('ctl/admin/home.php');

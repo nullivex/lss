@@ -5,7 +5,7 @@ require_once(ROOT.'/tools/lib/def.php');
 final class PkgDef extends Def {
 
 	protected $container_var = 'pkgdef';
-	
+
 	//meta info
 	private $fqn 	 = null;
 	private $sqn	 = null;
@@ -49,27 +49,27 @@ final class PkgDef extends Def {
 		$len = strlen($this->filename) - $start - 4;
 		return substr($this->filename,$start,$len);
 	}
-	
+
 	public function getSQN(){
 		if(!is_null($this->sqn)) return $this->sqn;
 		$start = strlen($this->getRepo()) + 1;
 		$len = strlen($this->getFQN()) - $start;
 		return substr($this->getFQN(),$start,$len);
 	}
-	
+
 	public function getRepo(){
 		if(!is_null($this->repo)) return $this->repo;
 		$len = strpos($this->getFQN(),'/');
 		return substr($this->getFQN(),0,$len);
 	}
-	
+
 	public function getName(){
 		if(!is_null($this->name)) return $this->name;
 		$start = strrpos($this->getFQN(),'/') + 1;
 		$len = strlen($this->getFQN()) - $start;
 		return substr($this->getFQN(),$start,$len);
 	}
-	
+
 	public function getClass(){
 		if(!is_null($this->class)) return $this->class;
 		$start = strlen($this->getRepo()) + 1;
@@ -105,8 +105,7 @@ final class PkgDef extends Def {
 		$this->data['info']['name'   ] = $this->getName();
 		if(!gfa($this->data,'info','version'))
 			$this->data['info']['version'] = DEFAULT_VERSION;
-
 		return $this;
 	}
-	
+
 }

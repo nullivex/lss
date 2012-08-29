@@ -24,7 +24,7 @@
 class Config {
 
 	static $inst = false;
-	
+
 	public $config;
 
 	public static function _get(){

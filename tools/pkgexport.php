@@ -12,14 +12,14 @@ require_once(ROOT.'/tools/lib/pkgexport.php');
 $so = 'm:';
 $lo = array(
 	'help',
-	
+
 	//package selction
 	'pkg:',
 	'repo:',
-	
+
 	//mirror
 	'mirror:',
-	
+
 );
 $opts = getopt($so,$lo); unset($so,$lo);
 

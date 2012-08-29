@@ -34,7 +34,7 @@ function send($url,$data,$post=false){
 
 	//Enable Redirection/Cookies
 	curl_setopt($curl, CURLOPT_FOLLOWLOCATION,true);
-	
+
 	//Disable SSL Verification
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);

@@ -21,7 +21,7 @@ $so = array(
 	'h', //help
 	'y', //yes
 	'v', //verbose
-	
+
 	//package actions
 	'u', //upgrade
 	's:', //search
@@ -29,20 +29,20 @@ $so = array(
 	'r:', //remove
 	'p:', //purge
 	'l', //list installed
-	
+
 	//backup/restore
 	'B::', //backup
 	'R::', //restore
-	
+
 	//db actions
 	'U', //update
 	'b', //build-db
 	'e', //export-db
 	'S', //show-db
-	
+
 	//working dir
 	't:', //user working directory
-	
+
 	//mirrors
 	'm:', //use mirror
 );
@@ -51,7 +51,7 @@ $lo = array(
 	'help',
 	'yes',
 	'verbose',
-	
+
 	//package actions
 	'upgrade',
 	'search:',
@@ -59,7 +59,7 @@ $lo = array(
 	'remove:',
 	'purge:',
 	'list',
-	
+
 	//backup/restore
 	'backup::',
 	'restore::',
@@ -68,31 +68,31 @@ $lo = array(
 	'backup-list',
 	'db-dump:',
 	'db-restore:',
-	
+
 	//db actions
 	'db-file:',
 	'build-db',
 	'export-db',
 	'show-db',
 	'update',
-	
+
 	//mirror
 	'mirror:',
-	
+
 	//working dir
 	'target:',
-	
+
 	//misc/utility
 	'int-version:',
 	'clear-cache',
-	
+
 	//set options
 	'set::',
 	'add::',
 	'del::',
 	'name:',
 	'value:',
-	
+
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 
@@ -151,7 +151,7 @@ foreach(array_keys($opts) as $act){
 			usage();
 			exit;
 			break;
-			
+
 		//db actions
 		case 'build-db':
 		case 'b':
@@ -173,7 +173,7 @@ foreach(array_keys($opts) as $act){
 			$noerror=true;
 			update();
 			break;
-			
+
 		//package actions
 		case 'upgrade':
 		case 'u':
@@ -200,7 +200,7 @@ foreach(array_keys($opts) as $act){
 			remove((gfa($opts,'purge') ? gfa($opts,'purge') : gfa($opts,'p')),true);
 			exit;
 			break;
-			
+
 		//backup/restore
 		case 'backup':
 		case 'B':
@@ -212,26 +212,26 @@ foreach(array_keys($opts) as $act){
 			restore(gfa($opts,'restore') ? gfa($opts,'restore') : gfa($opts,'R'),gfa($opts,'db-restore'),gfa($opts,'restore-file'));
 			exit;
 			break;
-			
+
 		//migrate
 		case 'migrate':
 			migrate(gfa($opts,'migrate'));
 			exit;
 			break;
-		
+
 		//local package actions
 		case 'list':
 		case 'l':
 			listInstalled();
 			exit;
 			break;
-			
+
 		//misc/utility
 		case 'int-version':
 			intVersion(gfa($opts,'int-version'));
 			exit;
 			break;
-			
+
 		//default
 		default:
 			continue;

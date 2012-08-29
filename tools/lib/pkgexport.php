@@ -8,12 +8,12 @@ class PkgExport {
 	public function __construct($def){
 		$this->def = $def;
 	}
-	
+
 	//make sure the def is readonly (no funny business)
 	public function getDef(){
 		return $this->def;
 	}
-	
+
 	//we compile the tarball into memory
 	public function compile(){
 		//build the file mapping array
@@ -35,7 +35,7 @@ class PkgExport {
 		Phar::unlinkArchive($n);
 		return $out;
 	}
-	
+
 	//now compress that tarball
 	public function compress(){
 		$n = '/dev/shm/php_'.time().'.tar';
@@ -49,7 +49,7 @@ class PkgExport {
 		Phar::unlinkArchive($n.'.bz2');
 		return $out;
 	}
-	
+
 	//write the tarball to disk
 	public function write($dest){
 		$out = "  Writing to $dest\n";
@@ -57,14 +57,14 @@ class PkgExport {
 		file_put_contents($dest,$this->buff);
 		return $out;
 	}
-	
+
 	//retrieve the buffer for external use
 	public function get(){
 		return $this->buff;
 	}
-	
+
 	public static function getDest($def,$mirror){
 		return $mirror.'/'.$def->getFQN().'.tar.bz2';
 	}
-	
+
 }

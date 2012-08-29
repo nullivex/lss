@@ -110,5 +110,5 @@ class Staff {
 		$query->execute(array(0,$data['staff_id']));
 		return $data['staff_id'];
 	}
-	
+
 }
