@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-require('boot.php');
+require('src/boot.php');
 
 //require sources
 require_once(ROOT.'/tools/lib/pkg.php');

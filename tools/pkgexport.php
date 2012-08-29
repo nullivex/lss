@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-require('boot.php');
+require('src/boot.php');
 
 //require sources
 require_once(ROOT.'/tools/lib/pkg.php');
@@ -33,15 +33,14 @@ if(!$pkg) throw new Exception('No package supplied: '.$pkg);
 $repo = gfa($opts,'repo') ? gfa($opts,'repo') : REPO_MAIN;
 if(!Pkg::exists($pkg,$repo)) throw new Exception('Package does not exist: '.$pkg);
 
-//figure out mirror
-mirror($opts);
+if(is_null(gfa($opts,'mirror'))) throw new Exception('Mirror must be set to export');
 
 if(gfa($opts,'help')){
 	displayHelp();
 	exit;
 }
 
-exportPkg($pkg,$repo);
+exportPkg($pkg,$repo,gfa($opts,'mirror'));
 exit;
 
 //---------------------------------
@@ -49,7 +48,7 @@ exit;
 //---------------------------------
 
 //create package
-function exportPkg($pkg,$repo){
+function exportPkg($pkg,$repo,$mirror){
 	$def = new PkgDef($pkg,$repo);
 	$exp = new PkgExport($def);
 	UI::out("Starting to compile package\n");
@@ -57,7 +56,7 @@ function exportPkg($pkg,$repo){
 	UI::out("Compressing package\n");
 	UI::out($exp->compress());
 	UI::out("Writing package\n");
-	UI::out($exp->write(PkgExport::getDest($def)));
+	UI::out($exp->write(PkgExport::getDest($def,$mirror)));
 	return true;
 }
 

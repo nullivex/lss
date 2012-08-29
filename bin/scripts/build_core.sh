@@ -19,13 +19,13 @@ echo "  done"
 echo "Exporting..."
 while read pkg
 do
-	bin/pkgexport --pkg $pkg
+	bin/pkgexport --pkg $pkg --mirror /data/mirror
 done < bin/scripts/.core_pkgs
 echo "  done"
 
 #update db
 echo "Updating DB..."
-bin/lss --build-db --export-db --update
+bin/lss --build-db --export-db --mirror /data/mirror
 echo "  done"
 
 echo "Completed"

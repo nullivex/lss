@@ -1,25 +1,100 @@
 <?php
-require_once(ROOT.'/tools/lib/func_dialog.php');
 
 class UIMenu extends UI implements UIInt {
 
 	//content buffer
 	private $content = array();
-	private $outbuf_filename = '';
+	
+	//screen definitions
+	private $screen_atr = NCURSES_A_NORMAL;
+	private $backtitle = false;
+	
+	//coordinate tracking
+	private $cols = -1;
+	private $rows = -1;
+	private $view_row = 0;
+	private $view_col = 0;
+	private $x = 0;
+	private $y = 0;
 
 	protected function _init(){
-		$this->dialog_init();
+		ncurses_init();
+		ncurses_savetty();
+		ncurses_keypad(STDSCR,true);
+		ncurses_cbreak();
+		ncurses_noecho();
+		ncurses_nonl();
+		$this->_resize();
+//		ncurses_curs_set(0);
+		$this->y = $this->rows-1;
+		$this->x = 0;
 		if($this::$debug) $this->out("[UIMenu init()]\n");
 	}
 
 	protected function _deinit($death_by_signal=false){
 		if($this::$debug) $this->out("[UIMenu deinit()]\n");
+		if(!$death_by_signal){
+			$this->out("[END]",true);
+			ncurses_timeout(250);
+			while($in=ncurses_getch()){
+				pcntl_signal_dispatch();
+				if(in_array($in,array(13,27,ord('q'))))
+					break;
+			}
+		}
+		ncurses_refresh();
+		ncurses_resetty();
+		ncurses_end();
+	}
+
+	protected function _resize(){
+//		list($prev_rows,$prev_cols)=array($this->rows,$this->cols);
+		ncurses_getmaxyx(STDSCR,&$this->rows,&$this->cols);
+		ncurses_erase();
+		for($c=1;$c<$this->cols;$c++)
+			for($r=1;$r<$this->rows;$r++)
+				ncurses_mvaddstr($r,$c,' ');
+		if($this->backtitle != false){
+			int i;
+			ncurses_wattrset(STDSCR,$this->screen_atr);
+			ncurses_mvwaddstr(STDSCR,0,1,$this->backtitle);
+			ncurses_wmove(STDSCR, 1, 1);
+			for($i=1;$i<$this->cols-1;$i++)
+				ncurses_waddch(STDSCR, ACS_HLINE);
+		}
+		ncurses_wnoutrefresh(STDSCR);
+
+		$cr = $this->view_row;
+		while(1){
+			$this->screen[$this->content[$cr];
+		}
 	}
 
 	public function __out($string,$err=false){
-		if($err) $string = '\Zr\Z1'.$string.'\Zn';
-		file_put_contents($this->outbuf_filename,$string,FILE_APPEND);
-//		if($this::$debug) getc(STDIN);
+		if($err) ncurses_wattron(STDSCR,NCURSES_A_REVERSE);
+		$y_off = 0;
+		while(strrpos($string,"\n",-1) !== false){
+			$y_off++;
+			$string = substr($string,0,-1);
+		}
+		$y_flow = ($this->y+$y_off) - ($this->rows - 1);
+		if($y_flow >= 0){
+			ncurses_move(0,0);
+			ncurses_deleteln(-1*$y_flow);
+			$this->y -= $y_flow;
+		}
+		ncurses_move($this->y,$this->x);
+		ncurses_addstr($string);
+		$this->y += $y_off;
+		$this->x = ($y_off) ? 0 : ($this->x + strlen($string));
+		ncurses_move($this->y,$this->x);
+		if($err) ncurses_wattroff(STDSCR,NCURSES_A_REVERSE);
+		ncurses_refresh();
+		if($this::$debug) ncurses_getch();
+	}
+
+	public function __in(&$rv,$len=-1){
+		
 	}
 
 	public function ask($q,$a,$default=false){
@@ -49,80 +124,6 @@ class UIMenu extends UI implements UIInt {
 
 	public function select($q,&$a,$default=0){
 		//TODO: this.
-	}
-
-//Dialog functions
-	private function dialog_exec($args){
-		if(is_array($args))
-		 $args = join(' ',array_merge($args));
-		$pipes = array(NULL,NULL,NULL);
-		// Allow user to interact with dialog
-		$i = fopen ('php://stdin' ,'r');
-		$o = fopen ('php://stdout','w');
-		// But tell PHP to redirect stderr so we can read it
-		print $args;
-		$p = proc_open('dialog '.$args,array(
-			0=>$i,
-			1=>$o,
-			2=>array('pipe','w')
-		),$pipes);
-		// Wait for and read result
-		$rv = stream_get_contents($pipes[2]);
-		// Close all handles
-		fclose($pipes[2]);
-		fclose($o);
-		fclose($i);
-		proc_close($p);
-		// Return result
-		return $rv;
-	}
-
-	private function dialog_init(){
-		$this->outbuf_filename = tempnam('/dev/shm/','DLG');
-		$args = array();
-		$args[] = '--clear';
-		if($this->backtitle !== false)
-			$args[] = sprintf('--backtitle "%s"',$this->backtitle);
-		$args[] = sprintf('--begin %d %d',2,0);
-		$args[] = '--scrollbar';
-		$args[] = sprintf('--tailbox "%s" %d %d',$this->outbuf_filename,-1,-1);
-		$this->dialog_exec($args);
-	}
-
-	private function dialog_deinit(){
-		
-	}
-
-	private function dialog_textbox($content='',$begin=array(2,0),$size=array(-1,-1)){
-		//dialog --backtitle "This is my Title" --begin 2 0 --scrollbar --textbox /var/log/syslog -1 -1
-		$f = tempnam('/dev/shm/','DLG');
-		file_put_contents($f,$content);
-		$args = array();
-		$args[] = '--clear';
-		if($this->backtitle !== false)
-			$args[] = sprintf('--backtitle "%s"',$backtitle);
-		$args[] = sprintf('--begin %d %d',$begin[0],$begin[1]);
-		$args[] = '--scrollbar';
-		$args[] = sprintf('--textbox "%s" %d %d',$f,$size[0],$size[1]);
-		$rv = $this->dialog_exec($args);
-		unlink($f);
-		return $rv;
-	}
-
-	private function dialog_tailboxbg($content='',$begin=array(2,0),$size=array(-1,-1)){
-		//dialog --backtitle "This is my Title" --begin 2 0 --scrollbar --textbox /var/log/syslog -1 -1
-		$f = tempnam('/dev/shm/','DLG');
-		file_put_contents($f,$content);
-		$args = array();
-		$args[] = '--clear';
-		if($this->backtitle !== false)
-			$args[] = sprintf('--backtitle "%s"',$backtitle);
-		$args[] = sprintf('--begin %d %d',$begin[0],$begin[1]);
-		$args[] = '--scrollbar';
-		$args[] = sprintf('--textbox "%s" %d %d',$f,$size[0],$size[1]);
-		$rv = $this->dialog_exec($args);
-		unlink($f);
-		return $rv;
 	}
 
 }

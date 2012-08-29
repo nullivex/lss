@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-require('boot.php');
+require('src/boot.php');
 
 //require sources
 require_once(ROOT.'/tools/lib/pkg.php');
@@ -39,6 +39,7 @@ $lo = array(
 	'deldep',
 	'dep-pkg:',
 	'dep-version:',
+	'pre',
 	
 	//manifest args
 	'addfile:',
@@ -78,7 +79,7 @@ foreach(array_keys($opts) as $act){
 			deleteDef($repo,$pkg);
 			exit;
 		case 'adddep':
-			addDep($repo,$pkg,gfa($opts,'dep-pkg'),gfa($opts,'dep-version'));
+			addDep($repo,$pkg,gfa($opts,'dep-pkg'),gfa($opts,'dep-version'),gfa($opts,'pre'));
 			exit;
 		case 'deldep':
 			delDep($repo,$pkg,gfa($opts,'dep-pkg'));
@@ -137,9 +138,10 @@ function deleteDef($repo,$pkg){
 }
 
 //add dep
-function addDep($repo,$pkg,$dep_pkg,$dep_versions){
+function addDep($repo,$pkg,$dep_pkg,$dep_versions,$pre=false){
 	$def = new PkgDef($pkg,$repo,PkgDef::READWRITE);
 	$def->data['dep'][$dep_pkg] = array('versions'=>explode(',',$dep_versions));
+	$def->data['dep'][$dep_pkg]['pre'] = $pre;
 	return true;
 }
 

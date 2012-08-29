@@ -24,7 +24,7 @@ final class LsDef extends Def {
 	}
 	
 	public static function getDefFile($lss_path){
-		return $lss_path.'/users/_sys_.lss';
+		return $lss_path.'/.lss';
 	}
 
 	protected function dataSanitizer(){
@@ -34,9 +34,7 @@ final class LsDef extends Def {
 		if(!isset($this->data['ui'])) $this->data['ui'] = DEFAULT_UI;
 		if(!isset($this->data['target'])) $this->data['target'] = DEFAULT_TARGET;
 		//default arrays
-		if(!isset($this->data['public_mirror'])) $this->data['public_mirror'] = array();
-		if(!isset($this->data['private_mirror'])) $this->data['private_mirror'] = array();
-		if(!isset($this->data['personal_mirror'])) $this->data['personal_mirror'] = array();
+		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
 		//chainable
 		return $this;
 	}

@@ -13,7 +13,7 @@ final class PkgDef extends Def {
 	private $class	 = null;
 	private $name	 = null;
 
-	function __construct($pkg,$repo=REPO_MAIN,$iostate=self::READONLY){
+	function __construct($pkg,$repo=REPO_MAIN,$iostate=self::READONLY,$readpkg=true){
 		//deal with iostate
 		$this->iostate = $iostate;
 		$this->filename = self::getDefFile($repo,$pkg);
@@ -23,7 +23,7 @@ final class PkgDef extends Def {
 		$this->repo  = $this->getRepo();
 		$this->name  = $this->getName();
 		$this->class = $this->getClass();
-		return $this->read();
+		if($readpkg) $this->read();
 	}
 
 	public static function getDefFile($repo,$pkg){

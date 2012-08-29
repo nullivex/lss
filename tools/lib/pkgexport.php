@@ -63,8 +63,8 @@ class PkgExport {
 		return $this->buff;
 	}
 	
-	public static function getDest($def){
-		return MIRROR.'/'.$def->getFQN().'.tar.bz2';
+	public static function getDest($def,$mirror){
+		return $mirror.'/'.$def->getFQN().'.tar.bz2';
 	}
 	
 }

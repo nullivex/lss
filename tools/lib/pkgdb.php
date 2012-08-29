@@ -27,6 +27,68 @@ class PkgDb {
 		);
 	}
 	
+	//this function originally copied a built database from our mirrors
+	//however, now we need to get a built database from multiple mirrors and merge them
+	public static function update(){
+		$tmp = CACHE.'/tmp.pkg.db';
+		//get db handle
+		$db = PkgDb::_get();
+		//re-init db
+		$db->clearDb();
+		$db->initDb();
+		//get db from each mirror
+		$mirrors = array_reverse(getFromDefMerged('mirror'));
+		if(!is_array($mirrors) || !count($mirrors)) throw new Exception('No mirrors available for update');
+		foreach($mirrors as $mirror){
+			//get the remote db
+			$src = $mirror.'/pkg.db';
+			$buff = file_get_contents($src);
+			if($buff === false){
+				UI::out("WARNING: $mirror is not a valid mirror\n",true);
+				continue;
+			}
+			$rv = file_put_contents($tmp,$buff); unset($buff);
+			if($rv === false) throw new Exception('Failed to write tmp database: '.$tmp);
+			//setup the second db handle
+			$srcdb = new PkgDb($tmp);
+			foreach($srcdb->pkgList() as $pkg){
+				try {
+					$def = self::makePkg($srcdb,$pkg);
+					$db->addToDb($def,$mirror);
+				} catch(Exception $e){
+					if($e->getCode() == ERR_PKG_EXISTS){
+						UI::out('Ignored '.$pkg['fqn'].' from '.$mirror.' it was already defined.'."\n");
+					} else throw $e;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public static function makePkg($db,$pkg){
+		$arr = array('info'=>array(),'manifest'=>array(),'dep'=>array());
+		//set basic info
+		$arr['info']['fqn'] = $pkg['fqn'];
+		$arr['info']['sqn'] = $pkg['sqn'];
+		$arr['info']['repo'] = $pkg['repo'];
+		$arr['info']['class'] = $pkg['class'];
+		$arr['info']['name'] = $pkg['name'];
+		$arr['info']['version'] = $pkg['version'];
+		$arr['info']['description'] = $pkg['description'];
+		//deal with manifest
+		foreach($db->getManifest($pkg['rowid']) as $manifest)
+			$arr['manifest'][] = $manifest['file'];
+		//deal with deps
+		foreach($db->getDeps($pkg['rowid']) as $dep){
+			$arr['dep'][$dep['fqn']] = array('versions'=>array());
+			foreach($db->getDepVers($dep['rowid']) as $dep_ver)
+				$arr['dep'][$dep['fqn']]['versions'][] = $dep_ver['version'];
+		}
+		$obj = new PkgDef($pkg['sqn'],$pkg['repo'],PkgDef::READONLY,false);
+		$obj->data = $arr;
+		return $obj;
+	}
+	
 	public function clearDb(){
 		$this->db->prepare('drop table if exists pkg')->execute();
 		$this->db->prepare('drop table if exists pkg_dep')->execute();
@@ -43,10 +105,17 @@ class PkgDb {
 		return true;
 	}
 	
-	public function addToDb(PkgDef $pkg){
+	public function addToDb(PkgDef $pkg,$mirror=null){
+		try {
+			$this->getByFQN($pkg->data['info']['fqn']);
+			throw new Exception('Package already exists in database.',ERR_PKG_EXISTS);
+		} catch(Exception $e){
+			if($e->getCode() !== ERR_PKG_NOT_FOUND) throw $e;
+		}
 		//insert initial package
 		$query = $this->db->prepare('
 			INSERT INTO pkg (
+				mirror,
 				fqn,
 				sqn,
 				name,
@@ -55,9 +124,10 @@ class PkgDb {
 				description,
 				version,
 				version_int
-			) VALUES (?,?,?,?,?,?,?,?)
+			) VALUES (?,?,?,?,?,?,?,?,?)
 		');
 		$query->execute(array(
+			$mirror,
 			gfa($pkg->data,'info','fqn'),
 			gfa($pkg->data,'info','sqn'),
 			gfa($pkg->data,'info','name'),
@@ -182,14 +252,6 @@ class PkgDb {
 		return true;
 	}
 	
-	public static function update($src){
-		$dest = CACHE.'/pkg.db';
-		$buff = file_get_contents($src);
-		@mkdir(dirname($dest),0755,true);
-		file_put_contents($dest,$buff);
-		return true;
-	}
-	
 	public function show(){
 		$out = '';
 		$repo = null;
@@ -205,6 +267,7 @@ class PkgDb {
 			//package name and details
 			$out .= "  [PKG ".$pkg['sqn']."]\n";
 			$out .= "    [VERSION: ".$pkg['version']."]\n";
+			$out .= "    [MIRROR: ".$pkg['mirror']."]\n";
 			//get the deps
 			$qa = $this->db->prepare('SELECT ROWID,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
 			$qa->execute(array($pkg['rowid']));
@@ -223,6 +286,12 @@ class PkgDb {
 				$out .= "      [FILE ".$pkg_manifest['file']."]\n";
 		}
 		return $out;
+	}
+	
+	public function pkgList(){
+		$query = $this->db->prepare('SELECT ROWID,* FROM pkg ORDER BY fqn ASC');
+		$query->execute();
+		return $query->fetchAll();
 	}
 	
 	public function search($keywords){
@@ -266,6 +335,12 @@ class PkgDb {
 		return $query->fetchAll();
 	}
 	
+	public function getDepVers($pkg_dep_id){
+		$query = $this->db->prepare('SELECT rowid,* FROM pkg_dep_ver WHERE pkg_dep_id = ? ORDER BY version_int ASC');
+		$query->execute(array($pkg_dep_id));
+		return $query->fetchAll();
+	}
+	
 	public function getManifest($pkg_id){
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg_manifest WHERE pkg_id = ? ORDER BY file ASC');
 		$query->execute(array($pkg_id));
@@ -276,7 +351,7 @@ class PkgDb {
 		$query = $this->db->prepare('SELECT rowid,* FROM pkg WHERE fqn = ? LIMIT 1');
 		$query->execute(array($fqn));
 		$result = $query->fetch(); $query->closeCursor();
-		if(!$result) throw new Exception('Could not find package by FQN: '.$fqn);
+		if(!$result) throw new Exception('Could not find package by FQN: '.$fqn,ERR_PKG_NOT_FOUND);
 		return $result;
 	}
 	
@@ -287,6 +362,7 @@ define('DB_TBL_PKG',
 <<<SQL
 	CREATE TABLE 'pkg' (
 		'pkg_id' INT PRIMARY KEY ,
+		'mirror' VARCHAR ( 255 ) NULL,
 		'fqn' VARCHAR ( 62 ) NOT NULL ,
 		'sqn' VARCHAR ( 41 ) NOT NULL ,
 		'name' VARCHAR ( 20 ) NOT NULL ,
@@ -304,7 +380,8 @@ define('DB_TBL_PKG_DEP',
 	CREATE TABLE 'pkg_dep' (
 		'pkg_dep_id' INT PRIMARY KEY ,
 		'pkg_id' INT NOT NULL ,
-		'fqn' VARCHAR ( 62 ) NOT NULL 
+		'fqn' VARCHAR ( 62 ) NOT NULL ,
+		'pre' INT NOT NULL DEFAULT '0' 
 	)
 SQL
 );

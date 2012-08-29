@@ -1,8 +1,23 @@
 <?php
 
-//update our package db
+//--------------------------
+//Local Target Functions
+//--------------------------
+function listInstalled(){
+	$tgtdef = TgtDef::_get();
+	UI::out('Currently installed packages at '.UsrDef::_get()->get('target')."\n\n");
+	UI::out('  PACKAGE'.str_repeat(' ',65).'VERSION'."\n");
+	foreach($tgtdef->get('installed') as $pkg => $version)
+		UI::out("  $pkg".str_repeat(' ',72 - strlen($pkg))."$version\n");
+	UI::out("\n");
+	return;
+}
+
+//--------------------------
+//Database Functions
+//--------------------------
 function update(){
-	PkgDb::update(MIRROR.'/pkg.db');
+	PkgDb::update();
 	UI::out("Package database updated.\n");
 }
 
@@ -11,20 +26,32 @@ function buildDb(){
 	UI::out("Package database has been built.\n");
 }
 
-function exportDb(){
-	PkgDb::export(ROOT.'/pkg/pkg.db',MIRROR.'/pkg.db');
+function exportDb($mirror){
+	if(is_null($mirror)) throw new Exception('Mirror must be provided for DB export');
+	PkgDb::export(ROOT.'/pkg/pkg.db',$mirror.'/pkg.db');
 	UI::out("Package database has been exported.\n");
 }
 
 function showDb($opts){
 	if(gfa($opts,'db-file')) $dbfile = gfa($opts,'db-file');
-	else $dbfile = MIRROR.'/pkg.db';
+	else $dbfile = null;
 	UI::out(PkgDb::_get($dbfile)->show());
 	UI::out("Database display complete.\n");
 }
 
-function upgrade($tgtdef,$backup=true){
+
+//--------------------------
+//Package Functions
+//--------------------------
+function search($keywords){
+	UI::out("Searching for packages matching \"$keywords\"\n");
+	UI::out(PkgDb::_get()->search($keywords));
+}
+
+function upgrade(){
 	UI::out("Upgrading ".UsrDef::_get()->get('target')."\n");
+	//grab def handle
+	$tgtdef = TgtDef::_get();
 	//grab the db handle
 	$db = PkgDb::_get();
 	//look for packages that need upgraded
@@ -46,7 +73,7 @@ function upgrade($tgtdef,$backup=true){
 		exit;
 	}
 	//chain to install as it is the same process
-	install($tgtdef,trim($pkg_str,','),true,$backup);
+	install($tgtdef,trim($pkg_str,','),true);
 	
 	//now we have to manually do the upgrade hooks
 	UI::out("Upgrade packages.\n");
@@ -72,14 +99,10 @@ function upgrade($tgtdef,$backup=true){
 	UI::out("Upgrade complete.\n");
 }
 
-function search($keywords){
-	UI::out("Searching for packages matching \"$keywords\"\n");
-	UI::out(PkgDb::_get()->search($keywords));
-}
-
-function install($tgtdef,$packages,$upgrade=false,$backup=true){
+function install($packages,$upgrade=false){
+	$tgtdef = TgtDef::_get();
 	//create a backup
-	if($backup === true && $tgtdef->get('no_backup') != true) backup($tgtdef);
+	if(getFromDef('no_backup')) backup();
 	//get db
 	$db = PkgDb::_get();
 	//blow up packages and find them
@@ -103,7 +126,9 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	$ui->out("Selecting dependencies if needed\n");
 	foreach($pkgs as $pkg){
 		foreach($db->getDeps($pkg['rowid']) as $dep){
-			$pkgs[] = $db->getByFQN($dep['fqn']);
+			$arr = $db->getByFQN($dep['fqn']);
+			if($dep['pre']) $arr['pre'] = true;
+			$pkgs[] = $arr;
 		}
 	}
 	
@@ -123,7 +148,7 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	
 	//make sure we still have pkgs
 	if(!count($pkgs)){
-		$ui->out("No packages to be removed.\n",true);
+		$ui->out("No packages to be installed.\n",true);
 		exit;
 	}
 	
@@ -143,8 +168,8 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	$ui->out("Downloading packages from mirror\n");
 	foreach($pkgs as $key => $pkg){
 		$ui->out('  Downloading '.$pkg['fqn']);
-		$dest = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
-		$src = $pkgs[$key]['file'] = MIRROR.'/'.$pkg['fqn'].'.tar.bz2';
+		$dest = $pkgs[$key]['file'] = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
+		$src = $pkg['mirror'].'/'.$pkg['fqn'].'.tar.bz2';
 		@mkdir(dirname($dest),0755,true);
 		$buff = @file_get_contents($src);
 		if(!$buff) throw new Exception('Could not download package: '.$src);
@@ -164,12 +189,20 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	//process hooks
 	if($upgrade === false){
 		$ui->out("Setting up new packages\n");
+		//pass 1 pre-depends
 		foreach($pkgs as $pkg){
+			if(isset($pkg['pre']) && $pkg['pre'] === false) continue;
+			else if(!isset($pkg['pre'])) continue;
 			$ui->out('  Setting up '.$pkg['fqn']);
 			$hook_file = Pkg::hookFile($pkg['fqn']);
-			if(file_exists($hook_file)){
-				exec_hook($hook_file,'install');
-			}
+			if(file_exists($hook_file)) exec_hook($hook_file,'install');
+			$ui->out("... done\n");
+		}
+		foreach($pkgs as $pkg){
+			if(isset($pkg['pre']) && $pkg['pre'] === true) continue;
+			$ui->out('  Setting up '.$pkg['fqn']);
+			$hook_file = Pkg::hookFile($pkg['fqn']);
+			if(file_exists($hook_file)) exec_hook($hook_file,'install');
 			$ui->out("... done\n");
 		}
 	}
@@ -187,9 +220,10 @@ function install($tgtdef,$packages,$upgrade=false,$backup=true){
 	
 }
 
-function remove($tgtdef,$packages,$purge=null,$backup=true){
+function remove($packages,$purge=null){
+	$tgtdef = TgtDef::_get();
 	//create a backup
-	if($backup === true && $tgtdef->get('no_backup') != true) backup($tgtdef);
+	if(getFromDef('no_backup')) backup();
 	//grab ui handle
 	$ui = UI::_get();
 	//are we purging or removing?
@@ -297,17 +331,9 @@ function remove($tgtdef,$packages,$purge=null,$backup=true){
 	$ui->out("Install complete.\n");
 }
 
-function listInstalled($tgtdef){
-	UI::out('Currently installed packages at '.UsrDef::_get()->get('target')."\n\n");
-	UI::out('  PACKAGE'.str_repeat(' ',65).'VERSION'."\n");
-	foreach($tgtdef->get('installed') as $pkg => $version)
-		UI::out("  $pkg".str_repeat(' ',72 - strlen($pkg))."$version\n");
-	UI::out("\n");
-	return;
-}
-
-function backup($tgtdef,$name=null,$db_dump=null){
+function backup($name=null,$db_dump=null){
 	//deal with name
+	$tgtdef = TgtDef::_get();
 	if(is_null($name) || $name === false) $name = time();
 	else $name = urlname($name);
 	UI::out("Starting backup to \"$name\"\n");
@@ -348,7 +374,8 @@ function backup($tgtdef,$name=null,$db_dump=null){
 	return $file_backup;
 }
 
-function restore($tgtdef,$name=null,$db_restore=null,$file=null){
+function restore($name=null,$db_restore=null,$file=null){
+	$tgtdef = TgtDef::_get();
 	//deal with backup file
 	if(is_null($name) && is_null($file)) throw new Exception('Backup name or file must be supplied to restore');
 	if(!is_null($file)) $backup_file = $file;
@@ -372,11 +399,12 @@ function restore($tgtdef,$name=null,$db_restore=null,$file=null){
 	return $backup_file;
 }
 
-function migrate($tgtdef,$dest,$db_dump=null){
+function migrate($dest,$db_dump=null){
 	if(!$dest) throw new Exception('A migration destination must be provided');
+	$tgtdef = TgtDef::_get();
 	$time = time();
 	UI::out("Starting backup\n");
-	$backup_file = backup($tgtdef,$time,$db_dump);
+	$backup_file = backup($time,$db_dump);
 	$dest = $dest.'/.bak/'.basename($backup_file);
 	
 	//transport to destination
@@ -388,11 +416,6 @@ function migrate($tgtdef,$dest,$db_dump=null){
 	UI::out("Migration complete, please run:\n  lss -R=$time --db-restore=\"".$tgtdef->get('db-restore')."\" \non the destination\n");
 	
 	return $backup_file;
-}
-
-function intVersion($version){
-	Ui::out(Pkg::v2i($version)."\n");
-	return true;
 }
 	
 function usage(){ 

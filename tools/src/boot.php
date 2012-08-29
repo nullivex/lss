@@ -1,6 +1,6 @@
 <?php
 
-define('ROOT',dirname(dirname(__FILE__)));
+define('ROOT',dirname(dirname(dirname(__FILE__))));
 chdir(ROOT);
 
 //constants
@@ -13,16 +13,22 @@ define('DEFAULT_VERSION','0.0.1');
 define('DEFAULT_DESCRIPTION','An OpenLSS Package');
 define('DEFAULT_TARGET','/opt/lss');
 define('DEFAULT_LSS','/usr/lss');
-define('DEFAULT_MIRROR','http://mirror.openlss.org');
 define('DEFAULT_CACHE','/var/cache/lss');
 
-//load global deps
-require_once(ROOT.'/tools/lib/func.php');
+//load global src files
+require_ONCE(ROOT.'/tools/src/err.php');
+require_once(ROOT.'/tools/src/func.php');
+
+//load global objects
+require_once(ROOT.'/tools/lib/lsdef.php');
 require_once(ROOT.'/tools/lib/usrdef.php');
 require_once(ROOT.'/tools/lib/ui.php');
 
+//start lsdef for handle system wide default options
+LsDef::init();
+
 //start the usrdef to handle default options
-UsrDef::init($_SERVER['USER']);
+UsrDef::init((isset($_SERVER['HOME']) ? $_SERVER['HOME'] : null));
 
 //load the User Interface
 UI::init(UsrDef::_get()->get('ui'),'OpenLSS v'.LSSTOOLS_VERSION);

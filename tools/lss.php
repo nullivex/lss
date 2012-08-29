@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-require('boot.php');
+require('src/boot.php');
 
 //require sources
 require_once(ROOT.'/tools/lib/pkg.php');
@@ -10,7 +10,7 @@ require_once(ROOT.'/tools/lib/pkgdb.php');
 require_once(ROOT.'/tools/lib/tgtdef.php');
 
 //control funcs
-require_once(ROOT.'/tools/lib/func_lss.php');
+require_once(ROOT.'/tools/src/func_lss.php');
 
 //set this to throw an error if there is no action
 $noerror = false;
@@ -59,7 +59,6 @@ $lo = array(
 	'remove:',
 	'purge:',
 	'list',
-	'no-backup',
 	
 	//backup/restore
 	'backup::',
@@ -77,25 +76,22 @@ $lo = array(
 	'show-db',
 	'update',
 	
+	//mirror
+	'mirror:',
+	
 	//working dir
 	'target:',
-	
-	//sources
-	'mirror-add:',
-	'mirror-del:',
 	
 	//misc/utility
 	'int-version:',
 	'clear-cache',
 	
-	//defaults
-	'default-do-backup',
-	'default-no-backup',
-	'default-db-dump:',
-	'default-db-restore:',
-	'default-target:',
-	'default-cache:',
-	'default-ui:',
+	//set options
+	'set::',
+	'add::',
+	'del::',
+	'name:',
+	'value:',
 	
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
@@ -103,46 +99,44 @@ $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 //suppress system logging
 if(is_null(gfa($opts,'v')) && is_null(gfa($opts,'verbose'))) define('OUT_QUIET',true);
 
-//update defaults if needed
-if(!is_null(gfa($opts,'default-target'))){
-	$noerror = true;
-	UsrDef::_get()->iostate = UsrDef::READWRITE;
-	UsrDef::_get()->data['target'] = gfa($opts,'default-target');
-}
-if(!is_null(gfa($opts,'default-cache'))){
-	$noerror = true;
-	UsrDef::_get()->iostate = UsrDef::READWRITE;
-	UsrDef::_get()->data['cache'] = gfa($opts,'default-cache');
-}
-if(!is_null(gfa($opts,'default-ui'))){
-	$noerror = true;
-	UsrDef::_get()->iostate = UsrDef::READWRITE;
-	UsrDef::_get()->data['ui'] = gfa($opts,'default-ui');
-}
-
 //figure out our target and mirror
 target($opts); //sets the constant 'TARGET'
-mirror($opts); //sets the constant 'MIRROR'
 cache(); //sets the constant 'CACHE'
-$tgtdef = new TgtDef(TARGET);
 
-//target defaults
-if(gfa($opts,'default-db-dump')){
-	$noerror = true;
-	$tgtdef->iostate = $tgtdef::READWRITE;
-	$tgtdef->data['db-dump'] = gfa($opts,'default-db-dump');
-}
-if(gfa($opts,'default-db-restore')){
-	$noerror = true;
-	$tgtdef->iostate = $tgtdef::READWRITE;
-	$tgtdef->data['db-restore'] = gfa($opts,'default-db-restore');
-}
-if(!is_null(gfa($opts,'default-no-backup')) || !is_null(gfa($opts,'default-do-backup'))){
-	$noerror = true;
-	$tgtdef->iostate = $tgtdef::READWRITE;
-	if(!is_null(gfa($opts,'default-no-backup'))) $tgtdef->data['no_backup'] = true;
-	elseif(!is_null(gfa($opts,'default-do-backup'))) $tgtdef->data['no_backup'] = false;
-	else unset($tgtdef->data['no_backup']);
+//init target def
+TgtDef::init(TARGET);
+
+//set options
+if( !is_null(gfa($opts,'set')) || !is_null(gfa($opts,'add')) || !is_null(gfa($opts,'del')) ){
+	//figure out def type
+	if(!is_null(gfa($opts,'set'))) $type = gfa($opts,'set');
+	else if(!is_null(gfa($opts,'add'))) $type = gfa($opts,'add');
+	else if(!is_null(gfa($opts,'del'))) $type = gfa($opts,'del');
+	else $type = 'sys';
+	switch($type){
+		case 'target':
+			$def = TgtDef::_get();
+			break;
+		case 'user':
+			$def = UsrDef::_get();
+			break;
+		default:
+			$def = LsDef::_get();
+			break;
+	}
+	//figure out value action
+	try {
+		if(!is_null(gfa($opts,'set'))) setValue($def,gfa($opts,'name'),gfa($opts,'value'));
+		else if(!is_null(gfa($opts,'add'))) addValue($def,gfa($opts,'name'),gfa($opts,'value'));
+		else if(!is_null(gfa($opts,'del'))) delValue($def,gfa($opts,'name'),gfa($opts,'value'));
+		else throw new Exception('No proper action submitted for value modification');
+	} catch(Exception $e){
+		//we dont want to write on error
+		$def->iostate = $def::READONLY;
+		//throw the original exception so the upstream can handle it
+		throw $e;
+	}
+	exit;
 }
 
 //figure out our answer status
@@ -167,7 +161,7 @@ foreach(array_keys($opts) as $act){
 		case 'export-db':
 		case 'e':
 			$noerror=true;
-			exportDb();
+			exportDb(gfa($opts,'mirror'));
 			break;
 		case 'show-db':
 		case 'S':
@@ -180,20 +174,10 @@ foreach(array_keys($opts) as $act){
 			update();
 			break;
 			
-		//mirror management
-		case 'mirror-add':
-			$noerror=true;
-			mirrorAdd(gfa($opts,'mirror-add'));
-			break;
-		case 'mirror-del':
-			$noerror=true;
-			mirrorDel(gfa($opts,'mirror-del'));
-			break;
-			
 		//package actions
 		case 'upgrade':
 		case 'u':
-			upgrade($tgtdef,(!is_null(gfa($opts,'no-backup')) ? false : true));
+			upgrade();
 			exit;
 			break;
 		case 'search':
@@ -203,42 +187,42 @@ foreach(array_keys($opts) as $act){
 			break;
 		case 'install':
 		case 'i':
-			install($tgtdef,gfa($opts,'install') ? gfa($opts,'install') : gfa($opts,'i'),false,(!is_null(gfa($opts,'no-backup')) ? false : true));
+			install(gfa($opts,'install') ? gfa($opts,'install') : gfa($opts,'i'));
 			exit;
 			break;
 		case 'remove':
 		case 'r':
-			remove($tgtdef,(gfa($opts,'remove') ? gfa($opts,'remove') : gfa($opts,'r')),false,(!is_null(gfa($opts,'no-backup')) ? false : true));
+			remove((gfa($opts,'remove') ? gfa($opts,'remove') : gfa($opts,'r')));
 			exit;
 			break;
 		case 'purge':
 		case 'p':
-			remove($tgtdef,(gfa($opts,'purge') ? gfa($opts,'purge') : gfa($opts,'p')),true,(!is_null(gfa($opts,'no-backup')) ? false : true));
+			remove((gfa($opts,'purge') ? gfa($opts,'purge') : gfa($opts,'p')),true);
 			exit;
 			break;
 			
 		//backup/restore
 		case 'backup':
 		case 'B':
-			backup($tgtdef,gfa($opts,'backup') ? gfa($opts,'backup') : gfa($opts,'B'),gfa($opts,'db-dump'));
+			backup(gfa($opts,'backup') ? gfa($opts,'backup') : gfa($opts,'B'),gfa($opts,'db-dump'));
 			exit;
 			break;
 		case 'restore':
 		case 'R':
-			restore($tgtdef,gfa($opts,'restore') ? gfa($opts,'restore') : gfa($opts,'R'),gfa($opts,'db-restore'),gfa($opts,'restore-file'));
+			restore(gfa($opts,'restore') ? gfa($opts,'restore') : gfa($opts,'R'),gfa($opts,'db-restore'),gfa($opts,'restore-file'));
 			exit;
 			break;
 			
 		//migrate
 		case 'migrate':
-			migrate($tgtdef,gfa($opts,'migrate'));
+			migrate(gfa($opts,'migrate'));
 			exit;
 			break;
 		
 		//local package actions
 		case 'list':
 		case 'l':
-			listInstalled($tgtdef);
+			listInstalled();
 			exit;
 			break;
 			
