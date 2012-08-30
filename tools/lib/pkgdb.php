@@ -62,6 +62,9 @@ class PkgDb {
 				}
 			}
 		}
+		//cleanup
+		unset($db,$srcdb);
+		unlink($tmp);
 		return true;
 	}
 

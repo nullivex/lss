@@ -116,9 +116,11 @@ if( !is_null(gfa($opts,'set')) || !is_null(gfa($opts,'add')) || !is_null(gfa($op
 	else $type = 'sys';
 	switch($type){
 		case 'target':
+		case 'tgt':
 			$def = TgtDef::_get();
 			break;
 		case 'user':
+		case 'usr':
 			$def = UsrDef::_get();
 			break;
 		case 'sys':
@@ -246,6 +248,10 @@ foreach(array_keys($opts) as $act){
 		//misc/utility
 		case 'int-version':
 			intVersion(gfa($opts,'int-version'));
+			exit;
+			break;
+		case 'clear-cache':
+			clearCache();
 			exit;
 			break;
 

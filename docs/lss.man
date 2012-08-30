@@ -5,12 +5,12 @@
 .SH NAME
 lss \- The OpenLSS package manager
 .SH SYNOPSIS
-.B lss [-hyvRUubSl] [-irp] <
-.I pkg
-.B >
-.B [-s] <
-.I keywords
-.B >
+.B lss 
+.I [-hyvUuSlb] 
+.I [-irp <pkg>] 
+.I [-s <keywords>] 
+.I [-t <target>] 
+.I [-m <mirror>]
 .B ...
 .SH DESCRIPTION
 .B lss
@@ -23,6 +23,11 @@ Display help information
 Answer yes to all confirmation prompts
 .IP "-v --verbose"
 Increase verbosity and show underlying system commands
+.SH RUN-TIME SETTINGS
+.IP "-t --target <tgt>"
+Manually specify the target (this should be set into the respective def)
+.IP "-m --mirror <mirror>"
+Specify external mirror (mainly for dev functions)
 .SH PACKAGE MANAGEMENT
 .IP "-U --update"
 Syncs the local package database with the upstream
@@ -43,30 +48,44 @@ Shows the local package db.
 When used with --show-db will show contents of a non standard package DB
 .IP "-l --list"
 List locally installed packages
+.SH UTILITY
+.IP "--int-version <version>"
+Show the integer version of a standard version
+.IP "--clear-cache"
+Clear the local cache (must update db afterwards)
 .SH DEV
 .IP "-b --build-db"
 Builds the package database from a local tree.
 .IP "--export-db"
-Export the package database to the remote mirror.
-.IP "--int-version <version>"
-Show the integer version of a standard version
-.SH USER SETTINGS
-.IP "--default-do-backup"
-Enable auto backups before all package operations.
-.IP "--default-no-backup"
-Disable auto backups before all package operations.
-.IP "--default-db-dump='<dump command>'"
-Set the database dump command to use when making backups, eg: mysqldump -u user db
-.IP "--default-db-restore='<restore command>'"
-Set the database restore command to use when restoring backups, eg: mysql -u user db
-.IP "--default-mirror='<mirror location>'"
-Set the mirror location to something non standard, accepts URL's and local paths.
-.IP "--default-target='<target path>'"
-Set thd efault target for the package manager. There should be one install per user.
-.IP "--default-cache='<cache path>'"
-Set the default cache path to something non standard.
-.IP "--default-ui='<0,1,2>'"
-set the UI mode to the following, 0=Text, 1=Menu, 2=Web
+Export the package database to the remote mirror. (requires --mirror)
+.SH SETTINGS
+.IP "--set=::<usr|tgt>"
+Set a setting value for the respective def (usr|tgt options, defaults to sys)
+.IP "--add=::<usr|tgt>"
+Add a value to an array for a respective def
+.IP "--del=::<usr|tgt>"
+Removes a value from an array for a respective def
+.IP "--name <name>"
+Name of the value to be modified
+.IP "--value <value>"
+Value to be set
+.SH EXAMPLES
+.IP "Update Package Database"
+lss --update
+.IP "Install Packages"
+lss --install web,admin,staff
+.IP "Remove Package"
+lss --remove web
+.IP "Purge Packages"
+lss --purge staff,admin
+.IP "Add Mirror to User Def"
+lss --add=user --name mirror --value http://mirror.openlss.org
+.IP "Add Restricted Mirror to Target Def"
+lss --add=target --name mirrorauth --mirror http://private.openlss.org --value username:password
+.IP "Change Default Target"
+lss --set --name target --value /opt/lss
+.IP "Change Default UI to Menu"
+lss --set --name ui --value 1
 .SH FILES
 .I /usr/lss/users/<user>.lss
 .RS

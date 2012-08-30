@@ -441,31 +441,45 @@ function migrate($dest,$db_dump=null){
 	return $backup_file;
 }
 
+function clearCache(){
+	run('rm -rf '.CACHE.'/* ');
+	UI::out("Cache has been cleared, please update package DB\n");
+}
+
 function usage(){ 
 	UI::out(<<<'HELP'
-Options:
- --help    	-h ..........	display help info
- --yes     	-y ..........	answer yes to all user prompts
- --verbose 	-v ..........	increase output
- --rebase  	-R ..........	rebase the tree to build to (dangerous)
- --search  	-s <keywords>	search the package database
- --update  	-U ..........	sync the package database with the upstream
- --upgrade 	-u ..........	upgrade the current working tree
- --install 	-i <pkgs> ...	install new packages to working tree
- --remove  	-r <pkgs> ...	remove packages from working tree
- --purge   	-p <pkgs> ...	remove packages and data the packages have left behind (includes database tables)
- --build-db	-b ..........	build the database from def files (only works in a full source set)
- --show-db 	-S ..........	show the current package database
- --local   	-l ..........	source the packages from a local source set
-User Settings:
- --default-do-backup 	backup flag: set true
- --default-no-backup 	backup flag: set false
- --default-db-dump   	Set default database dump command
- --default-db-restore	Set default database restore command
- --default-mirror    	Set default MIRROR
- --default-target    	Set default TARGET
- --default-cache     	Set default CACHE
- --default-ui        	Set default UI type (0=Text, 1=Menu, 2=Web)
+SYNOPSIS
+    lss [-hyvUuSlb] [-irp <pkg>] [-s <keywords>] [-t <target>] [-m <mirror>] ...
+OPTIONS
+    --help     -h ..........   display help info
+    --yes      -y ..........   answer yes to all user prompts
+    --verbose  -v ..........   increase output
+RUN-TIME SETTINGS
+    --target   -t <tgt>.....   manually specify the target (this should be set into the respective def)
+    --mirror   -m <mirror>..   specify external mirror (mainly for dev functions)
+PACKAGE MANAGEMENT
+    --update   -U ..........   sync the package database with the upstream
+    --search   -s <keywords>   search the package database
+    --upgrade  -u ..........   upgrade the current working tree
+    --install  -i <pkgs> ...   install new packages to working tree
+    --remove   -r <pkgs> ...   remove packages from working tree
+    --purge    -p <pkgs> ...   remove packages and data the packages have left behind (includes database tables)
+LOCAL DB
+    --show-db  -S ..........   show the current package database
+    --db-file     <file>....   show the local database using a specific database file
+    --list     -l ..........   show locally installed packages for target
+UTILITY
+    --int-version <version>.   take full version and return integer value
+    --clear-cache ..........   clear the local cache (must update db afterwards)
+DEV
+    --build-db -b ..........   build the database from def files (only works in a full source set)
+    --export-db   ..........   export built database to mirror (requires --mirror)
+SETTINGS
+    --set         :<usr|tgt>   set a value for a def (user or target is optional, defaults to sys)
+    --add         :<usr|tgt>   add a value to an array
+    --del         :<usr|tgt>   remove a value from and array
+    --name        <name>....   name of value to modify
+    --value       <value....   value to set
 
 HELP
 );
