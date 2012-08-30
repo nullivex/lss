@@ -449,7 +449,17 @@ function clearCache(){
 function usage(){ 
 	UI::out(<<<'HELP'
 SYNOPSIS
-    lss [-hyvUuSlb] [-irp <pkg>] [-s <keywords>] [-t <target>] [-m <mirror>] ...
+    lss [OPTIONS] --update
+
+    lss [OPTIONS] [--install --remove --purge] <packages>
+
+    lss [OPTIONS] [--set --add --del] --name <name> --value <value>
+
+    lss [OPTIONS] [UTILITY]
+
+    lss [OPTIONS] [LOCAL DB]
+
+lss [OPTIONS] [DEV]
 OPTIONS
     --help     -h ..........   display help info
     --yes      -y ..........   answer yes to all user prompts
@@ -477,7 +487,7 @@ DEV
 SETTINGS
     --set         :<usr|tgt>   set a value for a def (user or target is optional, defaults to sys)
     --add         :<usr|tgt>   add a value to an array
-    --del         :<usr|tgt>   remove a value from and array
+    --del         :<usr|tgt>   remove a value from an array
     --name        <name>....   name of value to modify
     --value       <value....   value to set
 

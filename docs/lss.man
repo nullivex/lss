@@ -1,17 +1,22 @@
 .\" Process this file with
 .\" groff -man -Tascii foo.1
 .\"
-.TH LSS 1 "AUGUST 2012" Linux "User Manuals"
+.TH LSS 1 "2012" OpenLSS "Website Package Manager"
 .SH NAME
 lss \- The OpenLSS package manager
 .SH SYNOPSIS
-.B lss 
-.I [-hyvUuSlb] 
-.I [-irp <pkg>] 
-.I [-s <keywords>] 
-.I [-t <target>] 
-.I [-m <mirror>]
-.B ...
+lss [OPTIONS] --update
+
+lss [OPTIONS] [--install --remove --purge] <packages>
+
+lss [OPTIONS] [--set --add --del] --name <name> --value <value>
+
+lss [OPTIONS] [UTILITY]
+
+lss [OPTIONS] [LOCAL DB]
+
+lss [OPTIONS] [DEV]
+
 .SH DESCRIPTION
 .B lss
 manages the local package database for a target that is
@@ -86,12 +91,24 @@ lss --add=target --name mirrorauth --mirror http://private.openlss.org --value u
 lss --set --name target --value /opt/lss
 .IP "Change Default UI to Menu"
 lss --set --name ui --value 1
-.SH FILES
-.I /usr/lss/users/<user>.lss
-.RS
-Storage of user settings
-.RE
 .SH BUGS
 Report bugs at http://bugs.openlss.org
-.SH AUTHOR
-Bryan Tong <contact@nullivex.com> Tony Butler <spudz76@gmail.com>
+.SH DOCUMENTATIION
+See more documentation at http://wiki.openlss.org
+.SH SUPPORT
+Visit our community forum http://forum.openlss.org
+c
+See our mailing list at http://list.openlss.org
+
+For commercial support see http://support.openlss.com
+.SH AUTHORS
+Bryan Tong <contact [at] nullivex.com>
+
+Tony Butler <spudz76 [at] gmail.com>
+.SH COPYRIGHT
+(c) 2012 EggPire LLC, All Rights Reserved.
+
+.SH LICENSE
+LGPLv3+: GNU LGPL version 3 or later <http://www.gnu.org/licenses/lgpl.html>.
+
+This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.
