@@ -1,0 +1,10 @@
+Version: 0.0.1
+Section: web
+Priority: extra
+Maintainer: Bryan Tong <contact@nullivex.com>
+Homepage: http://openlss.org
+Package: lss
+Architecture: all
+Depends: php5-cli, libssh2-php, php5-sqlite, bzip2
+Description: The OpenLSS Package Manager
+ The OpenLSS Package Manager

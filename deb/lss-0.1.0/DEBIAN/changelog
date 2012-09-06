@@ -1,0 +1,5 @@
+lss (0.0.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- root <root@dev.openlss.com>  Wed, 05 Sep 2012 22:44:16 -0700
