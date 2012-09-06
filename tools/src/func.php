@@ -1,23 +1,5 @@
 <?php
 
-function gfa($data,$args=null){
-	if(!is_array($args)){
-		$args = func_get_args();
-		array_shift($args);
-	}
-	$var = ''; foreach($args as $arg) $var .= '[\''.$arg.'\']';
-	eval('$val = isset($data'.$var.') ? $data'.$var.' : null;');
-	return $val;
-}
-
-function dfa(&$data){
-	$args = func_get_args();
-	array_shift($args);
-	$var = ''; foreach($args as $arg) $var .= '[\''.$arg.'\']';
-	eval('@unset($data'.$var.');');
-	return true;
-}
-
 function run($cmd,&$return=null){
 	$output = '';
 	$cmd = '/bin/bash -c "'.addslashes($cmd).'"';
@@ -56,8 +38,8 @@ function file_array($path,$exclude='',$recursive=false){
 }
 
 function target($opts){
-	if(gfa($opts,'target')) $target = gfa($opts,'target');
-	elseif(gfa($opts,'t')) $target = gfa($opts,'t');
+	if(mda_get($opts,'target')) $target = mda_get($opts,'target');
+	elseif(mda_get($opts,'t')) $target = mda_get($opts,'t');
 	else $target = getFromDef('target');
 	if(is_null($target)) $target = DEFAULT_TARGET;
 	define('TARGET',$target);
@@ -132,42 +114,49 @@ function getStatusCode($headers){
 function setValue($def,$name=null,$value=null){
 	if(is_null($name)) throw new Exception('Name of value to set must be present');
 	$def->iostate = $def::READWRITE;
-	if(!isset($def->data[$name]) || is_array($def->data[$name])) throw new Exception('Cannot set the value of an array or the variable does not exist');
-	$def->add(array($name=>$value));
+	$var = mda_get($def->data,$name);
+	if(is_null($var) || is_array($var)) throw new Exception('Cannot set the value of an array or the variable does not exist');
+	mda_set($def->data,$value,$name);
 	return true;
 }
 
-function addValue($def,$name=null,$value=null,$key=null){
+function getDef($arg=null){
+	//if we are null return sys
+	if(is_null($arg) || $arg === false || $arg == 'sys' || $arg == 'system') return LsDef::_get();
+	else if($arg == 'usr' || $arg == 'user') return UsrDef::_get();
+	else if($arg == 'tgt' || $arg == 'target') return TgtDef::_get();
+	else {
+		//try to see if we can get a package def
+		$file = PkgDef::getDefFile($arg,true);
+		if(!file_exists($file)) throw new Exception('Invalid def type provided, and no package by this name exists');
+		return new PkgDef($arg);
+	}
+	return false;
+}
+
+function showDef($def){
+	UI::out(print_r($def->data,true));
+	return true;
+}
+
+function addValue($def,$name=null,$value=null){
 	if(is_null($name)) throw new Exception('Name of value to add must be present');
 	$def->iostate = $def::READWRITE;
 	//prepare the array
-	if(!isset($def->data[$name])) $def->data[$name] = array();
-	if(!is_array($def->data[$name])) throw new Exception('Trying to add a value to a non array');
-	//add value to the array
-	if(!is_null($key))
-		$def->data[$name][$key] = $value;
-	else
-		$def->data[$name][] = $value;
+	$var = mda_get($def->data,$name);
+	if(!is_null($var) && !is_array($def->data[$name])) throw new Exception('Trying to add a value to a non array');
+	mda_add($def->data,$value,$name);
 	return true;
 }
 
-function delValue($def,$name=null,$value=null,$key=null){
+function delValue($def,$name=null,$value=null){
 	if(is_null($name)) throw new Exception('Name of value to delete must be present');
 	$def->iostate = $def::READWRITE;
-	if(!isset($def->data[$name])) throw new Exception('Value array does not exist');
-	if(is_null($key)){
-		//remove keys from the array by value
-		$keys = array_keys($def->data[$name],$value);
-		if(!is_array($keys) || !count($keys)) throw new Exception('Value could not be found for removal');
-		foreach($keys as $k) unset($def->data[$name][$k]);
-	} else {
-		//remove explicit key from the array
-		if(!is_null(gfa($def->data[$name],$key)))
-			unset($def->data[$name][$key]);
-		else
-			throw new Exception('Value could not be found for removal');
-	}
-	return true;
+	$var = mda_get($def->data,$name);
+	if(is_null($var)) throw new Exception('Value array does not exist');
+	//process
+	if(is_null($value)) return mda_del($def->data,$name);
+	else return mda_del_value($def->data,$value,$name);
 }
 
 //--------------------------
@@ -180,7 +169,7 @@ function intVersion($version){
 
 function mirror_get_contents($mirror,$url,&$mirrorauth=null){
 	if(is_null($mirrorauth)) $mirrorauth = getFromDefMerged('mirrorauth');
-	$mirrorauth = gfa($mirrorauth,$mirror);
+	$mirrorauth = mda_get($mirrorauth,$mirror);
 	if($mirrorauth){
 		$buff = @file_get_contents($url,false
 			,stream_context_create(array('http'=>

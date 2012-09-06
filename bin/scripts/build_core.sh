@@ -2,16 +2,16 @@
 
 cd /opt/openlss
 
-wdir="core"
+wdir="/opt/openlss/core"
 
 echo "Making sure all files are unix formatted"
-find /opt/openlss/$wdir -type f -name "*.php" | xargs -I{} dos2unix {}
+find $wdir -type f -name "*.php" | xargs -I{} dos2unix {}
 
 #refactor
 echo "Refactoring..."
 while read pkg
 do
-	bin/refactor --pkg $pkg --dir $wdir
+	lss --refactor=$pkg --dir $wdir
 done < bin/scripts/.core_pkgs
 echo "  done"
 
@@ -19,7 +19,7 @@ echo "  done"
 echo "Exporting..."
 while read pkg
 do
-	bin/pkgexport --pkg $pkg --mirror /data/mirror
+	lss --export=$pkg --mirror /data/mirror
 done < bin/scripts/.core_pkgs
 echo "  done"
 

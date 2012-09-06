@@ -26,7 +26,11 @@ abstract class Def {
 	}
 
 	public function get(){
-		return gfa($this->data,func_get_args());
+		return mda_get($this->data,func_get_args());
+	}
+
+	public function getFilename(){
+		return $this->filename;
 	}
 
 	//add a single item to a def
@@ -40,9 +44,9 @@ abstract class Def {
 	}
 
 	//deletes a single item from a def
-	// - val should be a key definition as a string: ex "['keyname']['anothername']['etc']"
+	// - val should be a key path eg: var.foo.bar
 	public function del($val){
-		dfa($this->data,$val);
+		mda_del($this->data,$val);
 		return $this;
 	}
 

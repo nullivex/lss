@@ -87,7 +87,7 @@ class PkgDb {
 			foreach($db->getDepVers($dep['rowid']) as $dep_ver)
 				$arr['dep'][$dep['fqn']]['versions'][] = $dep_ver['version'];
 		}
-		$obj = new PkgDef($pkg['sqn'],$pkg['repo'],PkgDef::READONLY,false);
+		$obj = new PkgDef($pkg['fqn'],PkgDef::READONLY,false);
 		$obj->data = $arr;
 		return $obj;
 	}
@@ -133,18 +133,18 @@ class PkgDb {
 		$query->execute(array(
 			$mirror,
 			$mirrorauth,
-			gfa($pkg->data,'info','fqn'),
-			gfa($pkg->data,'info','sqn'),
-			gfa($pkg->data,'info','name'),
-			gfa($pkg->data,'info','class'),
-			gfa($pkg->data,'info','repo'),
-			gfa($pkg->data,'info','description') ? gfa($pkg->data,'info','description') : DEFAULT_DESCRIPTION,
-			gfa($pkg->data,'info','version'),
-			Pkg::v2i(gfa($pkg->data,'info','version'))
+			mda_get($pkg->data,'info','fqn'),
+			mda_get($pkg->data,'info','sqn'),
+			mda_get($pkg->data,'info','name'),
+			mda_get($pkg->data,'info','class'),
+			mda_get($pkg->data,'info','repo'),
+			mda_get($pkg->data,'info','description') ? mda_get($pkg->data,'info','description') : DEFAULT_DESCRIPTION,
+			mda_get($pkg->data,'info','version'),
+			Pkg::v2i(mda_get($pkg->data,'info','version'))
 		));
 		$pkg_id = $this->db->lastInsertId();
 		//insert package deps
-		foreach(gfa($pkg->data,'dep') as $dep_fqn => $dep){
+		foreach(mda_get($pkg->data,'dep') as $dep_fqn => $dep){
 			$query = $this->db->prepare('
 				INSERT INTO pkg_dep (
 					pkg_id,
@@ -157,7 +157,7 @@ class PkgDb {
 			));
 			$pkg_dep_id = $this->db->lastInsertId('pkg_dep_id');
 			//insert dep versions
-			foreach(gfa($dep,'versions') as $version){
+			foreach(mda_get($dep,'versions') as $version){
 				$query = $this->db->prepare('
 					INSERT INTO pkg_dep_ver (
 						pkg_dep_id,
@@ -175,7 +175,7 @@ class PkgDb {
 			}
 		}
 		//insert the manifest
-		foreach(gfa($pkg->data,'manifest') as $manifest){
+		foreach(mda_get($pkg->data,'manifest') as $manifest){
 			$query = $this->db->prepare('
 				INSERT INTO pkg_manifest (
 					pkg_id,
@@ -208,7 +208,7 @@ class PkgDb {
 						if(($file != '.') && ($file != '..'))
 							$dirs[] = $dir.$file.'/';
 					} else {
-						if(preg_match('|^'.$fulldefpath.'([^/]+)/([^/]+)/([^/]+).lss$|',$dir.$file,$m)){
+						if(preg_match('|^'.$fulldefpath.'([^/]+)/([^/]+)/([^/]+)/.lss$|',$dir.$file,$m)){
 							list(,$repo,$class,$name) = $m;
 							if(!array_key_exists($repo,$defs))
 								$defs[$repo] = array();
@@ -228,14 +228,14 @@ class PkgDb {
 			printf("[REPO %s]\n",$repo);
 			foreach($defs[$repo] as $pkg){
 				printf(" [PKG %s]\n",$pkg);
-				$def = new pkgDef($pkg,$repo,pkgDef::READONLY);
+				$def = new pkgDef($repo.'/'.$pkg,pkgDef::READONLY);
 				$skip = false;
 				if($pkg != $def->data['info']['class'].'/'.$def->data['info']['name']){
 					printf("WARNING: Package '%s' claims to be '%s/%s' in file '%s', skipping...\n"
 						  ,$pkg
 						  ,$def->data['info']['class']
 						  ,$def->data['info']['name']
-						  ,$def->filename
+						  ,$def->getFilename()
 					);
 					$skip = true;
 				}

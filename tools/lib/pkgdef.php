@@ -13,12 +13,12 @@ final class PkgDef extends Def {
 	private $class	 = null;
 	private $name	 = null;
 
-	function __construct($pkg,$repo=REPO_MAIN,$iostate=self::READONLY,$readpkg=true){
+	public function __construct($fqn,$iostate=self::READONLY,$readpkg=true){
 		//deal with iostate
 		$this->iostate = $iostate;
-		$this->filename = self::getDefFile($repo,$pkg);
+		$this->filename = self::getDefFile($fqn,true);
 		//set some meta info for quicker reference
-		$this->fqn   = $this->getFQN();
+		$this->fqn   = $fqn;
 		$this->sqn   = $this->getSQN();
 		$this->repo  = $this->getRepo();
 		$this->name  = $this->getName();
@@ -26,55 +26,50 @@ final class PkgDef extends Def {
 		if($readpkg) $this->read();
 	}
 
-	public static function getDefFile($repo,$pkg){
-		return DEF_PATH.'/'.$repo.'/'.$pkg.'.lss';
+	public static function getDefFile($fqn,$absolute=false){
+		if($absolute) return ROOT.'/'.DEF_PATH.'/'.$fqn.'/.lss';
+		return DEF_PATH.'/'.$fqn.'/.lss';
 	}
 
-	public static function createPkg($repo,$pkg){
-		$def_file = ROOT.'/'.self::getDefFile($repo,$pkg);
+	public static function createPkg($fqn){
+		$def_file = ROOT.'/'.self::getDefFile($fqn,true);
 		@mkdir(dirname($def_file),0755,true);
 		@touch($def_file);
 		return true;
 	}
 
-	public static function deletePkg($repo,$pkg){
-		$def_file = ROOT.'/'.self::getDeffile($repo,$pkg);
+	public static function deletePkg($fqn){
+		$def_file = ROOT.'/'.self::getDeffile($fqn,true);
 		@unlink($def_file);
 		return true;
 	}
 
 	public function getFQN(){
-		if(!is_null($this->fqn)) return $this->fqn;
-		$start = strlen(DEF_PATH)+1; //include the trailing slash
-		$len = strlen($this->filename) - $start - 4;
-		return substr($this->filename,$start,$len);
+		return $this->fqn;
 	}
 
 	public function getSQN(){
 		if(!is_null($this->sqn)) return $this->sqn;
-		$start = strlen($this->getRepo()) + 1;
-		$len = strlen($this->getFQN()) - $start;
-		return substr($this->getFQN(),$start,$len);
+		list(,$class,$name) = explode('/',$this->fqn);
+		return $class.'/'.$name;
 	}
 
 	public function getRepo(){
 		if(!is_null($this->repo)) return $this->repo;
-		$len = strpos($this->getFQN(),'/');
-		return substr($this->getFQN(),0,$len);
+		list($repo) = explode('/',$this->fqn);
+		return $repo;
 	}
 
 	public function getName(){
 		if(!is_null($this->name)) return $this->name;
-		$start = strrpos($this->getFQN(),'/') + 1;
-		$len = strlen($this->getFQN()) - $start;
-		return substr($this->getFQN(),$start,$len);
+		list(,,$name) = explode('/',$this->fqn);
+		return $name;
 	}
 
 	public function getClass(){
 		if(!is_null($this->class)) return $this->class;
-		$start = strlen($this->getRepo()) + 1;
-		$len = strlen($this->getFQN()) - $start - strlen($this->getName()) - 1;
-		return substr($this->getFQN(),$start,$len);
+		list(,$class) = explode('/',$this->fqn);
+		return $class;
 	}
 
 	protected function dataSanitizer(){
@@ -97,13 +92,15 @@ final class PkgDef extends Def {
 		// $this->data['manifest'] = array_merge($tmp);
 		// unset($tmp);
 		//setup defaults for package info
-		if(!isset($this->data['info'])) $this->data['info'] = array();
-		$this->data['info']['fqn'    ] = $this->getFQN();
-		$this->data['info']['sqn'    ] = $this->getSQN();
-		$this->data['info']['repo'   ] = $this->getRepo();
-		$this->data['info']['class'  ] = $this->getClass();
-		$this->data['info']['name'   ] = $this->getName();
-		if(!gfa($this->data,'info','version'))
+		if(!isset($this->data['info'])){
+			$this->data['info'] = array();
+			$this->data['info']['fqn']		= $this->getFQN();
+			$this->data['info']['sqn']		= $this->getSQN();
+			$this->data['info']['repo']		= $this->getRepo();
+			$this->data['info']['class']	= $this->getClass();
+			$this->data['info']['name']		= $this->getName();
+		}
+		if(!mda_get($this->data,'info','version'))
 			$this->data['info']['version'] = DEFAULT_VERSION;
 		return $this;
 	}

@@ -93,11 +93,11 @@ lss --set --name target --value /opt/lss
 lss --set --name ui --value 1
 .SH BUGS
 Report bugs at http://bugs.openlss.org
-.SH DOCUMENTATIION
+.SH DOCUMENTATION
 See more documentation at http://wiki.openlss.org
 .SH SUPPORT
 Visit our community forum http://forum.openlss.org
-c
+
 See our mailing list at http://list.openlss.org
 
 For commercial support see http://support.openlss.com

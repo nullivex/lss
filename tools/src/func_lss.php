@@ -33,7 +33,7 @@ function exportDb($mirror){
 }
 
 function showDb($opts){
-	if(gfa($opts,'db-file')) $dbfile = gfa($opts,'db-file');
+	if(mda_get($opts,'db-file')) $dbfile = mda_get($opts,'db-file');
 	else $dbfile = null;
 	UI::out(PkgDb::_get($dbfile)->show());
 	UI::out("Database display complete.\n");
@@ -180,7 +180,7 @@ function install($packages,$upgrade=false){
 		$buff = Pkg::getFromMirror(
 			$pkg['mirror'], //mirror to use
 			$src, //url to download from
-			gfa($pkg,'mirrorauth'), //mirror auth values
+			mda_get($pkg,'mirrorauth'), //mirror auth values
 			'Could not download package: '.$src //err message pre-text
 		);
 		if($buff === false) continue;
@@ -444,6 +444,48 @@ function migrate($dest,$db_dump=null){
 function clearCache(){
 	run('rm -rf '.CACHE.'/* ');
 	UI::out("Cache has been cleared, please update package DB\n");
+}
+
+function createPackage($fqn){
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null');
+	$def = new PkgDef($fqn,Def::READWRITE);
+	unset($def);
+	UI::out("Package has been created, please construct the def and then refactor\n");
+}
+
+function deletePackage($fqn){
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null');
+	unlink(PkgDef::getDefFile(mda_get($opts,'delete')));
+	UI::out("Package Definition has been destroyed, the files must be removed manually");
+}
+
+function exportPackage($fqn,$mirror){
+	if(is_null($fqn) || is_null($mirror)) throw new Exception('Package FQN and mirror location are required');
+	$def = new PkgDef($fqn);
+	$exp = new PkgExport($def);
+	UI::out("Starting to compile package\n");
+	UI::out($exp->compile());
+	UI::out("Compressing package\n");
+	UI::out($exp->compress());
+	UI::out("Writing package\n");
+	UI::out($exp->write(PkgExport::getDest($def,$mirror)));
+	return true;
+}
+
+function refactorPackage($fqn,$dir){
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null');
+	if(is_null($dir) || !is_dir($dir)) throw new Exception('Must have a valid dir to read from');
+	//read the def
+	$def = new PkgDef($fqn);
+	if(!isset($def->data['manifest']) || !count($def->data['manifest'])) throw new Exception('Package has no manifest cannot continue');
+
+	//go through the manifest
+	foreach($def->data['manifest'] as $file){
+		UI::out("About to copy $file\n");
+		$dest = ROOT.'/pkg/'.$fqn.'/'.$file;
+		@mkdir(dirname($dest),0755,true);
+		copy($dir.'/'.$file,$dest);
+	}
 }
 
 function usage(){ 

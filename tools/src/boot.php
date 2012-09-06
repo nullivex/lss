@@ -6,7 +6,7 @@ chdir(ROOT);
 //constants
 define('LSSTOOLS_VERSION','0.1.0');
 define('REPO_MAIN','main');
-define('DEF_PATH','pkg/def');
+define('DEF_PATH','pkg');
 define('PKG_PATH','pkg');
 define('DEFAULT_UI',0); //can't use UI class const yet
 define('DEFAULT_VERSION','0.0.1');
@@ -19,6 +19,7 @@ define('PACKAGE_DB_FQN','main/sys/db');
 //load global src files
 require_ONCE(ROOT.'/tools/src/err.php');
 require_once(ROOT.'/tools/src/func.php');
+require_once(ROOT.'/tools/src/mda.php');
 
 //load global objects
 require_once(ROOT.'/tools/lib/lsdef.php');

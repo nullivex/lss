@@ -7,6 +7,7 @@ require('src/boot.php');
 require_once(ROOT.'/tools/lib/pkg.php');
 require_once(ROOT.'/tools/lib/pkgdef.php');
 require_once(ROOT.'/tools/lib/pkgdb.php');
+require_once(ROOT.'/tools/lib/pkgexport.php');
 require_once(ROOT.'/tools/lib/tgtdef.php');
 require_once(ROOT.'/tools/lib/db.php');
 
@@ -80,25 +81,36 @@ $lo = array(
 	//mirror
 	'mirror:',
 
-	//working dir
+	//target
 	'target:',
+	
+	//working dir
+	'dir:',
 
 	//misc/utility
 	'int-version:',
 	'clear-cache',
 
-	//set options
+	//def management options
 	'set::',
 	'add::',
 	'del::',
+	'show::',
 	'name:',
 	'value:',
+	'key:',
+	
+	//pkg specific
+	'create:',
+	'delete:',
+	'export:',
+	'refactor:',
 
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 
 //suppress system logging
-if(is_null(gfa($opts,'v')) && is_null(gfa($opts,'verbose'))) define('OUT_QUIET',true);
+if(is_null(mda_get($opts,'v')) && is_null(mda_get($opts,'verbose'))) define('OUT_QUIET',true);
 
 //figure out our target and mirror
 target($opts); //sets the constant 'TARGET'
@@ -107,59 +119,8 @@ cache(); //sets the constant 'CACHE'
 //init target def
 TgtDef::init(TARGET);
 
-//set options
-if( !is_null(gfa($opts,'set')) || !is_null(gfa($opts,'add')) || !is_null(gfa($opts,'del')) ){
-	//figure out def type
-	if(!is_null(gfa($opts,'set'))) $type = gfa($opts,'set');
-	else if(!is_null(gfa($opts,'add'))) $type = gfa($opts,'add');
-	else if(!is_null(gfa($opts,'del'))) $type = gfa($opts,'del');
-	else $type = 'sys';
-	switch($type){
-		case 'target':
-		case 'tgt':
-			$def = TgtDef::_get();
-			break;
-		case 'user':
-		case 'usr':
-			$def = UsrDef::_get();
-			break;
-		case 'sys':
-			$def = LsDef::_get();
-			break;
-		default:
-			throw new Exception('Invalid type "'.$type.'" (expecting [target|user|sys])');
-			break;
-	}
-	//figure out value action
-	try {
-		if(!is_null(gfa($opts,'set'))) setValue($def,gfa($opts,'name'),gfa($opts,'value'));
-		else if(!is_null(gfa($opts,'add'))){
-			if(is_null(gfa($opts,'value'))) throw new Exception('Adding requires --value');
-			if(gfa($opts,'name') == 'mirrorauth'){
-				if(is_null(gfa($opts,'mirror'))) throw new Exception('Adding mirrorauth requires --mirror');
-				addValue($def,gfa($opts,'name'),gfa($opts,'value'),gfa($opts,'mirror'));
-			} else
-				addValue($def,gfa($opts,'name'),gfa($opts,'value'));
-		} else if(!is_null(gfa($opts,'del'))){
-			if(gfa($opts,'name') == 'mirrorauth'){
-				if(is_null(gfa($opts,'mirror'))) throw new Exception('Deleting mirrorauth requires --mirror');
-				delValue($def,gfa($opts,'name'),null,gfa($opts,'mirror'));
-			} else {
-				if(is_null(gfa($opts,'value'))) throw new Exception('Deleting requires --value');
-				delValue($def,gfa($opts,'name'),gfa($opts,'value'));
-			}
-		} else throw new Exception('No proper action submitted for value modification');
-	} catch(Exception $e){
-		//we dont want to write on error
-		$def->iostate = $def::READONLY;
-		//throw the original exception so the upstream can handle it
-		throw $e;
-	}
-	exit;
-}
-
 //figure out our answer status
-if(!is_null(gfa($opts,'y')) || !is_null(gfa($opts,'yes'))) define('ANSWER_YES',true);
+if(!is_null(mda_get($opts,'y')) || !is_null(mda_get($opts,'yes'))) define('ANSWER_YES',true);
 
 //figure out what we are going to do
 foreach(array_keys($opts) as $act){
@@ -180,7 +141,7 @@ foreach(array_keys($opts) as $act){
 		case 'export-db':
 		case 'e':
 			$noerror=true;
-			exportDb(gfa($opts,'mirror'));
+			exportDb(mda_get($opts,'mirror'));
 			break;
 		case 'show-db':
 		case 'S':
@@ -201,40 +162,40 @@ foreach(array_keys($opts) as $act){
 			break;
 		case 'search':
 		case 's':
-			search(gfa($opts,'search') ? gfa($opts,'search') : gfa($opts,'s'));
+			search(mda_get($opts,'search') ? mda_get($opts,'search') : mda_get($opts,'s'));
 			exit;
 			break;
 		case 'install':
 		case 'i':
-			install(gfa($opts,'install') ? gfa($opts,'install') : gfa($opts,'i'));
+			install(mda_get($opts,'install') ? mda_get($opts,'install') : mda_get($opts,'i'));
 			exit;
 			break;
 		case 'remove':
 		case 'r':
-			remove((gfa($opts,'remove') ? gfa($opts,'remove') : gfa($opts,'r')));
+			remove((mda_get($opts,'remove') ? mda_get($opts,'remove') : mda_get($opts,'r')));
 			exit;
 			break;
 		case 'purge':
 		case 'p':
-			remove((gfa($opts,'purge') ? gfa($opts,'purge') : gfa($opts,'p')),true);
+			remove((mda_get($opts,'purge') ? mda_get($opts,'purge') : mda_get($opts,'p')),true);
 			exit;
 			break;
 
 		//backup/restore
 		case 'backup':
 		case 'B':
-			backup(gfa($opts,'backup') ? gfa($opts,'backup') : gfa($opts,'B'),gfa($opts,'db-dump'));
+			backup(mda_get($opts,'backup') ? mda_get($opts,'backup') : mda_get($opts,'B'),mda_get($opts,'db-dump'));
 			exit;
 			break;
 		case 'restore':
 		case 'R':
-			restore(gfa($opts,'restore') ? gfa($opts,'restore') : gfa($opts,'R'),gfa($opts,'db-restore'),gfa($opts,'restore-file'));
+			restore(mda_get($opts,'restore') ? mda_get($opts,'restore') : mda_get($opts,'R'),mda_get($opts,'db-restore'),mda_get($opts,'restore-file'));
 			exit;
 			break;
 
 		//migrate
 		case 'migrate':
-			migrate(gfa($opts,'migrate'));
+			migrate(mda_get($opts,'migrate'));
 			exit;
 			break;
 
@@ -247,12 +208,117 @@ foreach(array_keys($opts) as $act){
 
 		//misc/utility
 		case 'int-version':
-			intVersion(gfa($opts,'int-version'));
+			intVersion(mda_get($opts,'int-version'));
 			exit;
 			break;
 		case 'clear-cache':
 			clearCache();
 			exit;
+			break;
+			
+		//pkg management
+		case 'create':
+			createPackage(mda_get($opts,'create'));
+			exit;
+			break;
+			
+		case 'delete':
+			deletePackage(mda_get($opts,'delete'));
+			exit;
+			break;
+			
+		case 'export':
+			exportPackage(mda_get($opts,'export'),mda_get($opts,'mirror'));
+			exit;
+			break;
+			
+		case 'refactor':
+			refactorPackage(mda_get($opts,'refactor'),mda_get($opts,'dir'));
+			exit;
+			break;
+			
+		//def management
+		case 'show':
+			$def = getDef(mda_get($opts,'show'));
+			showDef($def);
+			exit;
+			break;
+		case 'set':
+			$def = getDef(mda_get($opts,'set'));
+			setValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+			exit;
+			break;
+		case 'add':
+			$def = getDef(mda_get($opts,'add'));
+			addValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+			exit;
+			break;
+		case 'del':
+			$def = getDef(mda_get($opts,'del'));
+			delValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+			exit;
+			break;
+			/*
+			//set options
+			if( !is_null(mda_get($opts,'set')) || !is_null(mda_get($opts,'add')) || !is_null(mda_get($opts,'del')) || !is_null(mda_get($opts,'show')) ){
+				//figure out def type
+				if(!is_null(mda_get($opts,'set'))) $type = mda_get($opts,'set');
+				else if(!is_null(mda_get($opts,'add'))) $type = mda_get($opts,'add');
+				else if(!is_null(mda_get($opts,'del'))) $type = mda_get($opts,'del');
+				else if(!is_null(mda_get($opts,'pkg'))) $type = 'pkg';
+				else $type = 'sys';
+				switch($type){
+					case 'target':
+					case 'tgt':
+						$def = TgtDef::_get();
+						break;
+					case 'user':
+					case 'usr':
+						$def = UsrDef::_get();
+						break;
+					case 'sys':
+						$def = LsDef::_get();
+						break;
+					case 'pkg':
+						$def = new PkgDef(mda_get($opts,'pkg'));
+						break;
+					default:
+						throw new Exception('Invalid type "'.$type.'" (expecting [target|user|sys])');
+						break;
+				}
+				//figure out value action
+				try {
+					if(!is_null(mda_get($opts,'set'))) setValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+					else if(!is_null(mda_get($opts,'show'))) showDef($def);
+					else if(!is_null(mda_get($opts,'add'))){
+						if(is_null(mda_get($opts,'value'))) throw new Exception('Adding requires --value');
+						if(mda_get($opts,'name') == 'mirrorauth'){
+							if(is_null(mda_get($opts,'mirror'))) throw new Exception('Adding mirrorauth requires --mirror');
+							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'),mda_get($opts,'mirror'));
+						} else if(!is_null(mda_get($opts,'dep'))){
+							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'),mda_get($opts,'dep'));
+						} else
+							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+					} else if(!is_null(mda_get($opts,'del'))){
+						if(mda_get($opts,'name') == 'mirrorauth'){
+							if(is_null(mda_get($opts,'mirror'))) throw new Exception('Deleting mirrorauth requires --mirror');
+							delValue($def,mda_get($opts,'name'),null,mda_get($opts,'mirror'));
+						} else if(!is_null(mda_get($opts,'dep'))){
+							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+						} else {
+							if(is_null(mda_get($opts,'value'))) throw new Exception('Deleting requires --value');
+							delValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
+						}
+					} else throw new Exception('No proper action submitted for value modification');
+				} catch(Exception $e){
+					//we dont want to write on error
+					$def->iostate = $def::READONLY;
+					//throw the original exception so the upstream can handle it
+					throw $e;
+				}
+				exit;
+			}
+*/
 			break;
 
 		//default
