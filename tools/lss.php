@@ -258,68 +258,6 @@ foreach(array_keys($opts) as $act){
 			delValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
 			exit;
 			break;
-			/*
-			//set options
-			if( !is_null(mda_get($opts,'set')) || !is_null(mda_get($opts,'add')) || !is_null(mda_get($opts,'del')) || !is_null(mda_get($opts,'show')) ){
-				//figure out def type
-				if(!is_null(mda_get($opts,'set'))) $type = mda_get($opts,'set');
-				else if(!is_null(mda_get($opts,'add'))) $type = mda_get($opts,'add');
-				else if(!is_null(mda_get($opts,'del'))) $type = mda_get($opts,'del');
-				else if(!is_null(mda_get($opts,'pkg'))) $type = 'pkg';
-				else $type = 'sys';
-				switch($type){
-					case 'target':
-					case 'tgt':
-						$def = TgtDef::_get();
-						break;
-					case 'user':
-					case 'usr':
-						$def = UsrDef::_get();
-						break;
-					case 'sys':
-						$def = LsDef::_get();
-						break;
-					case 'pkg':
-						$def = new PkgDef(mda_get($opts,'pkg'));
-						break;
-					default:
-						throw new Exception('Invalid type "'.$type.'" (expecting [target|user|sys])');
-						break;
-				}
-				//figure out value action
-				try {
-					if(!is_null(mda_get($opts,'set'))) setValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
-					else if(!is_null(mda_get($opts,'show'))) showDef($def);
-					else if(!is_null(mda_get($opts,'add'))){
-						if(is_null(mda_get($opts,'value'))) throw new Exception('Adding requires --value');
-						if(mda_get($opts,'name') == 'mirrorauth'){
-							if(is_null(mda_get($opts,'mirror'))) throw new Exception('Adding mirrorauth requires --mirror');
-							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'),mda_get($opts,'mirror'));
-						} else if(!is_null(mda_get($opts,'dep'))){
-							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'),mda_get($opts,'dep'));
-						} else
-							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
-					} else if(!is_null(mda_get($opts,'del'))){
-						if(mda_get($opts,'name') == 'mirrorauth'){
-							if(is_null(mda_get($opts,'mirror'))) throw new Exception('Deleting mirrorauth requires --mirror');
-							delValue($def,mda_get($opts,'name'),null,mda_get($opts,'mirror'));
-						} else if(!is_null(mda_get($opts,'dep'))){
-							addValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
-						} else {
-							if(is_null(mda_get($opts,'value'))) throw new Exception('Deleting requires --value');
-							delValue($def,mda_get($opts,'name'),mda_get($opts,'value'));
-						}
-					} else throw new Exception('No proper action submitted for value modification');
-				} catch(Exception $e){
-					//we dont want to write on error
-					$def->iostate = $def::READONLY;
-					//throw the original exception so the upstream can handle it
-					throw $e;
-				}
-				exit;
-			}
-*/
-			break;
 
 		//default
 		default:
