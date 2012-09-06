@@ -98,7 +98,6 @@ $lo = array(
 	'show::',
 	'name:',
 	'value:',
-	'key:',
 	
 	//pkg specific
 	'create:',
