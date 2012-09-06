@@ -100,11 +100,15 @@ lss --purge staff,admin
 .IP "Add Mirror to User Def"
 lss --add=user --name mirror --value http://mirror.openlss.org
 .IP "Add Restricted Mirror to Target Def"
-lss --add=target --name mirrorauth.http://private.openlss.org --value username:password
+lss --add=target --name mirror --value http://username:password@mirror.openlss.org/private
 .IP "Change Default Target"
 lss --set --name target --value /opt/lss
 .IP "Change Default UI to Menu"
 lss --set --name ui --value 1
+.IP "Update package information"
+lss --set=main/util/func --name info.version --value 0.1.0
+.IP "Export a package"
+lss --export=main/util/func --mirror=/data/mirror
 .SH BUGS
 Report bugs at http://bugs.openlss.org
 .SH DOCUMENTATION
