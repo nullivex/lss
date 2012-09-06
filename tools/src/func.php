@@ -109,57 +109,6 @@ function getStatusCode($headers){
 }
 
 //--------------------------
-//Setting Functions
-//--------------------------
-function setValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to set must be present');
-	$def->iostate = $def::READWRITE;
-	$var = mda_get($def->data,$name);
-	if(is_null($var) || is_array($var)) throw new Exception('Cannot set the value of an array or the variable does not exist');
-	mda_set($def->data,$value,$name);
-	return true;
-}
-
-function getDef($arg=null){
-	//if we are null return sys
-	if(is_null($arg) || $arg === false || $arg == 'sys' || $arg == 'system') return LsDef::_get();
-	else if($arg == 'usr' || $arg == 'user') return UsrDef::_get();
-	else if($arg == 'tgt' || $arg == 'target') return TgtDef::_get();
-	else {
-		//try to see if we can get a package def
-		$file = PkgDef::getDefFile($arg,true);
-		if(!file_exists($file)) throw new Exception('Invalid def type provided, and no package by this name exists');
-		return new PkgDef($arg);
-	}
-	return false;
-}
-
-function showDef($def){
-	UI::out(print_r($def->data,true));
-	return true;
-}
-
-function addValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to add must be present');
-	$def->iostate = $def::READWRITE;
-	//prepare the array
-	$var = mda_get($def->data,$name);
-	if(!is_null($var) && !is_array($def->data[$name])) throw new Exception('Trying to add a value to a non array');
-	mda_add($def->data,$value,$name);
-	return true;
-}
-
-function delValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to delete must be present');
-	$def->iostate = $def::READWRITE;
-	$var = mda_get($def->data,$name);
-	if(is_null($var)) throw new Exception('Value array does not exist');
-	//process
-	if(is_null($value)) return mda_del($def->data,$name);
-	else return mda_del_value($def->data,$value,$name);
-}
-
-//--------------------------
 //Utility Functions
 //--------------------------
 function intVersion($version){
@@ -167,14 +116,13 @@ function intVersion($version){
 	return true;
 }
 
-function mirror_get_contents($mirror,$url,&$mirrorauth=null){
-	if(is_null($mirrorauth)) $mirrorauth = getFromDefMerged('mirrorauth');
-	$mirrorauth = mda_get($mirrorauth,$mirror);
-	if($mirrorauth){
+function mirror_get_contents($url){
+	$parts = parse_url($url);
+	if(isset($parts['user']) || isset($parts['pass']) && $parts['user'] && $parts['pass']){
 		$buff = @file_get_contents($url,false
 			,stream_context_create(array('http'=>
 				array('header'=>"Authorization: Basic "
-				.base64_encode($mirrorauth)))
+				.base64_encode($parts['user'].':'.$parts['pass'])))
 			)
 		);
 	} else
@@ -186,7 +134,7 @@ function mirror_get_contents($mirror,$url,&$mirrorauth=null){
 			is_array($http_response_header) && 
 			getStatusCode($http_response_header) == 401
 		)
-			throw new Exception($mirror.' authorization failed: '.(($mirrorauth) ? ' (mirrorauth incorrect)' : ' (set mirrorauth)'),ERR_MIRROR_AUTH_FAILED);
+			throw new Exception($parts['host'].dirname($parts['path']).' authorization failed: '.(($parts['user']) ? ' (mirrorauth incorrect)' : ' (set mirrorauth)'),ERR_MIRROR_AUTH_FAILED);
 		else
 			throw new Exception($mirror.' is not a valid mirror',ERR_MIRROR_INVALID);
 	}

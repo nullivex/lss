@@ -38,12 +38,12 @@ class PkgDb {
 		$db->clearDb();
 		$db->initDb();
 		//get db from each mirror
-		$mirrors = array_reverse(getFromDefMerged('mirror'));
+		$mirrors = array_reverse(getFromDefMerged('mirror')); //this gets reversed because we want target mirrors first
 		if(!is_array($mirrors) || !count($mirrors)) throw new Exception('No mirrors available for update');
 		foreach($mirrors as $mirror){
 			//get the remote db
 			$src = $mirror.'/pkg.db';
-			$buff = Pkg::getFromMirror($mirror,$src,$mirrorauth);
+			$buff = Pkg::getFromMirror($src);
 			//if we have a bad value continue on
 			if($buff === false) continue;
 			//write the new db
@@ -54,7 +54,7 @@ class PkgDb {
 			foreach($srcdb->pkgList() as $pkg){
 				try {
 					$def = self::makePkg($srcdb,$pkg);
-					$db->addToDb($def,$mirror,$mirrorauth);
+					$db->addToDb($def,$mirror);
 				} catch(Exception $e){
 					if($e->getCode() == ERR_PKG_EXISTS){
 						UI::out('Ignored '.$pkg['fqn'].' from '.$mirror.' it was already defined.'."\n");
@@ -108,7 +108,7 @@ class PkgDb {
 		return true;
 	}
 
-	public function addToDb(PkgDef $pkg,$mirror=null,$mirrorauth=null){
+	public function addToDb(PkgDef $pkg,$mirror=null){
 		try {
 			$this->getByFQN($pkg->data['info']['fqn']);
 			throw new Exception('Package already exists in database.',ERR_PKG_EXISTS);
@@ -119,7 +119,6 @@ class PkgDb {
 		$query = $this->db->prepare('
 			INSERT INTO pkg (
 				mirror,
-				mirrorauth,
 				fqn,
 				sqn,
 				name,
@@ -128,11 +127,10 @@ class PkgDb {
 				description,
 				version,
 				version_int
-			) VALUES (?,?,?,?,?,?,?,?,?,?)
+			) VALUES (?,?,?,?,?,?,?,?,?)
 		');
 		$query->execute(array(
 			$mirror,
-			$mirrorauth,
 			mda_get($pkg->data,'info','fqn'),
 			mda_get($pkg->data,'info','sqn'),
 			mda_get($pkg->data,'info','name'),
@@ -367,7 +365,6 @@ define('DB_TBL_PKG',
 	CREATE TABLE 'pkg' (
 		'pkg_id' INT PRIMARY KEY ,
 		'mirror' VARCHAR ( 255 ) NULL,
-		'mirrorauth' VARCHAR ( 255 ) NULL,
 		'fqn' VARCHAR ( 62 ) NOT NULL ,
 		'sqn' VARCHAR ( 41 ) NOT NULL ,
 		'name' VARCHAR ( 20 ) NOT NULL ,

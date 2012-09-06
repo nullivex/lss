@@ -31,10 +31,10 @@ class Pkg {
 	
 	//this handles mirror authorization more gracefully than the core function
 	//	also has some nice error printing for nice warnings
-	public static function getFromMirror($mirror,$url,&$mirrorauth=null,$err_verbiage=null){
+	public static function getFromMirror($url,$err_verbiage=null){
 		$buff = false;
 		try {
-			$buff = mirror_get_contents($mirror,$url,$mirrorauth);
+			$buff = mirror_get_contents($url);
 		} catch(Exception $e){
 			if($e->getCode() == ERR_MIRROR_AUTH_FAILED || $e->getCode() == ERR_MIRROR_INVALID)
 				UI::out('WARNING: '.(is_null($err_verbiage) ? '' : $err_verbiage.' ').$e->getMessage()."\n",true);

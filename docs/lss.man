@@ -9,13 +9,15 @@ lss [OPTIONS] --update
 
 lss [OPTIONS] [--install --remove --purge] <packages>
 
-lss [OPTIONS] [--set --add --del] --name <name> --value <value>
+lss [OPTIONS] [--show --set --add --del] --name <name> --value <value>
 
 lss [OPTIONS] [UTILITY]
 
 lss [OPTIONS] [LOCAL DB]
 
 lss [OPTIONS] [DEV]
+
+lss [OPTIONS] [PACKAGE DEV]
 
 .SH DESCRIPTION
 .B lss
@@ -61,19 +63,31 @@ Clear the local cache (must update db afterwards)
 .SH DEV
 .IP "-b --build-db"
 Builds the package database from a local tree.
-.IP "--export-db"
+.IP "--export-db --mirror=<mirror>"
 Export the package database to the remote mirror. (requires --mirror)
 .SH SETTINGS
-.IP "--set=::<usr|tgt>"
+All of these commands take %fqn% which is a Fully Qualified Name of a package such as "main/util/func"
+.IP "--show=::<sys|usr|tgt|%fqn%>"
+Show a respective definition file
+.IP "--set=::<sys|usr|tgt|%fqn%>"
 Set a setting value for the respective def (usr|tgt options, defaults to sys)
-.IP "--add=::<usr|tgt>"
+.IP "--add=::<sys|usr|tgt|%fqn%>"
 Add a value to an array for a respective def
-.IP "--del=::<usr|tgt>"
+.IP "--del=::<sys|usr|tgt|%fqn%>"
 Removes a value from an array for a respective def
 .IP "--name <name>"
 Name of the value to be modified
 .IP "--value <value>"
 Value to be set
+.SH PACKAGE DEV
+.IP "--export=<%fqn%> --mirror=<mirror>"
+Export a package to the respective mirror
+.IP "--refactor=<%fqn%> --dir=<dir>"
+Pull files from a working directory to package based on the manifest
+.IP "--create=<%fqn%>"
+Create the basic def file for a package and package contents folder
+.IP "--delete=<%fqn%>"
+Delete the def file of a package, remaining files must be removed manually
 .SH EXAMPLES
 .IP "Update Package Database"
 lss --update
@@ -86,7 +100,7 @@ lss --purge staff,admin
 .IP "Add Mirror to User Def"
 lss --add=user --name mirror --value http://mirror.openlss.org
 .IP "Add Restricted Mirror to Target Def"
-lss --add=target --name mirrorauth --mirror http://private.openlss.org --value username:password
+lss --add=target --name mirrorauth.http://private.openlss.org --value username:password
 .IP "Change Default Target"
 lss --set --name target --value /opt/lss
 .IP "Change Default UI to Menu"
