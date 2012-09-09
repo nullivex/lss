@@ -54,7 +54,7 @@ function cache(){
 function remove_dups(&$arr){
 	//deal with uniques in the manifest
 	$tmp = array_unique($arr,SORT_STRING);
-	sort($tmp,SORT_STRING);
+	asort($tmp,SORT_STRING);
 	$arr = array_merge($tmp);
 	unset($tmp);
 }
@@ -118,6 +118,7 @@ function intVersion($version){
 
 function mirror_get_contents($url){
 	$parts = parse_url($url);
+	$mirror = mda_get($parts,'scheme')."://".mda_get($parts,'host').dirname(mda_get($parts,'path'));
 	if(isset($parts['user']) || isset($parts['pass']) && $parts['user'] && $parts['pass']){
 		$buff = @file_get_contents($url,false
 			,stream_context_create(array('http'=>
@@ -131,12 +132,22 @@ function mirror_get_contents($url){
 	if($buff === false){
 		if(
 			isset($http_response_header) && 
-			is_array($http_response_header) && 
-			getStatusCode($http_response_header) == 401
-		)
-			throw new Exception($parts['host'].dirname($parts['path']).' authorization failed: '.(($parts['user']) ? ' (mirrorauth incorrect)' : ' (set mirrorauth)'),ERR_MIRROR_AUTH_FAILED);
-		else
-			throw new Exception($mirror.' is not a valid mirror',ERR_MIRROR_INVALID);
+			is_array($http_response_header)
+		){
+			$statuscode = getStatusCode($http_response_header);
+			switch($statuscode){
+				case 401:
+					throw new Exception($mirror.' authorization failed: '.(($parts['user']) ? ' (auth incorrect)' : ' (set auth)'),ERR_MIRROR_AUTH_FAILED);
+					break;
+				case 404:
+					throw new Exception($mirror.' package database not found (status 404)',ERR_MIRROR_INVALID);
+					break;
+				default:
+					throw new Exception($mirror.' is not a valid mirror (status '.$statuscode.')',ERR_MIRROR_INVALID);
+					break;
+			}
+		} else
+			throw new Exception($mirror.' request failed completely',ERR_MIRROR_INVALID);
 	}
 	return $buff;
 }

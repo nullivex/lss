@@ -13,7 +13,7 @@ final class UsrDef extends Def {
 	}
 
 	public static function _get(){
-		if(!is_object(self::$inst)) throw new Exception('UsrDef has not been initialized');
+		if(!is_object(self::$inst)) throw new Exception('UsrDef has not been initialized',ERR_NOT_INITIALIZED);
 		return self::$inst;
 	}
 
@@ -35,7 +35,6 @@ final class UsrDef extends Def {
 		if(!isset($this->data['target'])) $this->data['target'] = LsDef::_get()->get('target');
 		//default arrays
 		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
-		if(!isset($this->data['mirrorauth'])) $this->data['mirrorauth'] = array();
 		return $this;
 	}
 

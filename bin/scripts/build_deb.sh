@@ -2,7 +2,7 @@
 
 cd /opt/openlss
 
-ver="0.1.0"
+ver="0.1.1"
 dir="lss-$ver"
 
 # create folders

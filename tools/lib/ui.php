@@ -86,7 +86,7 @@ abstract class UI {
 	}
 
 	public static function _get(){
-		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized');
+		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized',ERR_NOT_INITIALIZED);
 		return self::$inst;
 	}
 
@@ -128,12 +128,12 @@ abstract class UI {
 	}
 
 	public static function out($string,$err=false){
-		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized');
+		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized',ERR_NOT_INITIALIZED);
 		return self::$inst->_out($string,$err);
 	}
 
 	public static function title($t=false){
-		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized');
+		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized',ERR_NOT_INITIALIZED);
 		self::$inst->basetitle = $t;
 		return self::$inst;
 	}

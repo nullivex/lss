@@ -1,13 +1,13 @@
 <?php
 
 $install = function(){
-	dumpvar(Db::$inst);
+	//void
 };
 
 $remove = function(){
-	dumpvar(Db::$inst);
+	//void
 };
 
 $purge = function(){
-	dumpvar(Db::$inst);
+	//vodi
 };

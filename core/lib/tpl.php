@@ -155,6 +155,7 @@ class Tpl {
 		$end = microtime(true);
 		$time = number_format(($end - START),5);
 		if(class_exists('Db')) $db_stats = ' | Queries: '.Db::_get()->getQueryCount();
+		else $db_stats = '';
 		$this->setConstant('script_stats',
 			'Execution: '.$time.
 			$db_stats.

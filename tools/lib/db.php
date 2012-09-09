@@ -49,20 +49,14 @@ class Db {
 	}
 
 	public function connect(){
-		try{
-			$this->pdo = new PDO(
-				$this->config['driver'].':dbname='.$this->config['database'].
-				';host='.$this->config['host'].';port='.$this->config['port'],
-				$this->config['user'],
-				$this->config['password'],
-				array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION)
-			);
-			$this->connected = true;
-		}
-		catch(PDOException $error){
-			$this->connected = false;
-			throw new Exception("Database Connection Failed: ".$error->getMessage());
-		}
+		$this->pdo = new PDO(
+			$this->config['driver'].':dbname='.$this->config['database'].
+			';host='.$this->config['host'].';port='.$this->config['port'],
+			$this->config['user'],
+			$this->config['password'],
+			array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION)
+		);
+		$this->connected = true;
 		return $this;
 	}
 

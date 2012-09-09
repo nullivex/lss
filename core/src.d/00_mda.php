@@ -61,3 +61,4 @@ function mda_exists(&$arr,$value,$path=null){
 	foreach(array_keys($val,$value) as $key) $rv = true;
 	return $rv;
 }
+

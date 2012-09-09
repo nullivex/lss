@@ -22,7 +22,7 @@ class PkgDb {
 			null, //pass
 			array(
 				PDO::ATTR_ERRMODE		=>	PDO::ERRMODE_EXCEPTION,
-				PDO::ATTR_PERSISTENT	=>	true
+				PDO::ATTR_PERSISTENT	=>	false
 			)
 		);
 	}
@@ -38,8 +38,8 @@ class PkgDb {
 		$db->clearDb();
 		$db->initDb();
 		//get db from each mirror
-		$mirrors = array_reverse(getFromDefMerged('mirror')); //this gets reversed because we want target mirrors first
-		if(!is_array($mirrors) || !count($mirrors)) throw new Exception('No mirrors available for update');
+		$mirrors = Pkg::getMirrors();
+		if(!is_array($mirrors) || !count($mirrors)) throw new Exception('No mirrors available for update',ERR_NO_MIRRORS_AVAILABLE);
 		foreach($mirrors as $mirror){
 			//get the remote db
 			$src = $mirror.'/pkg.db';
@@ -48,7 +48,7 @@ class PkgDb {
 			if($buff === false) continue;
 			//write the new db
 			$rv = file_put_contents($tmp,$buff); unset($buff);
-			if($rv === false) throw new Exception('Failed to write tmp database: '.$tmp);
+			if($rv === false) throw new Exception('Failed to write tmp database: '.$tmp,ERR_DB_WRITE_FAILED);
 			//setup the second db handle
 			$srcdb = new PkgDb($tmp);
 			foreach($srcdb->pkgList() as $pkg){
@@ -269,7 +269,10 @@ class PkgDb {
 			//package name and details
 			$out .= "  [PKG ".$pkg['sqn']."]\n";
 			$out .= "    [VERSION: ".$pkg['version']."]\n";
-			$out .= "    [MIRROR: ".$pkg['mirror'].(($pkg['mirrorauth'])?'[+AUTH]':'')."]\n";
+			$parts = parse_url($pkg['mirror']);
+			$mirror = mda_get($parts,'scheme')."://".mda_get($parts,'host').mda_get($parts,'path');
+			$auth = (isset($parts['user']) || isset($parts['pass']) && $parts['user'] && $parts['pass']) ? '[+AUTH]' : '';
+			$out .= "    [MIRROR: ".$mirror.$auth."]\n";
 			//get the deps
 			$qa = $this->db->prepare('SELECT ROWID,* FROM pkg_dep WHERE pkg_id = ? ORDER BY fqn ASC');
 			$qa->execute(array($pkg['rowid']));

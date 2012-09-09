@@ -6,9 +6,9 @@
 function listInstalled(){
 	$tgtdef = TgtDef::_get();
 	UI::out('Currently installed packages at '.UsrDef::_get()->get('target')."\n\n");
-	UI::out('  PACKAGE'.str_repeat(' ',65).'VERSION'."\n");
+	UI::out('  PACKAGE'.str_repeat(' ',55).'VERSION'."\n");
 	foreach($tgtdef->get('installed') as $pkg => $version)
-		UI::out("  $pkg".str_repeat(' ',72 - strlen($pkg))."$version\n");
+		UI::out("  $pkg".str_repeat(' ',62 - strlen($pkg))."$version\n");
 	UI::out("\n");
 	return;
 }
@@ -27,7 +27,7 @@ function buildDb(){
 }
 
 function exportDb($mirror){
-	if(is_null($mirror)) throw new Exception('Mirror must be provided for DB export');
+	if(is_null($mirror)) throw new Exception('Mirror must be provided for DB export',ERR_MIRROR_REQUIRED);
 	PkgDb::export(ROOT.'/pkg/pkg.db',$mirror.'/pkg.db');
 	UI::out("Package database has been exported.\n");
 }
@@ -77,7 +77,11 @@ function upgrade(){
 	
 	//connect to the db for any db hooks
 	if(in_array(PACKAGE_DB_FQN,array_keys($tgtdef->get('installed'))) || Pkg::isSelected(PACKAGE_DB_FQN,$pkgs)){
-		Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+		try {
+			Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+		} catch(PDOException $e){
+			UI::out('Could not connect to database for hook processing: '.$e->getMessage()."\n",true);
+		}
 	}
 
 	//now we have to manually do the upgrade hooks
@@ -136,16 +140,16 @@ function install($packages,$upgrade=false){
 			$pkgs[] = $arr;
 		}
 	}
-
+	
 	//remove duplicates and print install list
 	$ui->out("Unselecting duplicates\n");
 	$tmp_pkgs = array();
 	foreach($pkgs as $key => $pkg) $tmp_pkgs[$key] = $pkg['fqn'];
-	remove_dups($tmp_pkgs);
+	$tmp_pkgs = array_unique($tmp_pkgs);
 	foreach($pkgs as $key => $pkg){
 		if(!in_array($key,array_keys($tmp_pkgs))) unset($pkgs[$key]);
 	}
-
+	
 	//remove locally installed packages
 	$ui->out("Unselecting locally installed packages\n");
 	foreach($pkgs as $key => $pkg)
@@ -173,8 +177,8 @@ function install($packages,$upgrade=false){
 	$ui->out("Downloading packages from mirror\n");
 	foreach($pkgs as $key => $pkg){
 		$ui->out('  Downloading '.$pkg['fqn']);
-		$dest = $pkgs[$key]['file'] = CACHE.'/mirror/'.$pkg['fqn'].'.tar.bz2';
-		$src = $pkg['mirror'].'/'.$pkg['fqn'].'.tar.bz2';
+		$dest = $pkgs[$key]['file'] = CACHE.'/mirror/'.$pkg['fqn'].'-'.$pkg['version'].'.tar.bz2';
+		$src = $pkg['mirror'].'/'.$pkg['fqn'].'-'.$pkg['version'].'.tar.bz2';
 		@mkdir(dirname($dest),0755,true);
 		//download package
 		$buff = Pkg::getFromMirror(
@@ -184,7 +188,7 @@ function install($packages,$upgrade=false){
 		if($buff === false) continue;
 		//write package
 		$rv = @file_put_contents($dest,$buff);
-		if(!$rv) throw new Exception('Failed to save package: '.$dest);
+		if(!$rv) throw new Exception('Failed to save package: '.$dest,ERR_PKG_SAVE_FAILED);
 		$ui->out("... done\n");
 	}
 
@@ -211,7 +215,11 @@ function install($packages,$upgrade=false){
 		
 		//connect to the db for any db hooks
 		if(in_array(PACKAGE_DB_FQN,array_keys($tgtdef->get('installed'))) || Pkg::isSelected(PACKAGE_DB_FQN,$pkgs)){
-			Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+			try {
+				Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
+			} catch(PDOException $e){
+				UI::out('Could not connect to database for hook processing: '.$e->getMessage()."\n",true);
+			}
 		}
 		
 		foreach($pkgs as $pkg){
@@ -398,10 +406,10 @@ function backup($name=null,$db_dump=null){
 function restore($name=null,$db_restore=null,$file=null){
 	$tgtdef = TgtDef::_get();
 	//deal with backup file
-	if(is_null($name) && is_null($file)) throw new Exception('Backup name or file must be supplied to restore');
+	if(is_null($name) && is_null($file)) throw new Exception('Backup name or file must be supplied to restore',ERR_BACKUP_FILE_REQUIRED);
 	if(!is_null($file)) $backup_file = $file;
 	elseif(!is_null($name)) $backup_file = TARGET.'/.bak/'.$name.'.tar.bz2';
-	if(!file_exists($backup_file)) throw new Exception('Backup file does not exist: '.$backup_file);
+	if(!file_exists($backup_file)) throw new Exception('Backup file does not exist: '.$backup_file,ERR_BACKUP_FILE_NOT_FOUND);
 
 	UI::out("Starting to restore backup \"$backup_file\"\n");
 
@@ -421,7 +429,7 @@ function restore($name=null,$db_restore=null,$file=null){
 }
 
 function migrate($dest,$db_dump=null){
-	if(!$dest) throw new Exception('A migration destination must be provided');
+	if(!$dest) throw new Exception('A migration destination must be provided',ERR_MIGRATION_DST_REQUIRED);
 	$tgtdef = TgtDef::_get();
 	$time = time();
 	UI::out("Starting backup\n");
@@ -445,20 +453,21 @@ function clearCache(){
 }
 
 function createPackage($fqn){
-	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null');
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null',ERR_FQN_REQUIRED);
 	$def = new PkgDef($fqn,Def::READWRITE);
 	unset($def);
 	UI::out("Package has been created, please construct the def and then refactor\n");
 }
 
 function deletePackage($fqn){
-	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null');
-	unlink(PkgDef::getDefFile(mda_get($opts,'delete')));
-	UI::out("Package Definition has been destroyed, the files must be removed manually");
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null',ERR_FQN_REQUIRED);
+	unlink(PkgDef::getDefFile($fqn,true));
+	UI::out("Package Definition has been destroyed, the remaining files must be removed manually\n");
 }
 
 function exportPackage($fqn,$mirror){
-	if(is_null($fqn) || is_null($mirror)) throw new Exception('Package FQN and mirror location are required');
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null',ERR_FQN_REQUIRED);
+	if(is_null($mirror)) throw new Exception('Mirror must be provided for package export',ERR_MIRROR_REQUIRED);
 	$def = new PkgDef($fqn);
 	$exp = new PkgExport($def);
 	UI::out("Starting to compile package\n");
@@ -471,11 +480,11 @@ function exportPackage($fqn,$mirror){
 }
 
 function refactorPackage($fqn,$dir){
-	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null');
-	if(is_null($dir) || !is_dir($dir)) throw new Exception('Must have a valid dir to read from');
+	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null',ERR_FQN_REQUIRED);
+	if(is_null($dir) || !is_dir($dir)) throw new Exception('Must have a valid dir to read from',ERR_DIR_REQUIRED);
 	//read the def
 	$def = new PkgDef($fqn);
-	if(!isset($def->data['manifest']) || !count($def->data['manifest'])) throw new Exception('Package has no manifest cannot continue');
+	if(!isset($def->data['manifest']) || !count($def->data['manifest'])) throw new Exception('Package has no manifest cannot continue',ERR_PKG_MANIFEST_MISSING);
 
 	//go through the manifest
 	foreach($def->data['manifest'] as $file){
@@ -490,10 +499,10 @@ function refactorPackage($fqn,$dir){
 //Def Management Functions
 //--------------------------
 function setValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to set must be present');
+	if(is_null($name)) throw new Exception('Name of value to set must be present',ERR_NAME_MISSING);
 	$def->iostate = $def::READWRITE;
 	$var = mda_get($def->data,$name);
-	if(is_array($var)) throw new Exception('Cannot set the value of an array or the variable does not exist');
+	if(is_array($var)) throw new Exception('Cannot set the value of an array or the variable does not exist',ERR_INVALID_VALUE_CAST);
 	mda_set($def->data,$value,$name);
 	return true;
 }
@@ -506,7 +515,7 @@ function getDef($arg=null){
 	else {
 		//try to see if we can get a package def
 		$file = PkgDef::getDefFile($arg,true);
-		if(!file_exists($file)) throw new Exception('Invalid def type provided, and no package by this name exists');
+		if(!file_exists($file)) throw new Exception('Invalid def type provided, and no package by this name exists',ERR_DEF_NOT_FOUND);
 		return new PkgDef($arg);
 	}
 	return false;
@@ -518,25 +527,28 @@ function showDef($def){
 }
 
 function addValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to add must be present');
+	if(is_null($name)) throw new Exception('Name of value to add must be present',ERR_NAME_MISSING);
 	$def->iostate = $def::READWRITE;
 	//prepare the array
 	$var = mda_get($def->data,$name);
-	if(!is_null($var) && !is_array($def->data[$name])) throw new Exception('Trying to add a value to a non array');
-	mda_add($def->data,$value,$name);
+	if(!is_null($var) && !is_array($def->data[$name])) throw new Exception('Trying to add a value to a non array',ERR_INVALID_VALUE_CAST);
+	if(mda_exists($def->data,$value,$name)) throw new Exception('Trying to add a value that already exists',ERR_VALUE_EXISTS);
+	else mda_add($def->data,$value,$name);
 	return true;
 }
 
 function delValue($def,$name=null,$value=null){
-	if(is_null($name)) throw new Exception('Name of value to delete must be present');
+	if(is_null($name)) throw new Exception('Name of value to delete must be present',ERR_NAME_MISSING);
 	$def->iostate = $def::READWRITE;
 	$var = mda_get($def->data,$name);
-	if(is_null($var)) throw new Exception('Value array does not exist');
+	if(is_null($var)) throw new Exception('Value array does not exist',ERR_VALUE_NOT_FOUND);
 	//process
 	if(is_null($value)) return mda_del($def->data,$name);
-	else return mda_del_value($def->data,$value,$name);
+	else {
+		if(!mda_exists($def->data,$value,$name)) throw new Exception('Trying to delete a value that does not exist',ERR_VALUE_NOT_FOUND);
+		return mda_del_value($def->data,$value,$name);
+	}
 }
-
 
 function usage(){ 
 	UI::out(<<<'HELP'
@@ -553,35 +565,36 @@ SYNOPSIS
 
 lss [OPTIONS] [DEV]
 OPTIONS
-    --help     -h ..........   display help info
-    --yes      -y ..........   answer yes to all user prompts
-    --verbose  -v ..........   increase output
+    --help     -h ..............   display help info
+    --yes      -y ..............   answer yes to all user prompts
+    -v -vv -vvv   ..............   increase output
+    -q -qq -qqq   ..............   decrease outpu
 RUN-TIME SETTINGS
-    --target   -t <tgt>.....   manually specify the target (this should be set into the respective def)
-    --mirror   -m <mirror>..   specify external mirror (mainly for dev functions)
+    --target   -t <tgt>.........   manually specify the target (this should be set into the respective def)
+    --mirror   -m <mirror>......   specify external mirror (mainly for dev functions)
 PACKAGE MANAGEMENT
-    --update   -U ..........   sync the package database with the upstream
-    --search   -s <keywords>   search the package database
-    --upgrade  -u ..........   upgrade the current working tree
-    --install  -i <pkgs> ...   install new packages to working tree
-    --remove   -r <pkgs> ...   remove packages from working tree
-    --purge    -p <pkgs> ...   remove packages and data the packages have left behind (includes database tables)
+    --update   -U ..............   sync the package database with the upstream
+    --search   -s <keywords>....   search the package database
+    --upgrade  -u ..............   upgrade the current working tree
+    --install  -i <pkgs> .......   install new packages to working tree
+    --remove   -r <pkgs> .......   remove packages from working tree
+    --purge    -p <pkgs> .......   remove packages and data the packages have left behind (includes database tables)
 LOCAL DB
-    --show-db  -S ..........   show the current package database
-    --db-file     <file>....   show the local database using a specific database file
-    --list     -l ..........   show locally installed packages for target
+    --show-db  -S ..............   show the current package database
+    --db-file     <file>........   show the local database using a specific database file
+    --list     -l ..............   show locally installed packages for target
 UTILITY
-    --int-version <version>.   take full version and return integer value
-    --clear-cache ..........   clear the local cache (must update db afterwards)
+    --int-version <version>.....   take full version and return integer value
+    --clear-cache ..............   clear the local cache (must update db afterwards)
 DEV
-    --build-db -b ..........   build the database from def files (only works in a full source set)
-    --export-db   ..........   export built database to mirror (requires --mirror)
+    --build-db -b ..............   build the database from def files (only works in a full source set)
+    --export-db   ..............   export built database to mirror (requires --mirror)
 SETTINGS
-    --set         :<usr|tgt>   set a value for a def (user or target is optional, defaults to sys)
-    --add         :<usr|tgt>   add a value to an array
-    --del         :<usr|tgt>   remove a value from an array
-    --name        <name>....   name of value to modify
-    --value       <value....   value to set
+    --set         :<usr|tgt|fqn>   set a value for a def (user or target is optional, defaults to sys)
+    --add         :<usr|tgt|fqn>   add a value to an array
+    --del         :<usr|tgt|fqn>   remove a value from an array
+    --name        <name>........   name of value to modify
+    --value       <value........   value to set
 
 HELP
 );

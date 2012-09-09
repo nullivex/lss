@@ -28,7 +28,8 @@ define('START',microtime(true));
 
 //load config
 $config = array();
-$dir = opendir('conf.d');
+$dir = false;
+if(is_dir('conf.d')) $dir = opendir('conf.d');
 if($dir){
 	while($dir && ($file = readdir($dir)) !== false){
 		if(in_array($file,array('.','..'))) continue;
@@ -46,27 +47,46 @@ date_default_timezone_set($config['info']['default_timezone']);
 define("ROOT",$config['paths']['lss']);
 
 //load global funcs
-require_once(ROOT.'/src/func.php');
 require_once(ROOT.'/lib/router.php');
 require_once(ROOT.'/lib/url.php');
 
 try {
 
-	//init modules
-	$dir = opendir('init.d');
+	//load global funcs
+	$dir = false;
+	if(is_dir('src.d')) $dir = opendir('src.d');
 	if($dir){
+		$files = array();
 		while($dir && ($file = readdir($dir)) !== false){
 			if(in_array($file,array('.','..'))) continue;
 			if(is_dir($file)) continue;
-			include('init.d/'.$file);
+			$files[] = $file;
 		}
 		closedir($dir);
+		sort($files);
+		foreach($files as $file) include('src.d/'.$file);
+	}
+
+	//init modules
+	$dir = false;
+	if(is_dir('init.d')) $dir = opendir('init.d');
+	if($dir){
+		$files = array();
+		while($dir && ($file = readdir($dir)) !== false){
+			if(in_array($file,array('.','..'))) continue;
+			if(is_dir($file)) continue;
+			$files[] = $file;
+		}
+		closedir($dir);
+		sort($files);
+		foreach($files as $file) include('init.d/'.$file);
 	}
 
 	//router
 	Router::init();
 	Router::_get()->setDefault('ctl/home.php');
-	$dir = opendir('rtr.d');
+	$dir = false;
+	if(is_dir('rtr.d')) $dir = opendir('rtr.d');
 	if($dir){
 		while(($file = readdir($dir)) !== false){
 			if(in_array($file,array('.','..'))) continue;

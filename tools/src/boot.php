@@ -4,7 +4,7 @@ define('ROOT',dirname(dirname(dirname(__FILE__))));
 chdir(ROOT);
 
 //constants
-define('LSSTOOLS_VERSION','0.1.0');
+define('LSSTOOLS_VERSION','0.1.2');
 define('REPO_MAIN','main');
 define('DEF_PATH','pkg');
 define('PKG_PATH','pkg');
@@ -15,6 +15,20 @@ define('DEFAULT_TARGET','/opt/lss');
 define('DEFAULT_LSS','/usr/lss');
 define('DEFAULT_CACHE','/var/cache/lss');
 define('PACKAGE_DB_FQN','main/sys/db');
+
+//core packages for admin commands
+define('CORE_PKGS',"
+main/admin/staff
+main/io/web
+main/lib-sys/url
+main/lib-sys/validate
+main/portal/admin
+main/sys/config
+main/sys/db
+main/sys/tpl
+main/sys/router
+main/util/func
+");
 
 //load global src files
 require_ONCE(ROOT.'/tools/src/err.php');
@@ -58,6 +72,6 @@ pcntl_signal(SIGINT  ,"sig_handler");
 //setup exception handling
 function sysError($e){
 	$msg = 'ERROR['.$e->getCode().'@'.$e->getFile().':'.$e->getLine().']: '.$e->getMessage()."\n";
-	UI::out($msg,true);
+	UI::out($msg,true,$e->getCode());
 }
 set_exception_handler('sysError');

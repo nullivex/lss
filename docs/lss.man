@@ -1,5 +1,5 @@
 .\" Process this file with
-.\" groff -man -Tascii foo.1
+.\" groff -man -Tascii lss.man
 .\"
 .TH LSS 1 "2012" OpenLSS "Website Package Manager"
 .SH NAME
@@ -28,8 +28,10 @@ running the OpenLSS framework.
 Display help information
 .IP "-y --yes"
 Answer yes to all confirmation prompts
-.IP "-v --verbose"
+.IP "-v -vv -vvv"
 Increase verbosity and show underlying system commands
+.IP "-q -qq -qqq"
+Decrase verbosity and suppress errors, warnings etc.
 .SH RUN-TIME SETTINGS
 .IP "-t --target <tgt>"
 Manually specify the target (this should be set into the respective def)

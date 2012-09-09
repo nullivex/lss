@@ -13,7 +13,7 @@ final class TgtDef extends Def {
 	}
 
 	public static function _get(){
-		if(!is_object(self::$inst)) throw new Exception('TgtDef has not been initialized');
+		if(!is_object(self::$inst)) throw new Exception('TgtDef has not been initialized',ERR_NOT_INITIALIZED);
 		return self::$inst;
 	}
 
@@ -23,7 +23,8 @@ final class TgtDef extends Def {
 		return $this->read();
 	}
 
-	public static function getDefFile($tgt){
+	public static function getDefFile($tgt,$absolute=false){
+		if($absolute) return ROOT.'/'.$tgt.'/.lss';
 		return $tgt.'/.lss';
 	}
 
@@ -34,7 +35,6 @@ final class TgtDef extends Def {
 		//default arrays
 		if(!isset($this->data['installed'])) $this->data['installed'] = array();
 		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
-		if(!isset($this->data['mirrorauth'])) $this->data['mirrorauth'] = array();
 		return $this;
 	}
 

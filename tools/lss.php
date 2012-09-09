@@ -23,6 +23,7 @@ $so = array(
 	'h', //help
 	'y', //yes
 	'v', //verbose
+	'q', //quiet
 
 	//package actions
 	'u', //upgrade
@@ -52,7 +53,6 @@ $lo = array(
 	//command settings
 	'help',
 	'yes',
-	'verbose',
 
 	//package actions
 	'upgrade',
@@ -108,8 +108,11 @@ $lo = array(
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 
-//suppress system logging
-if(is_null(mda_get($opts,'v')) && is_null(mda_get($opts,'verbose'))) define('OUT_QUIET',true);
+//setup output level
+define('OUT_LEVEL',(1 + count((array) mda_get($opts,'v')) - count((array) mda_get($opts,'q'))));
+
+//figure out our answer status
+if(!is_null(mda_get($opts,'y')) || !is_null(mda_get($opts,'yes'))) define('ANSWER_YES',true);
 
 //figure out our target and mirror
 target($opts); //sets the constant 'TARGET'
@@ -117,9 +120,6 @@ cache(); //sets the constant 'CACHE'
 
 //init target def
 TgtDef::init(TARGET);
-
-//figure out our answer status
-if(!is_null(mda_get($opts,'y')) || !is_null(mda_get($opts,'yes'))) define('ANSWER_YES',true);
 
 //figure out what we are going to do
 foreach(array_keys($opts) as $act){
@@ -266,4 +266,4 @@ foreach(array_keys($opts) as $act){
 }
 
 //no action was taken, error out
-if($noerror === false) throw new Exception('No action supplied see --help for details');
+if($noerror === false) throw new Exception('No action supplied see --help for details',ERR_NO_ACTION);

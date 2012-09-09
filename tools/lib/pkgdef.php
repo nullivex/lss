@@ -32,14 +32,14 @@ final class PkgDef extends Def {
 	}
 
 	public static function createPkg($fqn){
-		$def_file = ROOT.'/'.self::getDefFile($fqn,true);
+		$def_file = self::getDefFile($fqn,true);
 		@mkdir(dirname($def_file),0755,true);
 		@touch($def_file);
 		return true;
 	}
 
 	public static function deletePkg($fqn){
-		$def_file = ROOT.'/'.self::getDeffile($fqn,true);
+		$def_file = self::getDeffile($fqn,true);
 		@unlink($def_file);
 		return true;
 	}
@@ -70,6 +70,10 @@ final class PkgDef extends Def {
 		if(!is_null($this->class)) return $this->class;
 		list(,$class) = explode('/',$this->fqn);
 		return $class;
+	}
+
+	public function getVersion(){
+		return mda_get($this->data,'info','version');
 	}
 
 	protected function dataSanitizer(){
