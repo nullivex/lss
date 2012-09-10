@@ -80,7 +80,7 @@ function upgrade(){
 		try {
 			Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
 		} catch(PDOException $e){
-			UI::out('Could not connect to database for hook processing: '.$e->getMessage()."\n",true);
+			UI::out('Could not connect to database for hook processing: '.$e->getMessage()."\n",OUT_ERR);
 		}
 	}
 
@@ -157,7 +157,7 @@ function install($packages,$upgrade=false){
 
 	//make sure we still have pkgs
 	if(!count($pkgs)){
-		$ui->out("No packages to be installed.\n",true);
+		$ui->out("No packages to be installed.\n",OUT_WARN);
 		exit;
 	}
 
@@ -177,18 +177,7 @@ function install($packages,$upgrade=false){
 	$ui->out("Downloading packages from mirror\n");
 	foreach($pkgs as $key => $pkg){
 		$ui->out('  Downloading '.$pkg['fqn']);
-		$dest = $pkgs[$key]['file'] = CACHE.'/mirror/'.$pkg['fqn'].'-'.$pkg['version'].'.tar.bz2';
-		$src = $pkg['mirror'].'/'.$pkg['fqn'].'-'.$pkg['version'].'.tar.bz2';
-		@mkdir(dirname($dest),0755,true);
-		//download package
-		$buff = Pkg::getFromMirror(
-			$src, //url to download from
-			'Could not download package: '.$src //err message pre-text
-		);
-		if($buff === false) continue;
-		//write package
-		$rv = @file_put_contents($dest,$buff);
-		if(!$rv) throw new Exception('Failed to save package: '.$dest,ERR_PKG_SAVE_FAILED);
+		Pkg::download($pkg,$pkgs[$key]['file']);
 		$ui->out("... done\n");
 	}
 
@@ -218,7 +207,7 @@ function install($packages,$upgrade=false){
 			try {
 				Db::_get()->setConfig(Db::targetDbConfig(TARGET))->connect();
 			} catch(PDOException $e){
-				UI::out('Could not connect to database for hook processing: '.$e->getMessage()."\n",true);
+				UI::out('Could not connect to database for hook processing: '.$e->getMessage()."\n",OUT_ERR);
 			}
 		}
 		
@@ -293,7 +282,7 @@ function remove($packages,$purge=null){
 
 	//make sure we still have packages to process
 	if(!count($pkgs)){
-		$ui->out("No packages to be removed.\n",true);
+		$ui->out("No packages to be removed.\n",OUT_WARN);
 		exit;
 	}
 
@@ -461,7 +450,7 @@ function createPackage($fqn){
 
 function deletePackage($fqn){
 	if(is_null($fqn)) throw new Exception('Pacakge FQN must not be null',ERR_FQN_REQUIRED);
-	unlink(PkgDef::getDefFile($fqn,true));
+	@unlink(PkgDef::getDefFile($fqn,true));
 	UI::out("Package Definition has been destroyed, the remaining files must be removed manually\n");
 }
 

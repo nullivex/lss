@@ -20,7 +20,7 @@ final class LsDef extends Def {
 	private function __construct($lss_path=DEFAULT_LSS,$iostate=self::READONLY){
 		$this->filename = self::getDefFile($lss_path);
 		$this->iostate = $iostate;
-		return $this->read();
+		$this->read();
 	}
 
 	public static function getDefFile($lss_path,$absolute=false){
@@ -34,6 +34,7 @@ final class LsDef extends Def {
 		//default values
 		if(!isset($this->data['ui'])) $this->data['ui'] = DEFAULT_UI;
 		if(!isset($this->data['target'])) $this->data['target'] = DEFAULT_TARGET;
+		if(!isset($this->data['defparser'])) $this->data['defparser'] = DEFAULT_DEFPARSER;
 		//default arrays
 		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
 		//chainable

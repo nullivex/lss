@@ -57,7 +57,7 @@ class PkgDb {
 					$db->addToDb($def,$mirror);
 				} catch(Exception $e){
 					if($e->getCode() == ERR_PKG_EXISTS){
-						UI::out('Ignored '.$pkg['fqn'].' from '.$mirror.' it was already defined.'."\n");
+						UI::out('Ignored '.$pkg['fqn'].' from '.$mirror.' it was already defined.'."\n",OUT_WARN);
 					} else throw $e;
 				}
 			}

@@ -17,8 +17,6 @@ $so = array(
 	//command settings
 	'h', //help
 	'y', //yes
-	'v', //verbose
-	'q', //quiet
 );
 $lo = array(
 	//command settings
@@ -38,9 +36,6 @@ $lo = array(
 
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
-
-//setup output level
-define('OUT_LEVEL',(1 + count((array) mda_get($opts,'v')) - count((array) mda_get($opts,'q'))));
 
 //figure out our answer status
 if(!is_null(mda_get($opts,'y')) || !is_null(mda_get($opts,'yes'))) define('ANSWER_YES',true);

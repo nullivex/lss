@@ -13,9 +13,9 @@ class UIText extends UI implements UIInt {
 		if($this::$debug) $this->out("[UIText deinit()]\n");
 	}
 
-	public function __out($string,$err=false){
-		fwrite(($err)?STDERR:STDOUT,$string);
-		fflush(($err)?STDERR:STDOUT);
+	public function __out($string,$level=OUT_STD,$code=null){
+		fwrite(!is_null($code)?STDERR:STDOUT,$string);
+		fflush(!is_null($code)?STDERR:STDOUT);
 	}
 
 	public function ask($q,$a,$default=false){

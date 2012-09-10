@@ -1,5 +1,7 @@
 <?php
 
+require_once(ROOT.'/tools/lib/tml.php');
+
 abstract class Def {
 
 	//main data access
@@ -16,6 +18,11 @@ abstract class Def {
 	const READONLY  = 1;
 	const READWRITE = 0;
 	public $iostate = self::READONLY; // read-only by default
+
+	//parser
+	const PARSER_NATIVE = 0;
+	const PARSER_TML = 1;
+	public $parser = self::PARSER_NATIVE;
 
 	function __destruct(){
 		$this->write();
@@ -63,15 +70,23 @@ abstract class Def {
 			$fh = fopen($this->filename,'r');
 			if(is_resource($fh) && ($def_data = fread($fh,$filesize))){
 				$this->dataRaw = $def_data;
-				$proc = proc_open('php',array(0=>array('pipe','r'),1=>array('pipe','w')),$p);
-				if(is_resource($proc)){
-					fwrite($p[0],$def_data . 'print(serialize($'.$this->container_var.'));');
-					fclose($p[0]);
-					$this->data = unserialize(stream_get_contents($p[1]));
-					fclose($p[1]);
-					proc_close($proc);
+				//check for native format
+				if(stripos($this->dataRaw,'<?php') !== false){
+					$this->parser = self::PARSER_NATIVE;
+					$proc = proc_open('php',array(0=>array('pipe','r'),1=>array('pipe','w')),$p);
+					if(is_resource($proc)){
+						fwrite($p[0],$def_data . 'print(serialize($'.$this->container_var.'));');
+						fclose($p[0]);
+						$this->data = unserialize(stream_get_contents($p[1]));
+						fclose($p[1]);
+						proc_close($proc);
+					}
+					fclose($fh);
+				//tml format
+				} else {
+					$this->parser = self::PARSER_TML;
+					$this->data = mda_get(TML::toArray($this->dataRaw),$this->container_var);
 				}
-				fclose($fh);
 			}
 		}
 		$this->dataMD5 = md5($this->dataRaw);
@@ -80,16 +95,26 @@ abstract class Def {
 
 	protected function sync(){
 		$this->dataSanitizer();
-		$container_var = $this->container_var;
-		$this->dataRaw = <<<'HEADER'
+		$this->data['defparser']=(!is_null(mda_get($this->data,'defparser')))?$this->data['defparser']:$this->parser;
+		switch($this->data['defparser']){
+			case self::PARSER_NATIVE:
+				$this->dataRaw = <<<'HEADER'
 <?php
 // THIS IS A VOLATILE FILE AND MAY BE REGENERATED AUTOMATICALLY
 
 
 HEADER;
-		$this->dataRaw .= '$'.$this->container_var.' = array();'."\n";
-		$this->dataRaw .= self::dumpDef($this->data);
-		$this->dataRaw .= PHP_EOL;
+				$this->dataRaw .= '$'.$this->container_var.' = array();'."\n";
+				$this->dataRaw .= self::dumpDef($this->data);
+				$this->dataRaw .= PHP_EOL;
+				break;
+			case self::PARSER_TML:
+				$this->dataRaw = TML::fromArray(array($this->container_var=>$this->data));
+				break;
+			default:
+				throw new Exception('Invalid def parser',ERR_DEF_PARSER_INVALID);
+				break;
+		}
 		$this->dataMD5 = md5($this->dataRaw);
 		return $this;
 	}
@@ -116,8 +141,15 @@ HEADER;
 	protected function dumpDef($def=array(),$parents=array()){
 		$output = '';
 		$parent_nodes = (count($parents)) ? "['".join("']['",$parents)."']" : '';
-	//	ksort($def);
-		foreach($def as $def_key => $def_val){
+		ksort($def);
+		$predef = array();
+		foreach(array('defparser','ui','target','mirror') as $t){
+			if(!is_null(mda_get($def,$t))){
+				$predef[$t] = $def[$t];
+				unset($def[$t]);
+			}
+		}
+		foreach(array_merge($predef,$def) as $def_key => $def_val){
 			if(is_array($def_val)){
 				$output .= sprintf('$%s%s[\'%s\'] = array();'.PHP_EOL,$this->container_var,$parent_nodes,$def_key);
 				$output .= self::dumpDef($def_val,array_merge($parents,array($def_key)));

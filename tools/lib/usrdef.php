@@ -20,7 +20,7 @@ final class UsrDef extends Def {
 	private function __construct($homedir=null,$iostate=self::READONLY){
 		$this->filename = self::getDefFile($homedir);
 		$this->iostate = $iostate;
-		return $this->read();
+		$this->read();
 	}
 
 	public static function getDefFile($homedir=null){
@@ -33,6 +33,7 @@ final class UsrDef extends Def {
 		//default values
 		if(!isset($this->data['ui']))     $this->data['ui']     = LsDef::_get()->get('ui');
 		if(!isset($this->data['target'])) $this->data['target'] = LsDef::_get()->get('target');
+		if(!isset($this->data['defparser'])) $this->data['defparser'] = LsDef::_get()->get('defparser');
 		//default arrays
 		if(!isset($this->data['mirror'])) $this->data['mirror'] = array();
 		return $this;

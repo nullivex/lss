@@ -16,8 +16,8 @@ class UIMenu extends UI implements UIInt {
 		if($this::$debug) $this->out("[UIMenu deinit()]\n");
 	}
 
-	public function __out($string,$err=false){
-		if($err) $string = '\Zr\Z1'.$string.'\Zn';
+	public function __out($string,$level=OUT_STD,$code=null){
+		if(!is_null($code)) $string = '\Zr\Z1'.$string.'\Zn';
 		file_put_contents($this->outbuf_filename,$string,FILE_APPEND);
 //		if($this::$debug) getc(STDIN);
 	}

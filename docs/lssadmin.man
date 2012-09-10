@@ -1,0 +1,79 @@
+.\" Process this file with
+.\" groff -man -Tascii lssadmin.man
+.\"
+.TH LSSADMIN 1 "2012" OpenLSS "Website Package Manager Adminstration Tool"
+.SH NAME
+lssadmin \- The OpenLSS package manager Adminstration Tools
+.SH SYNOPSIS
+lss [OPTIONS] --build-deb --dir <debroot_dir>
+
+lss [OPTIONS] --build-core --dir <core_dir> --mirror <local_mirror>
+
+lss [OPTIONS] --test-core --dir <core_dir> --mirror <local_mirror>
+
+lss [OPTIONS] --install-man --dir <man_src_dir>
+
+lss [OPTIONS] --split-app=<app_map>
+
+.SH DESCRIPTION
+.B lssadmin
+administrative tools for the lss package manager, also helpers for management lss applications.
+NOTICE - many of these tools require a full dev tree please see the wiki for more details.
+.SH OPTIONS
+.IP "-h --help"
+Display help information
+.IP "-y --yes"
+Answer yes to all confirmation prompts
+.IP "-v -vv -vvv"
+Increase verbosity and show underlying system commands
+.IP "-q -qq -qqq"
+Decrase verbosity and suppress errors, warnings etc.
+.SH RUN-TIME SETTINGS
+.IP "-dir <directory>"
+Specify a working directory (SEE SYNOPSIS for dir types, SEE EXAMPLES for usage)
+.IP "--mirror <mirror>"
+Specify a local mirror for exporting (SEE EXAMPLES for usage)
+.SH ACTIONS
+.IP "--build-db --dir <debroot_dir>"
+Builds a debian package from the current dev tree. (REQUIRES FULL DEV TREE)
+.IP "--build-core --dir <core_dir> --mirror <local_mirror>"
+Build all the core packages (used for testing and core development) (REQUIRES FULL DEV TREE)
+.IP "--test-core --dir <core_dir> --mirror <local_mirror>"
+Test the core, will use the current default target and WILL DESTROY the current default target. (REQUIRES FULL DEV TREE)
+.IP "--install-man --dir <man_src_dir>"
+(RE)Install manual pages for testing. (REQUIRES FULL DEV TREE)
+.IP "--split-app=<app_map>"
+Split an existing application into packages using the app map.
+See http://wiki.openlss.org/doku.php?id=docs:howto:package_existing_applications for more details.
+.SH EXAMPLES
+.IP "Build debian package"
+lssadmin --build-deb --dir /opt/openlss/deb
+.IP "Build core packages"
+lssadmin --build-core --dir /opt/openlss/core --mirror /data/mirror
+.IP "Test core packages"
+lssadmin -y --test-core --dir /opt/openlss/core --mirror /data/mirror
+.IP "Install manual pages"
+lssadmin --install-man
+.IP "Split existing application to packages"
+lssadmin --split-app=~/app_map.txt
+.SH BUGS
+Report bugs at http://bugs.openlss.org
+.SH DOCUMENTATION
+See more documentation at http://wiki.openlss.org
+.SH SUPPORT
+Visit our community forum http://forum.openlss.org
+
+See our mailing list at http://list.openlss.org
+
+For commercial support see http://support.openlss.com
+.SH AUTHORS
+Bryan Tong <contact [at] nullivex.com>
+
+Tony Butler <spudz76 [at] gmail.com>
+.SH COPYRIGHT
+(c) 2012 EggPire LLC, All Rights Reserved.
+
+.SH LICENSE
+LGPLv3+: GNU LGPL version 3 or later <http://www.gnu.org/licenses/lgpl.html>.
+
+This is free software: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.

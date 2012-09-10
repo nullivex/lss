@@ -1,0 +1,118 @@
+app
+	source	/opt/openlss/core
+	mirror	/tmp/mirror
+	packages
+		main/lib-sys/url
+			version		0.0.1
+			description	URL handler for web
+			depends
+				main/util/func	0.0.1
+			manifest
+				lib/url.php
+		main/lib-sys/validate
+			version		0.0.1
+			description	Validation helper
+			depends
+				main/util/func	0.0.1
+			manifest
+				lib/validate.php
+		main/sys/router
+			version		0.0.1
+			description Routes web calls to modules
+			depends
+				main/util/func	0.0.1
+			manifest
+				lib/router.php
+		main/sys/config
+			version		0.0.1
+			description	The base config management system
+			depends
+				main/util/func	0.0.1
+			manifest
+				conf.d/defaults.php
+				init.d/00_config.php
+				lib/config.php
+		main/sys/tpl
+			version		0.0.1
+			description	The templating system
+			depends
+				main/lib-sys/url	0.0.1
+			manifest
+				conf.d/tpl.php
+				init.d/20_tpl.php
+				lib/tpl.php
+				tpl/skel.tpl.php
+		main/sys/db
+			version		0.0.1
+			description The database abstraction layer
+			depends
+				main/sys/config	0.0.1
+			manifest
+				conf.d/db.php
+				lib/db.php
+				init.d/10_db.php
+		main/io/web
+			version		0.0.1
+			description	I/O for web based calls
+			depends
+				main/util/func			0.0.1
+				main/sys/config			0.0.1
+				main/sys/router			0.0.1
+				main/sys/tpl			0.0.1
+				main/lib-sys/url		0.0.1
+				main/lib-sys/validate	0.0.1
+			manifest
+				ctl/home.php
+				hooks.d/main#io#web.php
+				hooks.d/skel.php
+				index.php
+				theme/css/style.css
+				tpl/footer.tpl.php
+				tpl/header.tpl.php
+				tpl/global.tpl.php
+				tpl/home.tpl.php
+		main/util/mda
+			version		0.0.1
+			description	Multi-Dimensional Array Functions
+			manifest
+				src.d/00_mda.php
+		main/util/func
+			version		0.0.1
+			description	Global functions for LSS packages
+			manifest
+				src.d/00_func.php
+		main/admin/staff
+			version		0.0.1
+			description	Basic admin staff management
+			depends
+				main/sys/db		0.0.1
+			manifest
+				ctl/admin/staff_create.php
+				ctl/admin/staff_list.php
+				ctl/admin/staff_profile.php
+				ctl/admin/staff_manage.php
+				hooks.d/main#admin#staff.php
+				lib/staff.php
+				rtr.d/admin/staff.php
+				tpl/admin/staff.tpl.php
+		main/portal/admin
+			version		0.0.1
+			description	Admin portal for web interfaces
+			depends
+				main/io/web	0.0.1
+				main/sys/db	0.0.1
+			manifest
+				admin.php
+				admin/index.php
+				conf.d/admin/login.php
+				conf.d/admin/defaults.php
+				conf.d/admin/tpl.php
+				ctl/admin/home.php
+				lib/admin/url.php
+				lib/admin/login.php
+				theme/admin/css/login.css
+				theme/admin/css/main.css
+				tpl/admin/footer.tpl.php
+				tpl/admin/global.tpl.php
+				tpl/admin/header.tpl.php
+				tpl/admin/login.tpl.php

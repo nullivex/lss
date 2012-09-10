@@ -55,7 +55,7 @@ class PkgExport {
 		$out = "  Writing to $dest\n";
 		@mkdir(dirname($dest),0755,true);
 		file_put_contents($dest,$this->buff);
-		$sumfile = preg_replace('^(.*).tar.bz2$','$1.sums',$dest);
+		$sumfile = preg_replace('/^(.*).tar.bz2$/','$1.sums',$dest);
 		$fp = fopen($sumfile,'w');
 		foreach(array('crc32b','md5','sha1','whirlpool') as $alg)
 			fprintf($fp,"%-10s %s\n",$alg,hash($alg,$this->buff));

@@ -1,9 +1,17 @@
 <?php
+//output levels
+define('OUT_ERR',1);
+define('OUT_WARN',2);
+define('OUT_STD',1);
+define('OUT_VERBOSE',2);
+define('OUT_INFO',3);
+define('OUT_DEBUG',4);
+
 interface UIInt {
 
 	public static function init($type);
 	public static function _get();
-	public static function out($string,$err=false);
+	public static function out($string,$level=OUT_STD,$code=null);
 
 	// title(t) : ask a true/false question (or yes/no)
 	// - q : the title string ("SomeApp v3.2.1")
@@ -115,7 +123,7 @@ abstract class UI {
 	// - string : the output
 	// - err    : if false, output normally (STDOUT or equivalent) [default]
 	//            if true, output as error (STDERR or equivalent)
-	private function _out($string,$err=false){
+	private function _out($string,$level=OUT_STD,$code=null){
 		//uses out() as implemented by the extender
 		$newline = (substr($string,-1) == "\n") ? true : false;
 		$a = (is_array($string)) ? $string : split("\n",$string);
@@ -123,13 +131,26 @@ abstract class UI {
 		foreach(array_keys($a) as $k)
 			if($k !== max(array_keys($a))) $a[$k] .= "\n";
 			else if($newline)  $a[$k] .= "\n";
-		foreach($a as $line) $this->__out($line,$err);
+		foreach($a as $line) $this->__out($line,$level,$code);
 		return $this;
 	}
 
-	public static function out($string,$err=false){
+	public static function out($string,$level=OUT_STD,$code=null){
 		if(!is_object(self::$inst)) throw new Exception('UI has not been initialized',ERR_NOT_INITIALIZED);
-		return self::$inst->_out($string,$err);
+		//replace code with undefined if its zero
+		if($code === 0) $code = ERR_UNDEFINED;
+		//do the output
+		$rv = null;
+		if(!(defined('OUT_LEVEL') && $level > OUT_LEVEL)) $rv = self::$inst->_out($string,$level,$code);
+		//error lets exit
+		if(!is_null($code)){
+			//subtract 1000 to get a usable code
+			$code = $code - 1000;
+			//mark out of range codes so users know
+			if($code > 255) $code = ERR_CODE_OUT_OF_RANGE - 1000;
+			exit($code);
+		}
+		return $rv;
 	}
 
 	public static function title($t=false){

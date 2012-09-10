@@ -31,6 +31,7 @@ function mda_get(&$arr,$path=null){
 
 function mda_set(&$arr,$value=null,$path=null){
 	$var = _mda_get_var($path,func_get_args(),3);
+
 	eval('$val = '.$var.' = $value;');
 	return $val;
 }
@@ -58,6 +59,7 @@ function mda_exists(&$arr,$value,$path=null){
 	$rv = false;
 	$var = _mda_get_var($path,func_get_args(),3);
 	eval('$val =& '.$var.';');
+	if(!is_array($val)) return false;
 	foreach(array_keys($val,$value) as $key) $rv = true;
 	return $rv;
 }

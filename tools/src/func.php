@@ -11,7 +11,7 @@ function run($cmd,&$return=null){
 
 function dolog($msg,$output=true){
 	$msg = date('m/d/y g:i:s').' -- '.$msg;
-	if($output && !defined('OUT_QUIET')) UI::out($msg."\n");
+	if($output) UI::out($msg."\n",OUT_VERBOSE);
 	$handle = fopen('/var/log/openlss','a');
 	fwrite($handle,$msg."\n");
 	fclose($handle);

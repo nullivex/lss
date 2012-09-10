@@ -20,7 +20,7 @@ final class TgtDef extends Def {
 	private function __construct($tgt,$iostate=self::READONLY){
 		$this->filename = self::getDefFile($tgt);
 		$this->iostate = $iostate;
-		return $this->read();
+		$this->read();
 	}
 
 	public static function getDefFile($tgt,$absolute=false){

@@ -1,0 +1,12 @@
+main/admin/staff
+main/io/web
+main/lib-sys/tml
+main/lib-sys/url
+main/lib-sys/validate
+main/portal/admin
+main/sys/config
+main/sys/db
+main/sys/tpl
+main/sys/router
+main/util/func
+main/util/mda

@@ -8,6 +8,7 @@ define('LSSTOOLS_VERSION','0.1.2');
 define('REPO_MAIN','main');
 define('DEF_PATH','pkg');
 define('PKG_PATH','pkg');
+define('DEFAULT_DEFPARSER',0); //can't use Def class const yet
 define('DEFAULT_UI',0); //can't use UI class const yet
 define('DEFAULT_VERSION','0.0.1');
 define('DEFAULT_DESCRIPTION','An OpenLSS Package');
@@ -16,22 +17,8 @@ define('DEFAULT_LSS','/usr/lss');
 define('DEFAULT_CACHE','/var/cache/lss');
 define('PACKAGE_DB_FQN','main/sys/db');
 
-//core packages for admin commands
-define('CORE_PKGS',"
-main/admin/staff
-main/io/web
-main/lib-sys/url
-main/lib-sys/validate
-main/portal/admin
-main/sys/config
-main/sys/db
-main/sys/tpl
-main/sys/router
-main/util/func
-");
-
 //load global src files
-require_ONCE(ROOT.'/tools/src/err.php');
+require_once(ROOT.'/tools/src/err.php');
 require_once(ROOT.'/tools/src/func.php');
 require_once(ROOT.'/tools/src/mda.php');
 
@@ -47,6 +34,10 @@ LsDef::init();
 UsrDef::init((isset($_SERVER['HOME']) ? $_SERVER['HOME'] : null));
 
 //load the User Interface
+$opts = getopt('vq');
+//setup output level
+define('OUT_LEVEL',(1 + count((array) mda_get($opts,'v')) - count((array) mda_get($opts,'q'))));
+//init
 UI::init(UsrDef::_get()->get('ui'),'OpenLSS v'.LSSTOOLS_VERSION);
 
 //setup signal catching
