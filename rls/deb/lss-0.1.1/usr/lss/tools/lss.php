@@ -22,6 +22,7 @@ $so = array(
 	//command settings
 	'h', //help
 	'y', //yes
+	'v', //verbose
 
 	//package actions
 	'u', //upgrade
@@ -40,9 +41,6 @@ $so = array(
 	'b', //build-db
 	'e', //export-db
 	'S', //show-db
-	
-	//misc
-	'V', //version
 
 	//working dir
 	't:', //user working directory
@@ -54,6 +52,7 @@ $lo = array(
 	//command settings
 	'help',
 	'yes',
+	'verbose',
 
 	//package actions
 	'upgrade',
@@ -91,7 +90,6 @@ $lo = array(
 	//misc/utility
 	'int-version:',
 	'clear-cache',
-	'version',
 
 	//def management options
 	'set::',
@@ -110,8 +108,8 @@ $lo = array(
 );
 $opts = getopt(implode('',$so),$lo); unset($so,$lo);
 
-//figure out our answer status
-if(!is_null(mda_get($opts,'y')) || !is_null(mda_get($opts,'yes'))) define('ANSWER_YES',true);
+//suppress system logging
+if(is_null(mda_get($opts,'v')) && is_null(mda_get($opts,'verbose'))) define('OUT_QUIET',true);
 
 //figure out our target and mirror
 target($opts); //sets the constant 'TARGET'
@@ -119,6 +117,9 @@ cache(); //sets the constant 'CACHE'
 
 //init target def
 TgtDef::init(TARGET);
+
+//figure out our answer status
+if(!is_null(mda_get($opts,'y')) || !is_null(mda_get($opts,'yes'))) define('ANSWER_YES',true);
 
 //figure out what we are going to do
 foreach(array_keys($opts) as $act){
@@ -213,12 +214,6 @@ foreach(array_keys($opts) as $act){
 			clearCache();
 			exit;
 			break;
-		case 'version':
-		case 'V':
-			UI::out('Tools Version: '.LSSTOOLS_VERSION."\n");
-			UI::out('Admin Version: '.LSSTOOLS_VERSION."\n");
-			exit;
-			break;
 			
 		//pkg management
 		case 'create':
@@ -271,4 +266,4 @@ foreach(array_keys($opts) as $act){
 }
 
 //no action was taken, error out
-if($noerror === false) throw new Exception('No action supplied see --help for details',ERR_NO_ACTION);
+if($noerror === false) throw new Exception('No action supplied see --help for details');

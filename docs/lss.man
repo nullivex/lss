@@ -29,9 +29,11 @@ Display help information
 .IP "-y --yes"
 Answer yes to all confirmation prompts
 .IP "-v -vv -vvv"
-Increase verbosity and show underlying system commands
+Increase verbosity and show underlying system commands:
+0 for standard, 1 for verbose, 2 for info, 3 for debug
 .IP "-q -qq -qqq"
 Decrase verbosity and suppress errors, warnings etc.
+Use more to negate -v arguments
 .SH RUN-TIME SETTINGS
 .IP "-t --target <tgt>"
 Manually specify the target (this should be set into the respective def)
@@ -62,6 +64,8 @@ List locally installed packages
 Show the integer version of a standard version
 .IP "--clear-cache"
 Clear the local cache (must update db afterwards)
+.IP "--version -V"
+Show the current versions of the software
 .SH DEV
 .IP "-b --build-db"
 Builds the package database from a local tree.

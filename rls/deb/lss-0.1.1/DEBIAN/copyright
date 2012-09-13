@@ -1,0 +1,38 @@
+This work was packaged for Debian by:
+
+    Bryan Tong <contact@nullivex.com> on Wed, 05 Sep 2012 22:44:16 -0700
+
+It was downloaded from:
+
+    http://openlss.org
+
+Upstream Author(s):
+
+    Bryan Tong <contact@nullivex.com>
+    Tony Butler <spudz76@gmail.com>
+
+Copyright:
+
+    <Copyright (C) 2012 EggPire LLC>
+    <Copyright (C) 2012 eSited LLC>
+    <Copyright (C) 2012 Nullivex LLC>
+
+License:
+
+    LGPLv3+: GNU LGPL version 3 or later <http://www.gnu.org/licenses/lgpl.html>.
+
+The Debian packaging is:
+
+    Copyright (C) 2012 Bryan Tong <contact@nullivex.com>
+
+# Please chose a license for your packaging work. If the program you package
+# uses a mainstream license, using the same license is the safest choice.
+# Please avoid to pick license terms that are more restrictive than the
+# packaged work, as it may make Debian's contributions unacceptable upstream.
+# If you just want it to be GPL version 3, leave the following lines in.
+
+and is licensed under the Lesser GPL version 3,
+see "/usr/share/common-licenses/LGPL-3".
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.

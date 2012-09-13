@@ -25,9 +25,11 @@ Display help information
 .IP "-y --yes"
 Answer yes to all confirmation prompts
 .IP "-v -vv -vvv"
-Increase verbosity and show underlying system commands
+Increase verbosity and show underlying system commands:
+0 for standard, 1 for verbose, 2 for info, 3 for debug
 .IP "-q -qq -qqq"
 Decrase verbosity and suppress errors, warnings etc.
+Use more to negate -v arguments
 .SH RUN-TIME SETTINGS
 .IP "-dir <directory>"
 Specify a working directory (SEE SYNOPSIS for dir types, SEE EXAMPLES for usage)
@@ -45,6 +47,8 @@ Test the core, will use the current default target and WILL DESTROY the current 
 .IP "--split-app=<app_map>"
 Split an existing application into packages using the app map.
 See http://wiki.openlss.org/doku.php?id=docs:howto:package_existing_applications for more details.
+.IP "--version -V"
+Show the current versions of the software
 .SH EXAMPLES
 .IP "Build debian package"
 lssadmin --build-deb --dir /opt/openlss/deb
