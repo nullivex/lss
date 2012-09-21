@@ -20,8 +20,8 @@
  */
 
 Router::_get()->register('staff',array(
-	'create'		=>	ROOT.'/ctl/admin/staff_create.php',
-	'manage'		=>	ROOT.'/ctl/admin/staff_manage.php',
-	'list'			=>	ROOT.'/ctl/admin/staff_list.php',
-	Router::DEF		=>	ROOT.'/ctl/admin/staff_list.php'
+	'create'		=>	'/ctl/admin/staff_create.php',
+	'manage'		=>	'/ctl/admin/staff_manage.php',
+	'list'			=>	'/ctl/admin/staff_list.php',
+	Router::DEF		=>	'/ctl/admin/staff_list.php'
 ));

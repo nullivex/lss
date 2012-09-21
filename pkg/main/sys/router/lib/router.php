@@ -21,7 +21,7 @@ class Router {
 	public function setDefault($dest){$this->default = $dest; return $dest;}
 
 	public function register($act,$do=array()){
-		$this->apps[$act] = array('do'=>$do);
+		$this->apps[$act] = $do;
 	}
 
 	public function route($act=null,$do=null,$fire=null){
@@ -29,10 +29,11 @@ class Router {
 		do {
 			$dest = $this->doRoute($keys[$i],$dest);
 			$i++;
-			if($i > 2) throw new Exception('Routing cannot pass 3 levels');
+			if($i > 2 && is_array($dest)) throw new Exception('Routing cannot pass 3 levels');
 		} while(is_array($dest));
 		if(is_null($dest)) return $this->default;
-		elseif(is_string($dest) && file_exists(ROOT.'/'.$dest)) return $dest;
+		$dest = ROOT.$dest;
+		if(is_string($dest) && file_exists($dest)) return $dest;
 		else throw new Exception('Could not route request');
 	}
 
@@ -42,7 +43,7 @@ class Router {
 			if($act !== $key) continue;
 			return $val;
 		}
-		if(isset($arr[Router::DEF])) return $arr[Router::DEF];
+		if(isset($arr[Router::DEF])) return ROOT.$arr[Router::DEF];
 		return null;
 	}
 

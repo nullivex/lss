@@ -121,7 +121,7 @@ class Login {
 		try {
 			$this->auth(post('username'),post('password'));
 			$this->start(post('username'),post('password'));
-			redirect($this->referrerVerify(session('login_referer')),true);
+			redirect($this->referrerVerify(session('login_referrer')),true);
 		} catch(Exception $e){
 			alert($e->getMessage(),false);
 			$this->loginPage();

@@ -26,6 +26,8 @@ define("LSS_VERSION","0.0.1");
 $config['info']['site_name'] = 'OpenLSS Core';
 $config['info']['default_timezone'] = 'UTC';
 
+$config['url']['url'] = $config['url']['uri'] = '';
+
 //paths
 $config['paths']['lss'] = dirname(dirname(__FILE__));
 

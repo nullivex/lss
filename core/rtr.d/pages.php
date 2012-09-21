@@ -19,10 +19,7 @@
  *   along with OpenLSS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Router::_get()->register(
-	'pages',
-	array(
-		'view'			=>	'ctl/page_view.php',
-		Router::DEF		=>	'ctl/page_view.php'
-	)
-);
+Router::_get()->register('pages',array(
+		'view'			=>	'/ctl/page_view.php',
+		Router::DEF		=>	'/ctl/page_view.php'
+));

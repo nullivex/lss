@@ -95,8 +95,7 @@ try {
 		}
 		closedir($dir);
 	}
-	$ctl = Router::_get()->route(req('act'),req('do'),req('fire'));
-	require_once($ctl);
+	require(Router::_get()->route(req('act'),req('do'),req('fire')));
 
 } catch(Exception $e){
 	sysError($e->getMessage());
